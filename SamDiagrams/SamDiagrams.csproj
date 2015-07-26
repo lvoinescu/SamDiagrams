@@ -1,0 +1,91 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{F06DAC8A-9CD9-41C1-BD1E-BA9AEE54411D}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>SamDiagrams</RootNamespace>
+    <AssemblyName>SamDiagrams</AssemblyName>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <NoStdLib>False</NoStdLib>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>Full</DebugType>
+    <Optimize>False</Optimize>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <DebugSymbols>False</DebugSymbols>
+    <DebugType>None</DebugType>
+    <Optimize>True</Optimize>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <BaseAddress>4194304</BaseAddress>
+    <PlatformTarget>x86</PlatformTarget>
+    <FileAlignment>4096</FileAlignment>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="BeforeNodeExpandOrCollapseArg.cs" />
+    <Compile Include="Delegates.cs" />
+    <Compile Include="DiagramContainer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DiagramItem.cs" />
+    <Compile Include="DiagramItemNode.cs" />
+    <Compile Include="DiagramNodeEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ItemResizedEventArg.cs">
+    </Compile>
+    <Compile Include="LinkPoint.cs" />
+    <Compile Include="LinkDirection.cs">
+    </Compile>
+    <Compile Include="ItemMovedEventArg.cs">
+    </Compile>
+    <Compile Include="ItemsMovedEventArg.cs">
+    </Compile>
+    <Compile Include="LinkDirectionChangedArg.cs">
+    </Compile>
+    <Compile Include="IDrawableItem.cs" />
+    <Compile Include="ItemLink.cs">
+    </Compile>
+    <Compile Include="LinkManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="SelectedItemsChangeArgs.cs" />
+    <Compile Include="SelectionBorder.cs">
+    </Compile>
+    <Compile Include="ZoomFactorChangedArg.cs" />
+    <EmbeddedResource Include="DiagramContainer.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DiagramContainer.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

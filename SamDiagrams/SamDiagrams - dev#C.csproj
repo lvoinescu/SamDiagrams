@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{F06DAC8A-9CD9-41C1-BD1E-BA9AEE54411D}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>SamDiagrams</RootNamespace>
+    <AssemblyName>SamDiagrams</AssemblyName>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <NoStdLib>False</NoStdLib>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>Full</DebugType>
+    <Optimize>False</Optimize>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <DebugSymbols>False</DebugSymbols>
+    <DebugType>None</DebugType>
+    <Optimize>True</Optimize>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <BaseAddress>4194304</BaseAddress>
+    <PlatformTarget>x86</PlatformTarget>
+    <FileAlignment>4096</FileAlignment>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Delegates.cs" />
+    <Compile Include="DiagramContainer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DrawableItem\DiagramItem.cs" />
+    <Compile Include="DrawableItem\DiagramItemNode.cs" />
+    <Compile Include="DrawableItem\IDrawableItem.cs" />
+    <Compile Include="DrawableItem\NodeEditor\INodeEditor.cs" />
+    <Compile Include="DrawableItem\NodeEditor\NodeTextEditor.cs" />
+    <Compile Include="DrawableItem\SelectionBorder.cs" />
+    <Compile Include="Events\BeforeNodeExpandOrCollapseArg.cs" />
+    <Compile Include="Events\ItemMovedEventArg.cs" />
+    <Compile Include="Events\ItemResizedEventArg.cs" />
+    <Compile Include="Events\ItemsMovedEventArg.cs" />
+    <Compile Include="Events\LinkDirectionChangedArg.cs" />
+    <Compile Include="Events\SelectedItemsChangeArgs.cs" />
+    <Compile Include="Events\ZoomFactorChangedArg.cs" />
+    <Compile Include="Linking\ILinkOrchestrator.cs" />
+    <Compile Include="Linking\ILinkStrategy.cs" />
+    <Compile Include="Linking\ItemLink.cs" />
+    <Compile Include="Linking\LinkDirection.cs" />
+    <Compile Include="Linking\LinkOrchestrator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Linking\LinkPoint.cs" />
+    <Compile Include="Linking\LinkStrategy.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <EmbeddedResource Include="DiagramContainer.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DiagramContainer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DrawableItem\NodeEditor" />
+    <Folder Include="Events" />
+    <Folder Include="Linking" />
+    <Folder Include="DrawableItem" />
+  </ItemGroup>
+</Project>

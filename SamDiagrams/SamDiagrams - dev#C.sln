@@ -1,0 +1,18 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+# SharpDevelop 3.2.1.6466
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamDiagrams - dev#C", "SamDiagrams - dev#C.csproj", "{F06DAC8A-9CD9-41C1-BD1E-BA9AEE54411D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F06DAC8A-9CD9-41C1-BD1E-BA9AEE54411D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F06DAC8A-9CD9-41C1-BD1E-BA9AEE54411D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F06DAC8A-9CD9-41C1-BD1E-BA9AEE54411D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F06DAC8A-9CD9-41C1-BD1E-BA9AEE54411D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+EndGlobal
