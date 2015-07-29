@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Text;
 
 
-namespace SamDiagrams
+namespace SamDiagrams.Linking
 {
 	public partial class Link:IComparable, IDrawableItem
 	{

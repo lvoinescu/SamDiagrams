@@ -8,6 +8,7 @@
  */
 
 using System;
+using SamDiagrams.Linking;
 
 namespace SamDiagrams
 {
