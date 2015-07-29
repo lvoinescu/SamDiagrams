@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-# SharpDevelop 3.2.1.6466
+# SharpDevelop 4.4
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamDiagrams - dev#C", "SamDiagrams - dev#C.csproj", "{F06DAC8A-9CD9-41C1-BD1E-BA9AEE54411D}"
 EndProject
 Global

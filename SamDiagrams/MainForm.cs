@@ -10,8 +10,11 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
 using System.Drawing.Drawing2D;
+using System.Windows.Forms;
+
+using SamDiagrams.Linking;
+
 namespace SamDiagrams
 {
 	/// <summary>
@@ -41,7 +44,7 @@ namespace SamDiagrams
 		{
             Image intImg = Image.FromFile("diamond.png");
             Image tImg = Image.FromFile("table.png");
-            int k = 5;
+            int k = 10;
             Random r = new Random(255);
             try
             {

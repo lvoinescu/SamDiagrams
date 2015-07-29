@@ -63,15 +63,18 @@
     <Compile Include="Events\LinkDirectionChangedArg.cs" />
     <Compile Include="Events\SelectedItemsChangeArgs.cs" />
     <Compile Include="Events\ZoomFactorChangedArg.cs" />
-    <Compile Include="Linking\ILinkOrchestrator.cs" />
-    <Compile Include="Linking\ILinkStrategy.cs" />
-    <Compile Include="Linking\ItemLink.cs" />
+    <Compile Include="Linking\Link.cs" />
     <Compile Include="Linking\LinkDirection.cs" />
-    <Compile Include="Linking\LinkOrchestrator.cs">
+    <Compile Include="Linking\LinkPoint.cs" />
+    <Compile Include="Linking\LinkStyle.cs" />
+    <Compile Include="Linking\Orchestrator\ILinkOrchestrator.cs" />
+    <Compile Include="Linking\Orchestrator\LinkOrchestrator.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Linking\LinkPoint.cs" />
-    <Compile Include="Linking\LinkStrategy.cs" />
+    <Compile Include="Linking\Strategy\CenterLinkStrategy.cs" />
+    <Compile Include="Linking\Strategy\ILinkStrategy.cs" />
+    <Compile Include="Linking\Strategy\NSWELinkStrategy\NSWELinkStrategy.cs" />
+    <Compile Include="Linking\Strategy\NSWELinkStrategy\NSWEDiagramItem.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -92,5 +95,8 @@
     <Folder Include="Events" />
     <Folder Include="Linking" />
     <Folder Include="DrawableItem" />
+    <Folder Include="Linking\Orchestrator" />
+    <Folder Include="Linking\Strategy" />
+    <Folder Include="Linking\Strategy\NSWELinkStrategy" />
   </ItemGroup>
 </Project>

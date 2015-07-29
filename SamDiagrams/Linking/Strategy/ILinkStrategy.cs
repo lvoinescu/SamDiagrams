@@ -8,10 +8,16 @@
  */
 using System;
 
-namespace SamDiagrams.Linking
+namespace SamDiagrams.Linking.Strategy
 {
 	public interface ILinkStrategy
 	{
-		LinkDirection computeDirection(ItemLink link);
+		
+		void RegisterLink(Link link);
+		
+		void DirectLinks(DiagramItem item);
+		
+		void ArangeLinksForItem(DiagramItem item);
+		
 	}
 }

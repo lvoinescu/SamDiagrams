@@ -8,12 +8,15 @@
  */
 
 using System;
-using System.Drawing;
-using System.Windows.Forms;
 using System.Collections.Generic;
-using System.Drawing.Drawing2D;
 using System.ComponentModel;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Windows.Forms;
+
 using SamDiagrams.DrawableItem.NodeEditor;
+using SamDiagrams.Linking.Orchestrator;
+
 namespace SamDiagrams
 {
     /// <summary>
@@ -138,7 +141,6 @@ namespace SamDiagrams
             this.Controls.Add(hScrollBar1);
             this.Controls.Add(vScrollBar1);
             linkOrchestrator = new LinkOrchestrator(this);
-            linkOrchestrator.LinkDirectionChangedEvent += new LinkDirectionChangedHandler(linkManager_LinkDirectionChangedEvent);
             nodeEditor =  new NodeTextEditor(this);
             this.Invalidate();
 
@@ -622,7 +624,7 @@ namespace SamDiagrams
                 if (s.Height < di.MinHeight)
                     s.Height = di.MinHeight;
                 di.SetSize(s.Width, s.Height);
-                linkOrchestrator.ArangeLinksForItem(di);
+                linkOrchestrator.linkStrategy.ArangeLinksForItem(di);
                 //Invalidate(invalidableRegion, false);
             }
             
@@ -638,16 +640,16 @@ namespace SamDiagrams
             di.Invalidated = true;
             if (di.IsSelected)
                 di.selectionBorder.Invalidated = true;
-            for (int j = 0; j < di.OutputLinkList.Count; j++)
-            {
-                di.OutputLinkList[j].Invalidated = true;
-                di.OutputLinkList[j].Destination.Invalidated = true;
-            }
-            for (int j = 0; j < di.InputLinkList.Count; j++)
-            {
-                di.InputLinkList[j].Invalidated = true;
-                di.InputLinkList[j].Destination.Invalidated = true;
-            }
+//            for (int j = 0; j < di.OutputLinkList.Count; j++)
+//            {
+//                di.OutputLinkList[j].Invalidated = true;
+//                di.OutputLinkList[j].Destination.Invalidated = true;
+//            }
+//            for (int j = 0; j < di.InputLinkList.Count; j++)
+//            {
+//                di.InputLinkList[j].Invalidated = true;
+//                di.InputLinkList[j].Destination.Invalidated = true;
+//            }
         }
 
         protected Region CalculateInvalidatedRegion(Rectangle initialRect)

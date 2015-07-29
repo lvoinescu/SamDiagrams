@@ -6,15 +6,14 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace SamDiagrams
+namespace SamDiagrams.Linking.Orchestrator
 {
 	public interface ILinkOrchestrator
 	{
 		void AddLink(DiagramItem source, DiagramItem destination);
 		void AddLink(DiagramItem source, DiagramItem destination, Color color);
-		List<ItemLink> Links { get; set; }
+		List<Link> Links { get; set; }
 		LinkStyle LinkStyle { get; set; }
-		event LinkDirectionChangedHandler LinkDirectionChangedEvent;
 	}
 }
 
