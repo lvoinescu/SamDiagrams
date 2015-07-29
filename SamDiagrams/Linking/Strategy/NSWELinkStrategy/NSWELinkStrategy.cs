@@ -9,13 +9,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using SamDiagrams.Linking.Strategy;
 
 namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 {
 	/// <summary>
 	/// Description of LinkStrategy.
 	/// </summary>
-	public class NSWELinkStrategy : ILinkStrategy
+	public class NSWELinkStrategy : ILinker
 	{
 		
 		public event LinkDirectionChangedHandler LinkDirectionChangedEvent;
@@ -92,7 +93,6 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 
 			nsweSource.Links.Add(link);
 			nsweDestination.Links.Add(link);
-			
 			
 			virtualMapping[link.Source] = nsweSource;
 			virtualMapping[link.Destination] = nsweDestination;
@@ -273,9 +273,6 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			if (this.LinkDirectionChangedEvent != null)
 				LinkDirectionChangedEvent(link, new LinkDirectionChangedArg(newDirection, link.Direction));
 		}
-		
-
-		
 		
 		private void SortCounterPoints(List<LinkPoint> list, LinkDirection direction)
 		{

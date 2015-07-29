@@ -71,8 +71,10 @@
     <Compile Include="Linking\Orchestrator\LinkOrchestrator.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Linking\Strategy\CenterLinkStrategy.cs" />
-    <Compile Include="Linking\Strategy\ILinkStrategy.cs" />
+    <Compile Include="Linking\Strategy\CenterLinkStrategy\CenterLinkStrategy.cs" />
+    <Compile Include="Linking\Strategy\ILinkDrawer.cs" />
+    <Compile Include="Linking\Strategy\ILinker.cs" />
+    <Compile Include="Linking\Strategy\NSWELinkStrategy\NSWELinkDrawer.cs" />
     <Compile Include="Linking\Strategy\NSWELinkStrategy\NSWELinkStrategy.cs" />
     <Compile Include="Linking\Strategy\NSWELinkStrategy\NSWEDiagramItem.cs" />
     <Compile Include="MainForm.cs">
@@ -97,6 +99,7 @@
     <Folder Include="DrawableItem" />
     <Folder Include="Linking\Orchestrator" />
     <Folder Include="Linking\Strategy" />
+    <Folder Include="Linking\Strategy\CenterLinkStrategy" />
     <Folder Include="Linking\Strategy\NSWELinkStrategy" />
   </ItemGroup>
 </Project>

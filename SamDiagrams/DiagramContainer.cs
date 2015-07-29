@@ -624,7 +624,7 @@ namespace SamDiagrams
                 if (s.Height < di.MinHeight)
                     s.Height = di.MinHeight;
                 di.SetSize(s.Width, s.Height);
-                linkOrchestrator.linkStrategy.ArangeLinksForItem(di);
+                //linkOrchestrator.linkStrategy.ArangeLinksForItem(di);
                 //Invalidate(invalidableRegion, false);
             }
             
@@ -664,7 +664,7 @@ namespace SamDiagrams
                 	linkOrchestrator.Links[i].Destination.Invalidated = true;
                 	linkOrchestrator.Links[i].Source.Invalidated = true;
                     RectangleF rl = linkOrchestrator.Links[i].Bounds;
-                    rl.Inflate( linkOrchestrator.lsPenWidh/2 +1, linkOrchestrator.lsPenWidh/2 +1);
+                    rl.Inflate( linkOrchestrator.lsPenWidth/2 +1, linkOrchestrator.lsPenWidth/2 +1);
                     r.Union(rl);
                 }
             }

@@ -8,18 +8,20 @@
  */
 using System;
 
-namespace SamDiagrams.Linking.Strategy
+namespace SamDiagrams.Linking.Strategy.CenterLinkStrategy
 {
 	/// <summary>
 	/// Description of CenterLinkStrategy.
 	/// </summary>
-	public class CenterLinkStrategy : ILinkStrategy
+	public class CenterLinkStrategy : ILinker
 	{
 		public CenterLinkStrategy()
 		{
 		}
 		
-		public void arrangeLinks(DiagramItem item)
+		
+		
+		public void RegisterLink(Link link)
 		{
 			throw new NotImplementedException();
 		}
@@ -29,16 +31,7 @@ namespace SamDiagrams.Linking.Strategy
 			throw new NotImplementedException();
 		}
 		
-		public void arrangeConnectionPoints(DiagramItem diagramItem)
-		{
-			throw new NotImplementedException();
-		}
-		
-		public void ArangeLinksForItem(DiagramItem item){
-			
-		}
-		
-		public void RegisterLink(Link link)
+		public void ArangeLinksForItem(DiagramItem item)
 		{
 			throw new NotImplementedException();
 		}

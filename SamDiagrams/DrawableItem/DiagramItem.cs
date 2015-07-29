@@ -142,9 +142,6 @@ namespace SamDiagrams
 			}
 		}
 
-
-		
-
 		private Rectangle bounds = new Rectangle();
 
 		public Rectangle Bounds
@@ -220,14 +217,13 @@ namespace SamDiagrams
 
 		public void Draw()
 		{
-			using(Graphics g = parentContainer.CreateGraphics())
+			using(Graphics g = parentContainer.CreateGraphics()) {
 				Draw(g);
+			}
 		}
 		
 		public void Draw(Graphics g){
 
-			//float scaleFactor = 1.0f;
-			
 			GraphicsPath path = new GraphicsPath();
 
 			//header
@@ -237,8 +233,6 @@ namespace SamDiagrams
 			path.AddLine(location.X, location.Y + (int)(scaledCornerRadius / 2) + titleHeight + titleOffset, location.X, location.Y + (int)(scaledCornerRadius / 2));
 			path.CloseAllFigures();
 
-
-			
 			
 			//title background
 			// LinearGradientBrush linBrush = new LinearGradientBrush(new Rectangle(scaledLocation,scaledSize), _ClassStartColor, _ClassEndColor, LinearGradientMode.Horizontal);
@@ -255,8 +249,7 @@ namespace SamDiagrams
 			int xscaledOffset = (int)((this.location.X + leftPadding) );
 			yScaledOffset = location.Y + titleHeight + (int)(scaledCornerRadius / 2);
 			int mainHeightScaled = rowScaledHeight * nrOfDisplayedRows + titleOffset;
-			if (!parentContainer.AutoSizeItem)
-			{
+			if (!parentContainer.AutoSizeItem) {
 				mainHeightScaled = this.size.Height - titleOffset - rowScaledHeight - scaledCornerRadius;
 			}
 			Rectangle lineMainR = new Rectangle(location.X, yScaledOffset, size.Width, mainHeightScaled);
@@ -264,8 +257,7 @@ namespace SamDiagrams
 			g.DrawRectangle(contur,lineMainR);
 
 			crtDrawingRow = 0;
-			for(int i=0;i<nodes.Count;i++)
-			{
+			for(int i=0;i<nodes.Count;i++) {
 				RecursiveDraw(g, rowScaledFont, scaleFactor, nodes[i],xscaledOffset,yScaledOffset + titleOffset);
 				crtDrawingRow++;
 			}
@@ -282,18 +274,15 @@ namespace SamDiagrams
 		}
 		
 
-		public Size getSize()
-		{
+		public Size getSize() {
 			return this.size;
 		}
 
-		public Point getLocation()
-		{
+		public Point getLocation() {
 			return this.location;
 		}
 
-		public void AddOnDiagram(DiagramContainer d, Color c)
-		{
+		public void AddOnDiagram(DiagramContainer d, Color c) {
 			this.diagramContainer = d;
 			scaleFactor = (float)parentContainer.ZoomFactor / 100;
 			rowScaledHeight = CalculateRowHeight();
@@ -305,8 +294,7 @@ namespace SamDiagrams
 		}
 		
 		
-		internal void OnClick(MouseEventArgs e, float scaleFactor)
-		{
+		internal void OnClick(MouseEventArgs e, float scaleFactor) {
 			crtExpanderCheckRow = 0;
 			for(int i=0;i<nodes.Count;i++)
 			{
@@ -326,8 +314,7 @@ namespace SamDiagrams
 		}
 		
 		
-		internal void OnDblClick(MouseEventArgs e, float scaleFactor)
-		{
+		internal void OnDblClick(MouseEventArgs e, float scaleFactor) {
 			Point pInside = new Point((int)(e.Location.X / scaleFactor), (int)(e.Location.Y / scaleFactor));
 			pInside.Offset(diagramContainer.hScrollBar1.Value, diagramContainer.vScrollBar1.Value);
 			int x = (int)(pInside.X - this.Location.X);
