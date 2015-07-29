@@ -13,9 +13,10 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
+using SamDiagrams;
 using SamDiagrams.Linking;
 
-namespace SamDiagrams
+namespace TestProject
 {
 	/// <summary>
 	/// Description of MainForm.
@@ -216,5 +217,10 @@ namespace SamDiagrams
         {
             diagramContainer1.AutoSizeItem = !diagramContainer1.AutoSizeItem;
         }
+		
+		void DiagramContainer1Load(object sender, EventArgs e)
+		{
+			
+		}
 	}
 }

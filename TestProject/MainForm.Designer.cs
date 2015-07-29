@@ -6,7 +6,7 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
-namespace SamDiagrams
+namespace TestProject
 {
 	partial class MainForm
 	{
@@ -50,6 +50,7 @@ namespace SamDiagrams
 			((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
@@ -58,10 +59,10 @@ namespace SamDiagrams
 			// textBox1
 			// 
 			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBox1.Location = new System.Drawing.Point(144, 292);
-			this.textBox1.Margin = new System.Windows.Forms.Padding(4);
+			this.textBox1.Location = new System.Drawing.Point(294, 193);
+			this.textBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(272, 22);
+			this.textBox1.Size = new System.Drawing.Size(155, 22);
 			this.textBox1.TabIndex = 1;
 			// 
 			// listBox1
@@ -69,20 +70,20 @@ namespace SamDiagrams
 			this.listBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.listBox1.FormattingEnabled = true;
 			this.listBox1.ItemHeight = 16;
-			this.listBox1.Location = new System.Drawing.Point(180, 121);
-			this.listBox1.Margin = new System.Windows.Forms.Padding(4);
+			this.listBox1.Location = new System.Drawing.Point(314, 80);
+			this.listBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.listBox1.Name = "listBox1";
-			this.listBox1.Size = new System.Drawing.Size(216, 148);
+			this.listBox1.Size = new System.Drawing.Size(123, 84);
 			this.listBox1.TabIndex = 0;
 			// 
 			// trackBar1
 			// 
-			this.trackBar1.Location = new System.Drawing.Point(33, 26);
-			this.trackBar1.Margin = new System.Windows.Forms.Padding(4);
+			this.trackBar1.Location = new System.Drawing.Point(19, 17);
+			this.trackBar1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.trackBar1.Maximum = 500;
 			this.trackBar1.Minimum = 10;
 			this.trackBar1.Name = "trackBar1";
-			this.trackBar1.Size = new System.Drawing.Size(363, 42);
+			this.trackBar1.Size = new System.Drawing.Size(204, 42);
 			this.trackBar1.TabIndex = 1;
 			this.trackBar1.TickFrequency = 10;
 			this.trackBar1.Value = 100;
@@ -90,20 +91,20 @@ namespace SamDiagrams
 			// 
 			// pictureBox1
 			// 
-			this.pictureBox1.Location = new System.Drawing.Point(568, 372);
-			this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
+			this.pictureBox1.Location = new System.Drawing.Point(320, 245);
+			this.pictureBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(231, 128);
+			this.pictureBox1.Size = new System.Drawing.Size(130, 84);
 			this.pictureBox1.TabIndex = 3;
 			this.pictureBox1.TabStop = false;
 			// 
 			// trackBar2
 			// 
-			this.trackBar2.Location = new System.Drawing.Point(83, 494);
-			this.trackBar2.Margin = new System.Windows.Forms.Padding(4);
+			this.trackBar2.Location = new System.Drawing.Point(46, 326);
+			this.trackBar2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.trackBar2.Maximum = 3000;
 			this.trackBar2.Name = "trackBar2";
-			this.trackBar2.Size = new System.Drawing.Size(363, 42);
+			this.trackBar2.Size = new System.Drawing.Size(204, 42);
 			this.trackBar2.TabIndex = 4;
 			this.trackBar2.Value = 400;
 			this.trackBar2.Scroll += new System.EventHandler(this.trackBar2_Scroll);
@@ -112,7 +113,7 @@ namespace SamDiagrams
 			// 
 			this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-			this.splitContainer1.Margin = new System.Windows.Forms.Padding(4);
+			this.splitContainer1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.splitContainer1.Name = "splitContainer1";
 			// 
 			// splitContainer1.Panel1
@@ -132,7 +133,7 @@ namespace SamDiagrams
 			this.splitContainer1.Panel2.Controls.Add(this.textBox1);
 			this.splitContainer1.Size = new System.Drawing.Size(1245, 705);
 			this.splitContainer1.SplitterDistance = 758;
-			this.splitContainer1.SplitterWidth = 5;
+			this.splitContainer1.SplitterWidth = 3;
 			this.splitContainer1.TabIndex = 5;
 			// 
 			// diagramContainer1
@@ -143,17 +144,20 @@ namespace SamDiagrams
 			this.diagramContainer1.DrawableWidth = 758;
 			this.diagramContainer1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.diagramContainer1.Location = new System.Drawing.Point(0, 0);
+			this.diagramContainer1.Margin = new System.Windows.Forms.Padding(2);
 			this.diagramContainer1.Name = "diagramContainer1";
 			this.diagramContainer1.Size = new System.Drawing.Size(758, 705);
 			this.diagramContainer1.SnapObjectsToGrid = false;
 			this.diagramContainer1.TabIndex = 0;
 			this.diagramContainer1.ZoomFactor = 100;
+			this.diagramContainer1.Load += new System.EventHandler(this.DiagramContainer1Load);
 			// 
 			// button3
 			// 
-			this.button3.Location = new System.Drawing.Point(43, 303);
+			this.button3.Location = new System.Drawing.Point(24, 200);
+			this.button3.Margin = new System.Windows.Forms.Padding(2);
 			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(83, 35);
+			this.button3.Size = new System.Drawing.Size(46, 23);
 			this.button3.TabIndex = 8;
 			this.button3.Text = "button3";
 			this.button3.UseVisualStyleBackColor = true;
@@ -161,9 +165,10 @@ namespace SamDiagrams
 			// 
 			// button2
 			// 
-			this.button2.Location = new System.Drawing.Point(40, 227);
+			this.button2.Location = new System.Drawing.Point(22, 150);
+			this.button2.Margin = new System.Windows.Forms.Padding(2);
 			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(69, 42);
+			this.button2.Size = new System.Drawing.Size(39, 28);
 			this.button2.TabIndex = 7;
 			this.button2.Text = "button2";
 			this.button2.UseVisualStyleBackColor = true;
@@ -171,9 +176,10 @@ namespace SamDiagrams
 			// 
 			// button1
 			// 
-			this.button1.Location = new System.Drawing.Point(40, 126);
+			this.button1.Location = new System.Drawing.Point(22, 83);
+			this.button1.Margin = new System.Windows.Forms.Padding(2);
 			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(87, 49);
+			this.button1.Size = new System.Drawing.Size(49, 32);
 			this.button1.TabIndex = 6;
 			this.button1.Text = "button1";
 			this.button1.UseVisualStyleBackColor = true;
@@ -182,11 +188,11 @@ namespace SamDiagrams
 			// textBox2
 			// 
 			this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.textBox2.Location = new System.Drawing.Point(99, 353);
+			this.textBox2.Location = new System.Drawing.Point(56, 233);
 			this.textBox2.Margin = new System.Windows.Forms.Padding(0);
 			this.textBox2.Multiline = true;
 			this.textBox2.Name = "textBox2";
-			this.textBox2.Size = new System.Drawing.Size(200, 18);
+			this.textBox2.Size = new System.Drawing.Size(114, 13);
 			this.textBox2.TabIndex = 5;
 			this.textBox2.Text = "Mta";
 			// 
@@ -207,6 +213,7 @@ namespace SamDiagrams
 			this.splitContainer1.Panel1.ResumeLayout(false);
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			this.splitContainer1.Panel2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}

@@ -4,13 +4,14 @@
     <ProjectGuid>{F06DAC8A-9CD9-41C1-BD1E-BA9AEE54411D}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>SamDiagrams</RootNamespace>
     <AssemblyName>SamDiagrams</AssemblyName>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWin32Manifest>False</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -77,19 +78,9 @@
     <Compile Include="Linking\Strategy\NSWELinkStrategy\NSWELinkDrawer.cs" />
     <Compile Include="Linking\Strategy\NSWELinkStrategy\NSWELinkStrategy.cs" />
     <Compile Include="Linking\Strategy\NSWELinkStrategy\NSWEDiagramItem.cs" />
-    <Compile Include="MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
     <EmbeddedResource Include="DiagramContainer.resx">
       <SubType>Designer</SubType>
       <DependentUpon>DiagramContainer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

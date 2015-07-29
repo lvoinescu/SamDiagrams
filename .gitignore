@@ -2,3 +2,6 @@ SamDiagrams/obj
 SamDiagrams/bin
 SamDiagrams/obj/**
 SamDiagrams/bin/**
+TestProject/bin/**
+TestProject/obj/**
+!SamDiagrams/bin/*.png
