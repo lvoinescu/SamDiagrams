@@ -13,10 +13,9 @@
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU Lesser General Public License for more details.
-*
+ *
  *   You should have received a copy of the GNU Lesser General Public License
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
- */To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 
 using System;
