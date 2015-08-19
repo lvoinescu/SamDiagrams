@@ -1,10 +1,21 @@
 /*
- * Created by SharpDevelop.
- * User: L
- * Date: 2/16/2013
- * Time: 9:03 AM
- * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
+ *   SamDiagrams - diagram component for .NET
+ *   Copyright (C) 2011  Lucian Voinescu
+ *
+ *   This file is part of SamDiagrams
+ *
+ *   SamDiagrams is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   SamDiagrams is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Lesser General Public License for more details.
+*
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 
 using System;
@@ -14,11 +25,9 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-using SamDiagrams.Actions;
 using SamDiagrams.DiagramItem.NodeEditor;
 using SamDiagrams.Drawers;
 using SamDiagrams.Drawings;
-using SamDiagrams.Linking.Orchestrator;
 
 namespace SamDiagrams
 {
@@ -204,7 +213,9 @@ namespace SamDiagrams
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			RectangleF rectangle = e.Graphics.ClipBounds;
-			e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(rd.Next(255), rd.Next(255), rd.Next(255))), new Rectangle((int)rectangle.X, (int)rectangle.Y, (int)rectangle.Width, (int)rectangle.Height));
+			#if DEBUG
+			//e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(rd.Next(255), rd.Next(255), rd.Next(255))), new Rectangle((int)rectangle.X, (int)rectangle.Y, (int)rectangle.Width, (int)rectangle.Height));
+			#endif
 			containerDrawer.Draw(scaleFactor, e.Graphics);
 		}
 
