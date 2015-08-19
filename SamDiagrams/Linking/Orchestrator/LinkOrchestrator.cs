@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
+using System.Windows.Forms;
+using SamDiagrams.Actions;
+using SamDiagrams.Drawers;
+using SamDiagrams.Drawers.Links;
+using SamDiagrams.Drawings;
 using SamDiagrams.Linking.Strategy;
 using SamDiagrams.Linking.Strategy.NSWELinkStrategy;
+
 namespace SamDiagrams.Linking.Orchestrator
 {
 
@@ -15,106 +17,94 @@ namespace SamDiagrams.Linking.Orchestrator
 
 	public partial class LinkOrchestrator : ILinkOrchestrator
 	{
-		DiagramContainer dc;
+		ContainerDrawer containerDrawer;
 		LinkStyle linkStyle = LinkStyle.SingleLine;
-		List<DiagramItem> items;
-		List<Link> links = new List<Link>();
-		internal int lPenWidth = 1;
-		internal int lsPenWidth = 9;
+		List<Drawing> items;
+		List<StructureLink> links = new List<StructureLink>();
+		internal int lineWidth = 1;
+		internal int selectedLineWidth = 9;
 		internal ILinker linkStrategy;
-		internal ILinkDrawer linkDrawer;
+		Dictionary<Structure, List<StructureLink>> structureLinks;
+		
 		
 		public LinkStyle LinkStyle {
 			get { return linkStyle; }
 			set {
 				linkStyle = value;
-				dc.Invalidate();
 			}
 		}
 
-		public List<Link> Links {
+		public List<StructureLink> Links {
 			get { return links; }
 			set { links = value; }
 		}
 		
 		
-		public LinkOrchestrator(DiagramContainer dc)
+		public LinkOrchestrator(ContainerDrawer containerDrawer)
 		{
-			items = new List<DiagramItem>();
+			items = new List<Drawing>();
 			linkStrategy = new NSWELinkStrategy();
-			linkDrawer = new NSWELinkDrawer(lPenWidth, lsPenWidth, LinkStyle.StreightLines);
-			this.dc = dc;
+			structureLinks = new Dictionary<Structure, List<StructureLink>>();
+			this.containerDrawer = containerDrawer;
+			containerDrawer.ItemsMoved+= new ItemsMovedHandler(OnItemsMoved);
 		}
 
-		public void AddLink(DiagramItem source, DiagramItem destination)
+		public void AddLink(Structure source, Structure destination)
 		{
-			Link link = new Link(source, destination);
+			StructureLink link = new StructureLink(source, destination);
 			RegisterLink(link);
 		}
 
-		public void AddLink(DiagramItem source, DiagramItem destination, Color color)
+		public void AddLink(Structure source, Structure destination, Color color)
 		{
-			Link link = new Link(source, destination, color);
+			StructureLink link = new StructureLink(source, destination, color);
 			RegisterLink(link);
 		}
 		
-		private void RegisterLink(Link link){
-			DiagramItem source = link.Source;
-			DiagramItem destination = link.Destination;
+		private void RegisterLink(StructureLink link)
+		{
+			Structure source = link.Source;
+			Structure destination = link.Destination;
+			
+			source.links.Add(link);
+			destination.links.Add(link);
+			
 			linkStrategy.RegisterLink(link);
 			links.Add(link);
+			LinkDrawing linkDrawer = new LinkDrawing(link, lineWidth, selectedLineWidth, LinkStyle.SingleLine);
+			containerDrawer.ModelToDrawer[link] = linkDrawer;
+			containerDrawer.Drawings.Add(linkDrawer);
 			
-			if (!items.Contains(source)) {
-				items.Add(source);
-				source.ItemResized += new ItemResizedHandler(OnItemResized);
-				source.ItemMoved += new ItemMovedHandler(OnItemMoved);
+			StructureDrawing sourceDrawing = (StructureDrawing)containerDrawer.ModelToDrawer[link.Source];
+			StructureDrawing destinationDrawing = (StructureDrawing)containerDrawer.ModelToDrawer[link.Destination];
+			
+			if (!items.Contains(sourceDrawing)) {
+				items.Add(sourceDrawing);
 			}
 			
-			if (!items.Contains(destination)) {
-				items.Add(destination);
-				destination.ItemResized += new ItemResizedHandler(OnItemResized);
-				destination.ItemMoved += new ItemMovedHandler(OnItemMoved);
+			if (!items.Contains(destinationDrawing)) {
+				items.Add(destinationDrawing);
 			}
 			
-			linkStrategy.DirectLinks(source);
-			linkStrategy.DirectLinks(destination);
+			linkStrategy.DirectLinks(sourceDrawing);
+			linkStrategy.DirectLinks(destinationDrawing);
 		}
 
 		private void OnItemResized(object sender, ItemResizedEventArg e)
 		{
-			linkStrategy.DirectLinks((DiagramItem)sender);
+			linkStrategy.DirectLinks((StructureDrawing)sender);
 		}
 
-		private void OnItemMoved(object sender, ItemMovedEventArg e)
+		public void OnItemsMoved(object sender, ItemsMovedEventArg e)
 		{
-			float scaleFactor = (float)dc.ZoomFactor / 100;
-			DiagramItem item = e.Item;
-
-			linkStrategy.DirectLinks(item);
-			
-			linkStrategy.DirectLinks(item);
-		}
-
-		internal void Draw(Graphics graphics)
-		{
-			RectangleF rct = graphics.ClipBounds;
-			float zoomFactor = (float)dc.ZoomFactor/100;
-			if (linkStyle == LinkStyle.SingleLine)
-				graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-			else
-				graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
-			foreach (Link link in links) {
-				if (link.Invalidated || rct.IntersectsWith(link.Bounds)) {
-					linkDrawer.Draw(link, graphics, zoomFactor);
-				}
-				link.Invalidated = false;
+			foreach (StructureDrawing structureDrawing in e.Items) {
+				linkStrategy.DirectLinks(structureDrawing);
 			}
 		}
 
-
 		internal void ArrangeAllLinks()
 		{
-			foreach (DiagramItem item in items)
+			foreach (StructureDrawing item in items)
 				linkStrategy.DirectLinks(item);
 		}
 

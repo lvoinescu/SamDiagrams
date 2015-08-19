@@ -20,27 +20,24 @@ namespace SamDiagrams
 	{
 		private int x = 0;
 		private int y = 0;
-		private Link link;
+		private StructureLink link;
 		
-		public Link Link
-		{
+		public StructureLink Link {
 			get { return link; }
 			set { link = value; }
 		}
 		
-		public int X
-		{
+		public int X {
 			get { return x; }
 			set { x = value; }
 		}
 
-		public int Y
-		{
+		public int Y {
 			get { return y; }
 			set { y = value; }
 		}
 
-		public LinkPoint(Link link)
+		public LinkPoint(StructureLink link)
 		{
 			this.link = link;
 		}
@@ -61,11 +58,10 @@ namespace SamDiagrams
 
 		internal bool IsGreater(LinkPoint point, LinkDirection direction)
 		{
-			switch (direction)
-			{
+			switch (direction) {
 				case LinkDirection.SourceNorthDestinationSouth:
 				case LinkDirection.SourceSouthDestinationNorth:
-					return this.x> point.x;
+					return this.x > point.x;
 				case LinkDirection.SourceEastDestinationWest:
 				case LinkDirection.SourceWestDestinationEast:
 					return this.y > point.y;

@@ -11,12 +11,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using SamDiagrams.Model;
 namespace SamDiagrams
 {
 	/// <summary>
 	/// Description of DiagramItemNode.
 	/// </summary>
-	public class DiagramItemNode : CollectionBase
+	public class Node : CollectionBase, Item
 	{
 		private String nodeText;
 		private Hashtable asoc = new Hashtable();
@@ -24,10 +25,10 @@ namespace SamDiagrams
 		private object tag;
 		private bool editable = true;
 		private List<Image> images;
-		private DiagramItem item;
-		private DiagramItemNode parent;
+		private Structure item;
+		private Node parent;
 		
-		public DiagramItemNode Parent {
+		public Node Parent {
 			get { return parent; }
 			set { parent = value; }
 		}
@@ -57,30 +58,30 @@ namespace SamDiagrams
 			get { return nodeText; }
 			set { nodeText = value; }
 		}
-		public DiagramItem DiagramItem{
+		public Structure DiagramItem{
 			get {return item; }
 		}
 		
-		public DiagramItemNode(string itemText, DiagramItem item)
+		public Node(string itemText, Structure item)
 		{
 			images = new List<Image>();
 			this.item = item;
 			this.nodeText = itemText;
 		}
-		public DiagramItemNode(string itemText, bool editable, DiagramItem item):  this(itemText, item)
+		public Node(string itemText, bool editable, Structure item):  this(itemText, item)
 		{
 			this.editable = editable;
 		}
 
-		public DiagramItemNode(string itemText, bool editable,Image img, DiagramItem item):this(itemText,editable,item)
+		public Node(string itemText, bool editable,Image img, Structure item):this(itemText,editable,item)
 		{
 			this.images.Add(img);
 		}
-		public DiagramItemNode this[int Index]
+		public Node this[int Index]
 		{
 			get
 			{
-				return (DiagramItemNode)List[Index];
+				return (Node)List[Index];
 			}
 			set
 			{
@@ -89,18 +90,18 @@ namespace SamDiagrams
 			}
 		}
 
-		public DiagramItemNode this[string name]
+		public Node this[string name]
 		{
 			get
 			{
 				if(asoc.ContainsKey(name))
-					return (DiagramItemNode)asoc[name];
+					return (Node)asoc[name];
 				return null;
 			}
 			
 		}
 
-		public void AddNode(DiagramItemNode nod)
+		public void AddNode(Node nod)
 		{
 			this.List.Add(nod);
 			nod.parent = this;

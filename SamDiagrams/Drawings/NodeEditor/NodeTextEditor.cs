@@ -11,7 +11,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-namespace SamDiagrams.DrawableItem.NodeEditor
+namespace SamDiagrams.DiagramItem.NodeEditor
 {
 	/// <summary>
 	/// Description of NodeEditor.
@@ -20,7 +20,7 @@ namespace SamDiagrams.DrawableItem.NodeEditor
 	{
 		DiagramContainer container;
 		private bool visible = false;
-		internal DiagramInfoItemNode currentNode = null;
+		internal StructureNodeInfo currentNode = null;
 		private Timer timer;
 		private int cursorBlinkPeriod = 300;
 		private bool cursorVisible = true;
@@ -56,7 +56,7 @@ namespace SamDiagrams.DrawableItem.NodeEditor
 		}
 
 
-		public void ShowOnNode(DiagramInfoItemNode nodeInfo)
+		public void ShowOnNode(StructureNodeInfo nodeInfo)
 		{
 			currentNode = nodeInfo;
 			currentText = nodeInfo.Nod.Text;
@@ -90,16 +90,16 @@ namespace SamDiagrams.DrawableItem.NodeEditor
 				if (cursorVisible) {
 
 					string currentCaretString = currentNode.Nod.Text.Substring(0, cursorPosition);
-					SizeF stringSize = g.MeasureString(currentCaretString, currentNode.Nod.DiagramItem.rowScaledFont);
-					if(stringSize.Width==0)
-						stringSize.Width =2;
-					cursorXposition = currentNode.BoundingRectangle.X + (int)stringSize.Width-1;
+					SizeF stringSize = g.MeasureString(currentCaretString, currentNode.StructureDrawing.rowScaledFont);
+					if (stringSize.Width == 0)
+						stringSize.Width = 2;
+					cursorXposition = currentNode.BoundingRectangle.X + (int)stringSize.Width - 1;
 					g.DrawLine(p, cursorXposition, currentNode.BoundingRectangle.Y, cursorXposition, currentNode.BoundingRectangle.Y + currentNode.BoundingRectangle.Height);
 					
 
 				}
 				
-				g.DrawString(currentNode.Nod.Text, currentNode.Nod.DiagramItem.rowScaledFont, Brushes.Black, new PointF(currentNode.BoundingRectangle.X, currentNode.BoundingRectangle.Y));
+				g.DrawString(currentNode.Nod.Text, currentNode.StructureDrawing.rowScaledFont, Brushes.Black, new PointF(currentNode.BoundingRectangle.X, currentNode.BoundingRectangle.Y));
 
 				p.Dispose();
 
@@ -134,14 +134,13 @@ namespace SamDiagrams.DrawableItem.NodeEditor
 		public void onMouseDown(object sender, MouseEventArgs e, double scaleFactor)
 		{
 
-			Font rowScaledFont = new Font(this.currentNode.Nod.DiagramItem.rowScaledFont.FontFamily,(float)((this.currentNode.Nod.DiagramItem.rowScaledFont.Size-0)));
+			Font rowScaledFont = new Font(currentNode.StructureDrawing.rowScaledFont.FontFamily, (float)((currentNode.StructureDrawing.rowScaledFont.Size - 0)));
 			
 			cursorPosition = 0;		
-			Size sT = new Size(0,0);
-			for(int i=0;i<currentText.Length;i++)
-			{
-				sT = TextRenderer.MeasureText(currentText.Substring(0,i),rowScaledFont);
-				if(currentNode.BoundingRectangle.X + sT.Width+6>e.X)
+			Size sT = new Size(0, 0);
+			for (int i = 0; i < currentText.Length; i++) {
+				sT = TextRenderer.MeasureText(currentText.Substring(0, i), rowScaledFont);
+				if (currentNode.BoundingRectangle.X + sT.Width + 6 > e.X)
 					break;
 				cursorPosition++;
 			}
@@ -161,8 +160,7 @@ namespace SamDiagrams.DrawableItem.NodeEditor
 		
 		public void onMouseMove(object sender, MouseEventArgs e, double scaleFactor)
 		{
-			if(mousePressed)
-			{
+			if (mousePressed) {
 				selectionSize.Width = e.X - selectionLocation.X;
 				selectionSize.Height = currentNode.BoundingRectangle.Height;
 				Rectangle r = new Rectangle((int)(currentNode.BoundingRectangle.Location.X * scaleFactor), (int)(currentNode.BoundingRectangle.Location.Y * scaleFactor), (int)(currentNode.BoundingRectangle.Size.Width * scaleFactor), (int)(currentNode.BoundingRectangle.Size.Height * scaleFactor));

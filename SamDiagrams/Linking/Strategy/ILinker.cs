@@ -7,23 +7,27 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using SamDiagrams.Drawings;
 
 namespace SamDiagrams.Linking.Strategy
 {
 	public interface ILinker
 	{
+		
+		event LinkDirectionChangedHandler LinkDirectionChangedEvent;
+		
 		/// <summary>
 		/// Registers a link to be handled by a link strategy.
 		/// </summary>
 		/// <param name="link"></param>
-		void RegisterLink(Link link);
+		void RegisterLink(StructureLink link);
 		
 		/// <summary>
 		/// Computes the end points of all links associated with an item.
 		/// This handled input links and output links.
 		/// </summary>
 		/// <param name="item"></param>
-		void DirectLinks(DiagramItem item);
+		void DirectLinks(StructureDrawing item);
 		
 		
 	}

@@ -8,12 +8,15 @@ using System.Windows.Forms;
 
 namespace SamDiagrams
 {
-    public enum LinkDirection { None,
-        SourceNorthDestinationSouth,
-        SourceSouthDestinationNorth,
-        SourceWestDestinationEast,
-        SourceEastDestinationWest 
-    };
+	public enum LinkDirection
+	{
+		None,
+		SourceNorthDestinationSouth,
+		SourceSouthDestinationNorth,
+		SourceWestDestinationEast,
+		SourceEastDestinationWest}
+
+	;
 
 }
 

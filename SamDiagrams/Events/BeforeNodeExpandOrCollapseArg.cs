@@ -14,16 +14,16 @@ namespace SamDiagrams
 	/// <summary>
 	/// Description of BeforeNodeExpandOrCollapseArg.
 	/// </summary>
-	public class BeforeNodeExpandOrCollapseArg :EventArgs 
+	public class BeforeNodeExpandOrCollapseArg :EventArgs
 	{
-		private DiagramItemNode nod;
+		private Node nod;
 		
-		public DiagramItemNode Nod {
+		public Node Nod {
 			get { return nod; }
 			set { nod = value; }
 		}
 		
-		public BeforeNodeExpandOrCollapseArg(DiagramItemNode n)
+		public BeforeNodeExpandOrCollapseArg(Node n)
 		{
 			this.nod = n;
 		}

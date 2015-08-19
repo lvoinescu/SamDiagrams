@@ -9,6 +9,8 @@
 
 using System;
 using System.Collections.Generic;
+using SamDiagrams.Drawers;
+using SamDiagrams.Drawings;
 namespace SamDiagrams
 {
 	/// <summary>
@@ -17,12 +19,12 @@ namespace SamDiagrams
 	public class SelectedItemsChangeArgs:EventArgs
 	{
 
-		private List<DiagramItem> selectedItems;
+		private List<Drawing> selectedItems;
 		
-		public List<DiagramItem> SelectedItems {
+		public List<Drawing> SelectedItems {
 			get { return selectedItems; }
 		}
-		public SelectedItemsChangeArgs( List<DiagramItem> items)
+		public SelectedItemsChangeArgs(List<Drawing> items)
 		{
 			this.selectedItems = items;
 		}

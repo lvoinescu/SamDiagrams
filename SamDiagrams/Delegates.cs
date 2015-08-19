@@ -17,8 +17,9 @@ namespace SamDiagrams
 	public delegate void SelectedItemsChangeHandler(object sender, SelectedItemsChangeArgs e);
 	public delegate void BeforeNodeExpandOrCollapseHandler(object sender, BeforeNodeExpandOrCollapseArg e);
 	public delegate void ZoomFactorChangedHandler(object sender, ZoomFactorChangedArg e);
-    public delegate void LinkDirectionChangedHandler(object sender, LinkDirectionChangedArg e);
-    public delegate void ItemsMovedHandler(object sender, ItemsMovedEventArg e);
-    public delegate void ItemMovedHandler(object sender, ItemMovedEventArg e);
-    public delegate void ItemResizedHandler(object sender, ItemResizedEventArg e);
+	public delegate void LinkDirectionChangedHandler(object sender, LinkDirectionChangedArg e);
+	public delegate void ItemsMovedHandler(object sender, ItemsMovedEventArg e);
+	public delegate void ItemMovedHandler(object sender, ItemMovedEventArg e);
+	public delegate void ItemResizedHandler(object sender, ItemResizedEventArg e);
+	public delegate void DiagramItemClickHandler(object sender, EventArgs e);
 }

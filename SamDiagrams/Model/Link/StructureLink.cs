@@ -4,11 +4,12 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
+using SamDiagrams.Model;
 
 
 namespace SamDiagrams.Linking
 {
-	public partial class Link:IComparable, IDrawableItem
+	public partial class StructureLink:IComparable, Item
 	{
 		private Color color = Color.Black;
 
@@ -17,7 +18,7 @@ namespace SamDiagrams.Linking
 			get { return color; }
 			set { color = value; }
 		}
-		private DiagramItem source;
+		private Structure source;
 		private LinkPoint sourcePoint, destinationPoint;
 
 		bool invalidated = true;
@@ -40,17 +41,6 @@ namespace SamDiagrams.Linking
 			set { sourcePoint = value; }
 		}
 
-
-		public Rectangle Bounds
-		{
-			get
-			{
-				Rectangle r = new Rectangle(Math.Min(sourcePoint.X, destinationPoint.X), Math.Min(sourcePoint.Y, destinationPoint.Y),
-				                            Math.Abs(sourcePoint.X - destinationPoint.X), Math.Abs(sourcePoint.Y - destinationPoint.Y));
-				return r;
-			}
-		}
-
 		private LinkDirection direction = LinkDirection.None ;
 
 		public LinkDirection Direction
@@ -59,29 +49,29 @@ namespace SamDiagrams.Linking
 			set { direction = value; }
 		}
 		
-		public DiagramItem Source
+		public Structure Source
 		{
 			get { return source; }
 			set { source = value; }
 		}
 		
-		private DiagramItem destination;
+		private Structure destination;
 
-		public DiagramItem Destination
+		public Structure Destination
 		{
 			get { return destination; }
 			set { destination = value; }
 		}
 		
-		public Link(DiagramItem source, DiagramItem destination)
+		public StructureLink(Structure source, Structure destination)
 		{
 			this.source = source;
 			this.destination = destination;
-			this.Direction = LinkDirection.None;
+			this.direction = LinkDirection.None;
 			this.sourcePoint = new LinkPoint(this);
 			this.destinationPoint = new LinkPoint(this);
 		}
-		public Link(DiagramItem source, DiagramItem destination, Color color):this(source,destination)
+		public StructureLink(Structure source, Structure destination, Color color):this(source,destination)
 		{
 			this.color = color;
 		}
@@ -96,18 +86,11 @@ namespace SamDiagrams.Linking
 			return new Point(Math.Min(sourcePoint.X, destinationPoint.X), Math.Min(sourcePoint.Y, destinationPoint.Y));
 		}
 
-		public void Draw(Graphics g)
-		{
-		}
-
-
-
-
 		#region IComparable Members
 
 		public int CompareTo(object obj)
 		{
-			Link l = (Link)obj;
+			StructureLink l = (StructureLink)obj;
 			switch(l.direction)
 			{
 				case LinkDirection.SourceNorthDestinationSouth:

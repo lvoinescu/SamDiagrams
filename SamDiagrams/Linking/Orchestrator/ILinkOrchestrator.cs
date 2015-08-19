@@ -10,9 +10,12 @@ namespace SamDiagrams.Linking.Orchestrator
 {
 	public interface ILinkOrchestrator
 	{
-		void AddLink(DiagramItem source, DiagramItem destination);
-		void AddLink(DiagramItem source, DiagramItem destination, Color color);
-		List<Link> Links { get; set; }
+		void AddLink(Structure source, Structure destination);
+		
+		void AddLink(Structure source, Structure destination, Color color);
+		
+		List<StructureLink> Links { get; set; }
+		
 		LinkStyle LinkStyle { get; set; }
 	}
 }

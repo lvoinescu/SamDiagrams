@@ -46,17 +46,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\MouseAction.cs" />
+    <Compile Include="Actions\MoveAction.cs" />
+    <Compile Include="Actions\SelectionAction.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Delegates.cs" />
     <Compile Include="DiagramContainer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="DrawableItem\DiagramItem.cs" />
-    <Compile Include="DrawableItem\DiagramItemNode.cs" />
-    <Compile Include="DrawableItem\IDrawableItem.cs" />
-    <Compile Include="DrawableItem\NodeEditor\INodeEditor.cs" />
-    <Compile Include="DrawableItem\NodeEditor\NodeTextEditor.cs" />
-    <Compile Include="DrawableItem\SelectionBorder.cs" />
+    <Compile Include="Drawings\Geometry\InflatableRectangle.cs" />
+    <Compile Include="Drawings\Grid\GridDrawer.cs" />
+    <Compile Include="Drawings\InvalidationStrategy.cs" />
+    <Compile Include="Drawings\Selection.cs" />
+    <Compile Include="Drawings\Structure\SelectionBorder.cs" />
+    <Compile Include="Drawings\Structure\StructureNodeInfo.cs" />
+    <Compile Include="Linking\LinkStyle.cs" />
+    <Compile Include="Linking\Strategy\NSWELinkStrategy\LinkDirection.cs" />
+    <Compile Include="Model\Item.cs" />
+    <Compile Include="Model\Link\NodeLink.cs" />
+    <Compile Include="Model\Link\StructureLink.cs" />
+    <Compile Include="Model\IDrawableItem.cs" />
+    <Compile Include="Drawings\NodeEditor\INodeEditor.cs" />
+    <Compile Include="Drawings\NodeEditor\NodeTextEditor.cs" />
+    <Compile Include="Drawings\Structure\StructureDrawing.cs" />
+    <Compile Include="Drawings\ContainerDrawer.cs" />
+    <Compile Include="Drawings\Drawing.cs" />
+    <Compile Include="Drawings\Link\LinkDrawer.cs" />
     <Compile Include="Events\BeforeNodeExpandOrCollapseArg.cs" />
     <Compile Include="Events\ItemMovedEventArg.cs" />
     <Compile Include="Events\ItemResizedEventArg.cs" />
@@ -64,33 +79,42 @@
     <Compile Include="Events\LinkDirectionChangedArg.cs" />
     <Compile Include="Events\SelectedItemsChangeArgs.cs" />
     <Compile Include="Events\ZoomFactorChangedArg.cs" />
-    <Compile Include="Linking\Link.cs" />
-    <Compile Include="Linking\LinkDirection.cs" />
+    <Compile Include="Model\Structure\Structure.cs" />
+    <Compile Include="Model\Structure\Node.cs" />
     <Compile Include="Linking\LinkPoint.cs" />
-    <Compile Include="Linking\LinkStyle.cs" />
     <Compile Include="Linking\Orchestrator\ILinkOrchestrator.cs" />
     <Compile Include="Linking\Orchestrator\LinkOrchestrator.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Linking\Strategy\CenterLinkStrategy\CenterLinkStrategy.cs" />
-    <Compile Include="Linking\Strategy\ILinkDrawer.cs" />
     <Compile Include="Linking\Strategy\ILinker.cs" />
-    <Compile Include="Linking\Strategy\NSWELinkStrategy\NSWELinkDrawer.cs" />
     <Compile Include="Linking\Strategy\NSWELinkStrategy\NSWELinkStrategy.cs" />
-    <Compile Include="Linking\Strategy\NSWELinkStrategy\NSWEDiagramItem.cs" />
+    <Compile Include="Linking\Strategy\NSWELinkStrategy\NSWEStructure.cs" />
     <EmbeddedResource Include="DiagramContainer.resx">
       <SubType>Designer</SubType>
       <DependentUpon>DiagramContainer.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DrawableItem\NodeEditor" />
+    <Folder Include="Drawings\Grid" />
+    <Folder Include="Drawings\Geometry" />
+    <Folder Include="Model\Link" />
+    <Folder Include="Model\Structure" />
+    <Folder Include="Drawings\NodeEditor" />
+    <Folder Include="Drawings\Link" />
+    <Folder Include="Drawings\Structure" />
     <Folder Include="Events" />
     <Folder Include="Linking" />
-    <Folder Include="DrawableItem" />
+    <Folder Include="Model" />
     <Folder Include="Linking\Orchestrator" />
     <Folder Include="Linking\Strategy" />
     <Folder Include="Linking\Strategy\CenterLinkStrategy" />
     <Folder Include="Linking\Strategy\NSWELinkStrategy" />
+    <Folder Include="Drawings" />
+    <Folder Include="Actions" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SamDiagrams - dev#C.cd" />
+    <Content Include="SamDiagrams - dev#C.cd" />
   </ItemGroup>
 </Project>

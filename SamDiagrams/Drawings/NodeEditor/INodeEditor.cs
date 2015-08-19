@@ -11,11 +11,11 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-namespace SamDiagrams.DrawableItem.NodeEditor
+namespace SamDiagrams.DiagramItem.NodeEditor
 {
 	public interface INodeEditor
 	{
-		void ShowOnNode(DiagramInfoItemNode nodeInfo);
+		void ShowOnNode(StructureNodeInfo nodeInfo);
 		void Draw(Graphics g);
 		Size getSize();
 		Point getLocation();
