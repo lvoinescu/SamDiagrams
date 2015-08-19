@@ -4,4 +4,6 @@ SamDiagrams/obj/**
 SamDiagrams/bin/**
 TestProject/bin/**
 TestProject/obj/**
+UnitTests/obj/**
+UnitTests/bin/**
 !SamDiagrams/bin/*.png
