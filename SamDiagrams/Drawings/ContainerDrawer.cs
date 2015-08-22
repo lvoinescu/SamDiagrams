@@ -22,6 +22,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using SamDiagrams.Actions;
 using SamDiagrams.Drawings;
+using SamDiagrams.Drawings.Geometry;
+using SamDiagrams.Drawings.Selection;
 using SamDiagrams.Linking.Orchestrator;
 using SamDiagrams.Model;
 
@@ -36,14 +38,15 @@ namespace SamDiagrams.Drawers
 		public event LinkDirectionChangedHandler LinkDirectionChanged;
 		
 		
-		private readonly List<Drawing> drawings;
+		private readonly List<IDrawing> drawings;
 		private readonly DiagramContainer diagramContainer;
-		private readonly Dictionary<Item, Drawing> modelToDrawer;
-		private readonly Dictionary<Drawing,Item > drawerToModel;
+		private readonly Dictionary<Item, IDrawing> modelToDrawer;
+		private readonly Dictionary<IDrawing,Item > drawerToModel;
 		private InvalidationStrategy invalidationStrategy;
 		private LinkOrchestrator linkOrchestrator;
 		private MoveAction moveAction;
 		private SelectionAction selectAction;
+		private List<ISelectableDrawing> selectableDrawings;
 		
 		public LinkOrchestrator LinkOrchestrator {
 			get {
@@ -56,19 +59,28 @@ namespace SamDiagrams.Drawers
 				return diagramContainer;
 			}
 		}
-		public List<Drawing> Drawings {
+		public List<IDrawing> Drawings {
 			get {
 				return drawings;
 			}
 		}
 
-		public Dictionary<Item, Drawing> ModelToDrawer {
+		public List<ISelectableDrawing> SelectedDrawings {
+			get {
+				return selectableDrawings;
+			}
+			set {
+				selectableDrawings = value;
+			}
+		}
+		
+		public Dictionary<Item, IDrawing> ModelToDrawer {
 			get {
 				return modelToDrawer;
 			}
 		}
 
-		public Dictionary<Drawing, Item> DrawerToModel {
+		public Dictionary<IDrawing, Item> DrawerToModel {
 			get {
 				return drawerToModel;
 			}
@@ -79,9 +91,9 @@ namespace SamDiagrams.Drawers
 			
 			this.diagramContainer = diagramContainer;
 			linkOrchestrator = new LinkOrchestrator(this);
-			modelToDrawer = new Dictionary<Item, Drawing>();
+			modelToDrawer = new Dictionary<Item, IDrawing>();
 			
-			drawerToModel = new Dictionary<Drawing, Item>();
+			drawerToModel = new Dictionary<IDrawing, Item>();
 			moveAction = new MoveAction(diagramContainer);
 			
 			moveAction.ItemsMoved += new ItemsMovedHandler(OnItemsMoved);
@@ -89,7 +101,8 @@ namespace SamDiagrams.Drawers
 			selectAction = new SelectionAction(diagramContainer);
 			invalidationStrategy = new InvalidationStrategy(this);
 
-			this.drawings = new List<Drawing>();
+			this.drawings = new List<IDrawing>();
+			this.selectableDrawings = new List<ISelectableDrawing>();
 		}
 		
 		
@@ -104,7 +117,7 @@ namespace SamDiagrams.Drawers
 			
 			graphics.TranslateTransform(-diagramContainer.HScrollBar.Value, -diagramContainer.VScrollBar.Value);
 			graphics.ScaleTransform(scaleFactor, scaleFactor, System.Drawing.Drawing2D.MatrixOrder.Append);
-			foreach (Drawing drawing in drawings) {
+			foreach (IDrawing drawing in drawings) {
 				if (drawing.Invalidated && getDrawerScaledBounds(scaleFactor, drawing).IntersectsWith(clipRectangle)) {
 					drawing.Draw(graphics);
 					drawing.Invalidated = false;
@@ -113,7 +126,7 @@ namespace SamDiagrams.Drawers
 		}
 		
 		
-		private RectangleF getDrawerScaledBounds(float scaleFactor, Drawing drawer)
+		private RectangleF getDrawerScaledBounds(float scaleFactor, IDrawing drawer)
 		{
 			return new RectangleF(
 				(float)(drawer.Location.X * scaleFactor),

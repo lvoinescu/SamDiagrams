@@ -13,7 +13,7 @@
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU Lesser General Public License for more details.
-*
+ *
  *   You should have received a copy of the GNU Lesser General Public License
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -23,15 +23,13 @@ using System.Drawing;
 namespace SamDiagrams.Drawings
 {
 	/// <summary>
-	/// Description of IDrawer.
+	/// Description of SelectableDrawing.
 	/// </summary>
-	public interface Drawing
+	public interface ISelectableDrawing : IDrawing
 	{
-		Point Location { get; }
-		Size Size { get; }
-		Rectangle Bounds { get; }
-		bool Invalidated { get; set; }
+		
 		bool Selected { get; set; }
-		void Draw(Graphics graphics);
+		
+		Point InitialSelectedLocation { get; set; }
 	}
 }

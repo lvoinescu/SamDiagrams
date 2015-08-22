@@ -20,6 +20,7 @@
 using System;
 using System.Drawing;
 using SamDiagrams.Drawings;
+using SamDiagrams.Drawings.Geometry;
 using SamDiagrams.Linking;
 
 namespace SamDiagrams.Drawers.Links
@@ -27,7 +28,7 @@ namespace SamDiagrams.Drawers.Links
 	/// <summary>
 	/// Description of NSWELinkDrawer.
 	/// </summary>
-	public class LinkDrawing : Drawing
+	public class LinkDrawing : IDrawing, IBoundedShape
 	{
 		private StructureLink link;
 		private float lineWidth;
@@ -67,13 +68,13 @@ namespace SamDiagrams.Drawers.Links
 		
 		public void Draw(Graphics graphics)
 		{
-			using (Pen lPen = new Pen(link.Color, lineWidth)) {
+			using (Pen linePen = new Pen(link.Color, lineWidth)) {
 				
 				ContainerDrawer containerDrawer = link.Source.DiagramContainer.ContainerDrawer;
-				Drawing sourceDrawing = (Drawing)containerDrawer.ModelToDrawer[link.Source];
-				Drawing destinationDrawing = (Drawing)containerDrawer.ModelToDrawer[link.Destination];
-				Pen sPen = new Pen(Color.FromArgb(70, link.Source.Color), selectedLineWidth);
-				lPen.DashPattern = new float[] { 8, 3 };
+				IDrawing sourceDrawing = containerDrawer.ModelToDrawer[link.Source];
+				IDrawing destinationDrawing = containerDrawer.ModelToDrawer[link.Destination];
+				Pen selectionPen = new Pen(Color.FromArgb(70, link.Source.Color), selectedLineWidth);
+				linePen.DashPattern = new float[] { 8, 3 };
 				if ((link.Direction == LinkDirection.SourceWestDestinationEast) || (link.Direction == LinkDirection.SourceEastDestinationWest)) {
 					if (linkStyle == LinkStyle.StreightLines) {
 						int midX = (int)(link.SourcePoint.X + link.DestinationPoint.X) / 2;
@@ -83,16 +84,19 @@ namespace SamDiagrams.Drawers.Links
 							new Point(midX, link.DestinationPoint.Y),
 							new Point(link.DestinationPoint.X, link.DestinationPoint.Y)
 						};
-						if (sourceDrawing.Selected || destinationDrawing.Selected) {
-							graphics.DrawLines(sPen, ps);
+						
+						if (((sourceDrawing is StructureDrawing) && (sourceDrawing as StructureDrawing).Selected) ||
+						    ((destinationDrawing is StructureDrawing) && (destinationDrawing as StructureDrawing).Selected)) {
+							graphics.DrawLines(selectionPen, ps);
 						}
-						graphics.DrawLines(lPen, ps);
+						graphics.DrawLines(linePen, ps);
 
 					} else {
-						if (sourceDrawing.Selected || destinationDrawing.Selected) {
-							graphics.DrawLine(sPen, link.SourcePoint.X, link.SourcePoint.Y, link.DestinationPoint.X, link.DestinationPoint.Y);
+						if (((sourceDrawing is StructureDrawing) && (sourceDrawing as StructureDrawing).Selected) ||
+						    ((destinationDrawing is StructureDrawing) && (destinationDrawing as StructureDrawing).Selected)) {
+							graphics.DrawLine(selectionPen, link.SourcePoint.X, link.SourcePoint.Y, link.DestinationPoint.X, link.DestinationPoint.Y);
 						}
-						graphics.DrawLine(lPen, link.SourcePoint.X, link.SourcePoint.Y, link.DestinationPoint.X, link.DestinationPoint.Y);
+						graphics.DrawLine(linePen, link.SourcePoint.X, link.SourcePoint.Y, link.DestinationPoint.X, link.DestinationPoint.Y);
 					}
 
 				} else {
@@ -104,15 +108,17 @@ namespace SamDiagrams.Drawers.Links
 							new Point((int)(link.DestinationPoint.X), (int)(midY)),
 							new Point((int)(link.DestinationPoint.X), (int)(link.DestinationPoint.Y))
 						};
-						if (sourceDrawing.Selected || destinationDrawing.Selected) {
-							graphics.DrawLines(sPen, ps);
+						if (((sourceDrawing is StructureDrawing) && (sourceDrawing as StructureDrawing).Selected) ||
+						    ((destinationDrawing is StructureDrawing) && (destinationDrawing as StructureDrawing).Selected)) {
+							graphics.DrawLines(selectionPen, ps);
 						}
-						graphics.DrawLines(lPen, ps);
+						graphics.DrawLines(linePen, ps);
 					} else {
-						if (sourceDrawing.Selected || destinationDrawing.Selected) {
-							graphics.DrawLine(sPen, link.SourcePoint.X, link.SourcePoint.Y, link.DestinationPoint.X, link.DestinationPoint.Y);
+						if (((sourceDrawing is StructureDrawing) && (sourceDrawing as StructureDrawing).Selected) ||
+						    ((destinationDrawing is StructureDrawing) && (destinationDrawing as StructureDrawing).Selected)) {
+							graphics.DrawLine(selectionPen, link.SourcePoint.X, link.SourcePoint.Y, link.DestinationPoint.X, link.DestinationPoint.Y);
 						}
-						graphics.DrawLine(lPen, link.SourcePoint.X, link.SourcePoint.Y, link.DestinationPoint.X, link.DestinationPoint.Y);
+						graphics.DrawLine(linePen, link.SourcePoint.X, link.SourcePoint.Y, link.DestinationPoint.X, link.DestinationPoint.Y);
 					}
 				}
 			}
@@ -121,6 +127,9 @@ namespace SamDiagrams.Drawers.Links
 		public Point Location {
 			get {
 				return link.getLocation();
+			}
+			set { 
+				throw new Exception("Cannot set location for a link.");
 			}
 		}
 		public Size Size {
@@ -131,7 +140,7 @@ namespace SamDiagrams.Drawers.Links
 		public Rectangle Bounds {
 			get {
 				Rectangle bounds = new Rectangle(link.getLocation(), link.getSize());
-				bounds.Inflate((int)Math.Floor(selectedLineWidth/2), (int)Math.Floor(selectedLineWidth/2));
+				bounds.Inflate((int)Math.Floor(selectedLineWidth / 2), (int)Math.Floor(selectedLineWidth / 2));
 				return bounds;
 			}
 		}

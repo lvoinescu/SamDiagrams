@@ -21,18 +21,18 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using SamDiagrams.Drawings.Geometry;
+using SamDiagrams.Drawings.Selection;
 
 namespace SamDiagrams.Drawings
 {
 	/// <summary>
 	/// Description of ComponentDrawer.
 	/// </summary>
-	public class StructureDrawing : Drawing
+	public class StructureDrawing : BaseDrawing, ISelectableDrawing
 	{
 		
 		public event BeforeNodeExpandOrCollapseHandler BeforeNodeExpandOrCollapse;
-		public event ItemResizedHandler ItemResized;
-		public event ItemMovedHandler ItemMoved;
 		
 		private static SolidBrush CONTOUR_BRUSH = new SolidBrush(Color.SteelBlue);
 		private const int SCALED_CORNER_RADIUS = 10;
@@ -46,8 +46,6 @@ namespace SamDiagrams.Drawings
 		private static SolidBrush TITLE_BRUSH = new SolidBrush(Color.Black);
 		
 		private Structure structure;
-		private Size size;
-		private Point location;
 		private Color color = Color.LightSteelBlue;
 		
 
@@ -64,19 +62,19 @@ namespace SamDiagrams.Drawings
 		private int nodDblX, nodDblY;
 		private int nrOfDisplayedRows = 0;
 		private int crtNodCheck = 0;
-		private bool invalidated = true;
 		private bool selected;
 
 		private int crtExpanderCheckRow = 0;
-		private Point initialSelectedLocation;
-		
 		internal Font titleScaledFont;
 		internal Font rowScaledFont;
+		
 		
 		public StructureDrawing(Structure Structure)
 		{
 			this.Structure = Structure;
+			this.invalidated = true;
 			contur = new Pen(CONTOUR_BRUSH, 1F);
+			this.selected = false;
 			this.rowFont = new Font(this.Structure.DiagramContainer.Font.FontFamily, 9.0F);
 			this.titleFont = new Font(this.Structure.DiagramContainer.Font.FontFamily, 9.0F, FontStyle.Bold);
 			this.structure.DiagramContainer.ZoomFactorChanged += new ZoomFactorChangedHandler(OnZoomFactorChanged);
@@ -84,6 +82,7 @@ namespace SamDiagrams.Drawings
 			this.size.Width = DEFAULT_WIDTH;
 			AutoSizeContent();
 		}
+
 		
 		public Structure Structure {
 			get {
@@ -93,43 +92,16 @@ namespace SamDiagrams.Drawings
 				structure = value;
 			}
 		}
-		
-		public Point Location {
+
+		public Point InitialSelectedLocation {
 			get {
-				return location;
+				throw new NotImplementedException();
 			}
 			set {
-				location = value;
-			}
-		}
-
-		public Size Size {
-			get {
-				return size;
+				throw new NotImplementedException();
 			}
 		}
 		
-		internal Point InitialSelectedLocation {
-			get { return initialSelectedLocation; }
-			set { initialSelectedLocation = value; }
-		}
-		
-		public Rectangle Bounds {
-			get {
-//				Rectangle r = new Rectangle(location, size);
-//				r.Inflate(1 ,1);
-				return new Rectangle(location, size);
-			}
-		}
-		public bool Invalidated {
-			get {
-				return invalidated;
-			}
-			set {
-				invalidated = value;
-			}
-		}
-
 		public bool Selected {
 			get {
 				return selected;
@@ -138,8 +110,9 @@ namespace SamDiagrams.Drawings
 				selected = value;
 			}
 		}
-		
-		public void Draw(System.Drawing.Graphics g)
+
+			
+		public override void Draw(Graphics graphics)
 		{
 			GraphicsPath path = new GraphicsPath();
 
@@ -152,14 +125,14 @@ namespace SamDiagrams.Drawings
 
 			
 			//title background
-			g.FillPath(new SolidBrush(color), path);
-			g.DrawPath(contur, path);
+			graphics.FillPath(new SolidBrush(color), path);
+			graphics.DrawPath(contur, path);
 
 			//title
 			int titlePosX = location.X + (size.Width - titleWidth) / 2;
-			g.DrawString(this.Structure.Title, titleScaledFont, TITLE_BRUSH, new PointF(titlePosX, location.Y));
+			graphics.DrawString(this.Structure.Title, titleScaledFont, TITLE_BRUSH, new PointF(titlePosX, location.Y));
 			if (Structure.TitleImage != null)
-				g.DrawImage(Structure.TitleImage, new Rectangle(((int)((this.location.X + 4))), ((int)((this.location.Y + 4))), ((int)(16)), ((int)(16))));
+				graphics.DrawImage(Structure.TitleImage, new Rectangle(((int)((this.location.X + 4))), ((int)((this.location.Y + 4))), ((int)(16)), ((int)(16))));
 
 
 			int xscaledOffset = (int)((this.location.X + LEFT_PADDING));
@@ -169,12 +142,12 @@ namespace SamDiagrams.Drawings
 				mainHeightScaled = this.size.Height - TITLE_OFFSET - rowScaledHeight - SCALED_CORNER_RADIUS;
 			}
 			Rectangle lineMainR = new Rectangle(location.X, yScaledOffset, size.Width, mainHeightScaled);
-			g.FillRectangle(Brushes.White, lineMainR);
-			g.DrawRectangle(contur, lineMainR);
+			graphics.FillRectangle(Brushes.White, lineMainR);
+			graphics.DrawRectangle(contur, lineMainR);
 
 			crtDrawingRow = 0;
 			foreach (Node node in Structure.Nodes) {
-				RecursiveDraw(g, rowScaledFont, scaleFactor, node, xscaledOffset, yScaledOffset + TITLE_OFFSET);
+				RecursiveDraw(graphics, rowScaledFont, scaleFactor, node, xscaledOffset, yScaledOffset + TITLE_OFFSET);
 				crtDrawingRow++;
 			}
 			
@@ -182,8 +155,8 @@ namespace SamDiagrams.Drawings
 			path.AddArc(location.X, lineMainR.Y + lineMainR.Height - (int)(SCALED_CORNER_RADIUS / 2), SCALED_CORNER_RADIUS, SCALED_CORNER_RADIUS, 180, -90);
 			path.AddArc(location.X + size.Width - SCALED_CORNER_RADIUS, lineMainR.Y + lineMainR.Height - (int)(SCALED_CORNER_RADIUS / 2), SCALED_CORNER_RADIUS, SCALED_CORNER_RADIUS, 90, -90);
 			path.CloseAllFigures();
-			g.FillPath(new SolidBrush(color), path);
-			g.DrawPath(contur, path);
+			graphics.FillPath(new SolidBrush(color), path);
+			graphics.DrawPath(contur, path);
 			
 		}
 		
@@ -228,8 +201,6 @@ namespace SamDiagrams.Drawings
 			titleHeight = sT.Height;
 			titleWidth = sT.Width;
 			size.Height = rowScaledHeight * nr + TITLE_OFFSET + titleHeight + (int)(SCALED_CORNER_RADIUS);
-//			if(ItemResized!=null)
-//				ItemResized(this, new ItemResizedEventArg(this.size.Width, this.size.Height));
 
 		}
 		

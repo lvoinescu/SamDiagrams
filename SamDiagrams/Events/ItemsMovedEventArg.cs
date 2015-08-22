@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
 using SamDiagrams.Drawings;
+using SamDiagrams.Drawings.Geometry;
+using SamDiagrams.Drawings.Selection;
 
 namespace SamDiagrams
 {
 	public partial class ItemsMovedEventArg : EventArgs
 	{
-		List<StructureDrawing> items;
+		List<BorderDrawingDecorator> items;
 
-		public List<StructureDrawing> Items {
+		public List<BorderDrawingDecorator> Items {
 			get { return items; }
 			set { items = value; }
 		}
@@ -23,7 +25,7 @@ namespace SamDiagrams
 			get { return dx; }
 			set { dx = value; }
 		}
-		public ItemsMovedEventArg(List<StructureDrawing> items, int dx, int dy)
+		public ItemsMovedEventArg(List<BorderDrawingDecorator> items, int dx, int dy)
 		{
 			this.items = items;
 			this.dx = dx;

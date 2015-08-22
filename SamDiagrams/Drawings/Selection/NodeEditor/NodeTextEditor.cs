@@ -21,13 +21,14 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using SamDiagrams.Drawings;
 
 namespace SamDiagrams.DiagramItem.NodeEditor
 {
 	/// <summary>
 	/// Description of NodeEditor.
 	/// </summary>
-	public class NodeTextEditor : IDrawableItem, INodeEditor
+	public class NodeTextEditor : IDrawing, INodeEditor
 	{
 		DiagramContainer container;
 		private bool visible = false;
@@ -118,6 +119,27 @@ namespace SamDiagrams.DiagramItem.NodeEditor
 			}
 		}
 
+		public Point Location {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
+				throw new NotImplementedException();
+			}
+		}
+		public Size Size {
+			get {
+				throw new NotImplementedException();
+			}
+		}
+		public bool Selected {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
+				throw new NotImplementedException();
+			}
+		}
 		internal void OnKeyDown(KeyEventArgs e)
 		{
 			switch (e.KeyCode) {

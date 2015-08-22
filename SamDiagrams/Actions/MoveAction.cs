@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using SamDiagrams.Drawings;
+using SamDiagrams.Drawings.Geometry;
+using SamDiagrams.Drawings.Selection;
 
 namespace SamDiagrams.Actions
 {
@@ -38,12 +40,7 @@ namespace SamDiagrams.Actions
 		{
 			float scaleFactor = (float)container.ZoomFactor / 100;
 			
-			foreach (Drawing drawing in container.ContainerDrawer.Drawings) {
-				
-				if (!(drawing is Drawing)) {
-					continue;
-				}
-				
+			foreach (IDrawing drawing in container.ContainerDrawer.Drawings) {
 				Point p = new Point((int)(e.Location.X / scaleFactor), (int)(e.Location.Y / scaleFactor));
 				p.Offset(container.HScrollBar.Value, container.VScrollBar.Value);
 				if (drawing.Bounds.Contains(e.Location)) {
@@ -57,13 +54,8 @@ namespace SamDiagrams.Actions
 		public void OnMouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
 			actionStarted = false;
-			foreach (Drawing drawing in container.ContainerDrawer.Drawings) {
-				
-				if (!(drawing is StructureDrawing)) {
-					continue;
-				}
-				StructureDrawing structureDrawing = drawing as StructureDrawing;
-				structureDrawing.InitialSelectedLocation = structureDrawing.Location;
+			foreach (ISelectableDrawing drawing in container.ContainerDrawer.SelectedDrawings) {
+				drawing.InitialSelectedLocation = drawing.Location;
 			}
 		}
 
@@ -75,28 +67,27 @@ namespace SamDiagrams.Actions
 			float scaleFactor = (float)container.ZoomFactor / 100;
 			int dx = (int)((e.X - startMovePoint.X) / scaleFactor);
 			int dy = (int)((e.Y - startMovePoint.Y) / scaleFactor);
-			List<StructureDrawing> movedStructures = new List<StructureDrawing>();
-			foreach (Drawing drawing in container.ContainerDrawer.Drawings) {
+			List<BorderDrawingDecorator> movedStructures = new List<BorderDrawingDecorator>();
+			foreach (BorderDrawingDecorator selectedDrawing in container.ContainerDrawer.SelectedDrawings) {
 				
-				if (!(drawing is StructureDrawing) || !drawing.Selected) {
+				if (!selectedDrawing.Selected) {
 					continue;
 				}
 				
-				StructureDrawing structureDrawing = drawing as StructureDrawing;
-				int x = (int)(structureDrawing.InitialSelectedLocation.X + dx);
-				int y = (int)(structureDrawing.InitialSelectedLocation.Y + dy);
+				int x = (int)(selectedDrawing.InitialSelectedLocation.X + dx);
+				int y = (int)(selectedDrawing.InitialSelectedLocation.Y + dy);
 
 				int inf = SelectionBorder.squareSize + SelectionBorder.inflate;
 				if (x < 0)
 					x = 0;
-				if (x > container.Width - structureDrawing.Size.Width)
-					x = (int)(container.Width - structureDrawing.Size.Width);
+				if (x > container.Width - selectedDrawing.Size.Width)
+					x = (int)(container.Width - selectedDrawing.Size.Width);
 				if (y < 0)
 					y = 0;
-				if (y > container.Height - structureDrawing.Size.Height)
-					y = (int)(container.Height - structureDrawing.Size.Height);
-				structureDrawing.Location = new Point(x, y);
-				movedStructures.Add(structureDrawing);
+				if (y > container.Height - selectedDrawing.Size.Height)
+					y = (int)(container.Height - selectedDrawing.Size.Height);
+				selectedDrawing.Location = new Point(x, y);
+				movedStructures.Add(selectedDrawing);
 			}
 			
 			if (ItemsMoved != null) {

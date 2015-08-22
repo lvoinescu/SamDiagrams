@@ -54,23 +54,26 @@
     <Compile Include="DiagramContainer.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Drawings\BaseDrawing.cs" />
+    <Compile Include="Drawings\IBoundedShape.cs" />
+    <Compile Include="Drawings\IDrawing.cs" />
     <Compile Include="Drawings\Geometry\InflatableRectangle.cs" />
     <Compile Include="Drawings\Grid\GridDrawer.cs" />
+    <Compile Include="Drawings\IMovableDrawing.cs" />
     <Compile Include="Drawings\InvalidationStrategy.cs" />
-    <Compile Include="Drawings\Selection.cs" />
-    <Compile Include="Drawings\Structure\SelectionBorder.cs" />
+    <Compile Include="Drawings\ISelectableDrawing.cs" />
+    <Compile Include="Drawings\Selection\BorderDrawingDecorator.cs" />
+    <Compile Include="Drawings\Selection\SelectionBorder.cs" />
     <Compile Include="Drawings\Structure\StructureNodeInfo.cs" />
     <Compile Include="Linking\LinkStyle.cs" />
     <Compile Include="Linking\Strategy\NSWELinkStrategy\LinkDirection.cs" />
     <Compile Include="Model\Item.cs" />
     <Compile Include="Model\Link\NodeLink.cs" />
     <Compile Include="Model\Link\StructureLink.cs" />
-    <Compile Include="Model\IDrawableItem.cs" />
-    <Compile Include="Drawings\NodeEditor\INodeEditor.cs" />
-    <Compile Include="Drawings\NodeEditor\NodeTextEditor.cs" />
+    <Compile Include="Drawings\Selection\NodeEditor\INodeEditor.cs" />
+    <Compile Include="Drawings\Selection\NodeEditor\NodeTextEditor.cs" />
     <Compile Include="Drawings\Structure\StructureDrawing.cs" />
     <Compile Include="Drawings\ContainerDrawer.cs" />
-    <Compile Include="Drawings\Drawing.cs" />
     <Compile Include="Drawings\Link\LinkDrawer.cs" />
     <Compile Include="Events\BeforeNodeExpandOrCollapseArg.cs" />
     <Compile Include="Events\ItemMovedEventArg.cs" />
@@ -98,9 +101,10 @@
   <ItemGroup>
     <Folder Include="Drawings\Grid" />
     <Folder Include="Drawings\Geometry" />
+    <Folder Include="Drawings\Selection" />
     <Folder Include="Model\Link" />
     <Folder Include="Model\Structure" />
-    <Folder Include="Drawings\NodeEditor" />
+    <Folder Include="Drawings\Selection\NodeEditor" />
     <Folder Include="Drawings\Link" />
     <Folder Include="Drawings\Structure" />
     <Folder Include="Events" />

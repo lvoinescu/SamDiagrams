@@ -1,4 +1,4 @@
-/*
+﻿/*
  *   SamDiagrams - diagram component for .NET
  *   Copyright (C) 2011  Lucian Voinescu
  *
@@ -13,25 +13,24 @@
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU Lesser General Public License for more details.
-*
+ *
  *   You should have received a copy of the GNU Lesser General Public License
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
-
 using System;
 using System.Drawing;
-namespace SamDiagrams
+
+namespace SamDiagrams.Drawings
 {
 	/// <summary>
-	/// Description of DrawableItem.
+	/// Description of BoundedShape.
 	/// </summary>
-	public interface IDrawableItem
+	public interface IBoundedShape
 	{
-
-        Rectangle Bounds { get;}
-        bool Invalidated { get;set;}
-		void Draw(Graphics g);
-        Size getSize();
-        Point getLocation();
+		
+		Point Location { get; set; }
+		Size Size { get; }
+		Rectangle Bounds { get; }
+		
 	}
 }

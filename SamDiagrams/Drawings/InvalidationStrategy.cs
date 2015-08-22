@@ -13,7 +13,7 @@
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU Lesser General Public License for more details.
-*
+ *
  *   You should have received a copy of the GNU Lesser General Public License
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -23,6 +23,7 @@ using System.Windows.Forms;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
 using SamDiagrams.Drawings.Geometry;
+using SamDiagrams.Drawings.Selection;
 using SamDiagrams.Linking;
 
 namespace SamDiagrams.Drawers
@@ -48,7 +49,7 @@ namespace SamDiagrams.Drawers
 
 		void OnMouseDown(object sender, MouseEventArgs e)
 		{
-			foreach (Drawing drawer in containerDrawer.Drawings) {
+			foreach (IDrawing drawer in containerDrawer.Drawings) {
 				drawer.Invalidated = true;
 			}
 		}
@@ -56,7 +57,7 @@ namespace SamDiagrams.Drawers
 
 		void OnItemsMoved(object sender, ItemsMovedEventArg e)
 		{
-			foreach (StructureDrawing drawer in e.Items) {
+			foreach (BorderDrawingDecorator drawer in e.Items) {
 				InvalidateStructureDrawing(drawer);
 			}
 		}
@@ -66,10 +67,10 @@ namespace SamDiagrams.Drawers
 			InvalidateLinkDrawing((LinkDrawing)containerDrawer.ModelToDrawer[e.Link]);
 		}
 		
-		void InvalidateStructureDrawing(StructureDrawing drawer)
+		void InvalidateStructureDrawing(BorderDrawingDecorator drawer)
 		{
 			InflatableRectangle newRectangleToInvalidate = new InflatableRectangle(drawer.Bounds);
-			newRectangleToInvalidate.Inflate(getStructureInvalidatedRegion(drawer));
+			newRectangleToInvalidate.Inflate(getStructureInvalidatedRegion((StructureDrawing)drawer.Drawing));
 			Rectangle auxRectangle = newRectangleToInvalidate.Bounds;
 			invalidateOverlappingDrawings(previouslyInvalidatedRectangle);
 			newRectangleToInvalidate.Inflate(previouslyInvalidatedRectangle);
@@ -109,7 +110,7 @@ namespace SamDiagrams.Drawers
 			appendLinksToRegion(rectangle, structure);
 			
 			for (int i = 0; i < containerDrawer.Drawings.Count; i++) {
-				Drawing drawing = containerDrawer.Drawings[i];
+				IDrawing drawing = containerDrawer.Drawings[i];
 				if (drawing.Bounds.IntersectsWith(rectangle.Bounds) && drawing.Invalidated == false) {
 					drawing.Invalidated = true;
 					rectangle.Inflate(drawing.Bounds);
@@ -136,7 +137,7 @@ namespace SamDiagrams.Drawers
 			appendLinksToRegion(rectangle, destinationDrawing.Structure);
 			
 			
-			foreach (Drawing drawing in containerDrawer.Drawings) {
+			foreach (IDrawing drawing in containerDrawer.Drawings) {
 				if (drawing.Bounds.IntersectsWith(rectangle.Bounds)) {
 					drawing.Invalidated = true;
 					rectangle.Inflate(drawing.Bounds);
@@ -156,7 +157,7 @@ namespace SamDiagrams.Drawers
 		void invalidateOverlappingDrawings(Rectangle rectangle)
 		{
 			for (int i = 0; i < containerDrawer.Drawings.Count; i++) {
-				Drawing drawing = containerDrawer.Drawings[i];
+				IDrawing drawing = containerDrawer.Drawings[i];
 				if (!drawing.Invalidated && drawing.Bounds.IntersectsWith(rectangle)) {
 					drawing.Invalidated = true;
 				}

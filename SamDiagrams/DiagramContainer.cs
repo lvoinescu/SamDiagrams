@@ -28,6 +28,8 @@ using System.Windows.Forms;
 using SamDiagrams.DiagramItem.NodeEditor;
 using SamDiagrams.Drawers;
 using SamDiagrams.Drawings;
+using SamDiagrams.Drawings.Geometry;
+using SamDiagrams.Drawings.Selection;
 
 namespace SamDiagrams
 {
@@ -43,13 +45,12 @@ namespace SamDiagrams
 
 		
 		
-		private List<Drawing> selectedItems;
+		private List<IDrawing> selectedItems;
 		private Structure primarySelectedItem;
 		private bool isMouseHoldingForMovement = false;
 		private bool isMouseHoldingForResize = false;
 		private Point mouseHoldingInitial = new Point(0, 0);
 		private Point itemMouseClickLocation = new Point(0, 0);
-		internal List<IDrawableItem> DrawableItems;
 		List<Structure> structures;
 		private int zoomFactor;
 		private float scaleFactor = 1;
@@ -73,7 +74,7 @@ namespace SamDiagrams
 			get { return autoSizeItem; }
 			set {
 				autoSizeItem = value;
-				foreach (Drawing drawer in containerDrawer.Drawings)
+				foreach (IDrawing drawer in containerDrawer.Drawings)
 					if (drawer is StructureDrawing)
 						((StructureDrawing)drawer).AutoSizeContent();
 				//Invalidate();
@@ -149,9 +150,8 @@ namespace SamDiagrams
 		public DiagramContainer()
 		{
 			zoomFactor = 100;
-			DrawableItems = new List<IDrawableItem>();
 			structures = new List<Structure>();
-			selectedItems = new List<Drawing>();
+			selectedItems = new List<IDrawing>();
 			SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw |
 			ControlStyles.DoubleBuffer | ControlStyles.UserPaint, true);
 			hScrollBar = new HScrollBar();
@@ -194,12 +194,16 @@ namespace SamDiagrams
 			structureDrawing.Invalidated = true;
 			containerDrawer.ModelToDrawer[structure] = structureDrawing;
 			containerDrawer.DrawerToModel[structureDrawing] = structure;
-			containerDrawer.Drawings.Add(structureDrawing);
+			
+			BorderDrawingDecorator selectableDrawing = new BorderDrawingDecorator(structureDrawing);
+			containerDrawer.Drawings.Add(selectableDrawing);
+			containerDrawer.SelectedDrawings.Add(selectableDrawing);
 			structures.Add(structure);
 			structureDrawing.AutoSizeContent();
 		}
 		
-		public void AddLink(Structure source, Structure destination){
+		public void AddLink(Structure source, Structure destination)
+		{
 			this.ContainerDrawer.LinkOrchestrator.AddLink(source, destination);
 		}
 
@@ -212,11 +216,15 @@ namespace SamDiagrams
 		Random rd = new Random();
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			RectangleF rectangle = e.Graphics.ClipBounds;
-			#if DEBUG
-			//e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(rd.Next(255), rd.Next(255), rd.Next(255))), new Rectangle((int)rectangle.X, (int)rectangle.Y, (int)rectangle.Width, (int)rectangle.Height));
-			#endif
-			containerDrawer.Draw(scaleFactor, e.Graphics);
+			try {
+				RectangleF rectangle = e.Graphics.ClipBounds;
+				#if DEBUG
+			e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(rd.Next(255), rd.Next(255), rd.Next(255))), new Rectangle((int)rectangle.X, (int)rectangle.Y, (int)rectangle.Width, (int)rectangle.Height));
+				#endif
+				containerDrawer.Draw(scaleFactor, e.Graphics);
+			} catch (Exception ex) {
+				
+			}
 		}
 
 		protected void OnZoomChanged()
@@ -245,10 +253,13 @@ namespace SamDiagrams
 		protected override void OnMouseClick(MouseEventArgs e)
 		{
 			for (int i = containerDrawer.Drawings.Count - 1; i >= 0; i--) {
-				Drawing drawer = containerDrawer.Drawings[i];
+				IBoundedShape drawer = containerDrawer.Drawings[i];
 				if (drawer is Structure) {
 					StructureDrawing structureDrawing = (StructureDrawing)drawer;
-					Rectangle r = new Rectangle((int)(structureDrawing.Location.X * scaleFactor), (int)(structureDrawing.Location.Y * scaleFactor), (int)(structureDrawing.Size.Width * scaleFactor), (int)(structureDrawing.Size.Height * scaleFactor));
+					Rectangle r = new Rectangle((int)(structureDrawing.Location.X * scaleFactor), 
+						              (int)(structureDrawing.Location.Y * scaleFactor), 
+						              (int)(structureDrawing.Size.Width * scaleFactor), 
+						              (int)(structureDrawing.Size.Height * scaleFactor));
 					Point p = e.Location;
 					p.Offset(hScrollBar.Value, vScrollBar.Value);
 					if (r.Contains(p)) {
@@ -266,25 +277,25 @@ namespace SamDiagrams
 			}
 		}
 
-		protected override void OnMouseDoubleClick(MouseEventArgs e)
-		{
-			for (int i = DrawableItems.Count - 1; i >= 0; i--) {
-				Drawing drawer = containerDrawer.Drawings[i];
-				if (drawer is Drawing) {
-					StructureDrawing structureDrawing = (StructureDrawing)drawer;
-					Rectangle r = new Rectangle(structureDrawing.Location.X, structureDrawing.Location.Y, structureDrawing.Size.Width, structureDrawing.Size.Height);
-					Point p = new Point((int)(e.Location.X / scaleFactor), (int)(e.Location.Y / scaleFactor));
-					p.Offset(hScrollBar.Value, vScrollBar.Value);
-					if (r.Contains(p)) {
-						structureDrawing.OnDblClick(e, scaleFactor);
-						return;
-						
-						
-						//nodeEditor.ShowOnNode(diin.Nod);
-					}
-				}
-			}
-		}
+		//		protected override void OnMouseDoubleClick(MouseEventArgs e)
+		//		{
+		//			for (int i = DrawableItems.Count - 1; i >= 0; i--) {
+		//				Drawing drawer = containerDrawer.Drawings[i];
+		//				if (drawer is Drawing) {
+		//					StructureDrawing structureDrawing = (StructureDrawing)drawer;
+		//					Rectangle r = new Rectangle(structureDrawing.Location.X, structureDrawing.Location.Y, structureDrawing.Size.Width, structureDrawing.Size.Height);
+		//					Point p = new Point((int)(e.Location.X / scaleFactor), (int)(e.Location.Y / scaleFactor));
+		//					p.Offset(hScrollBar.Value, vScrollBar.Value);
+		//					if (r.Contains(p)) {
+		//						structureDrawing.OnDblClick(e, scaleFactor);
+		//						return;
+		//
+		//
+		//						//nodeEditor.ShowOnNode(diin.Nod);
+		//					}
+		//				}
+		//			}
+		//		}
 
 
 		

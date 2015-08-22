@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using SamDiagrams.Drawings;
+using SamDiagrams.Drawings.Selection;
 
 namespace SamDiagrams.Actions
 {
@@ -20,12 +21,12 @@ namespace SamDiagrams.Actions
 	public class SelectionAction : MouseAction
 	{
 		DiagramContainer container;
-		private List<Drawing> selectedDrawings;
+		private List<ISelectableDrawing> selectedDrawings;
 		
 		public SelectionAction(DiagramContainer container)
 		{
 			this.container = container;
-			selectedDrawings = new List<Drawing>();
+			selectedDrawings = new List<ISelectableDrawing>();
 			this.container.MouseDown += new System.Windows.Forms.MouseEventHandler(OnMouseDown);
 			this.container.MouseUp += new System.Windows.Forms.MouseEventHandler(OnMouseUp);
 		}
@@ -35,23 +36,20 @@ namespace SamDiagrams.Actions
 			bool drawingFound = false;
 			float scaleFactor = (float)container.ZoomFactor / 100;
 			
-			for (int i = 0; i < container.ContainerDrawer.Drawings.Count && !drawingFound; i++) {
-				Drawing drawing = container.ContainerDrawer.Drawings[i];
-				
-				if (!(drawing is StructureDrawing)) {
-					continue;
-				}
+			for (int i = 0; i < container.ContainerDrawer.SelectedDrawings.Count && !drawingFound; i++) {
+				ISelectableDrawing selectableDrawing = container.ContainerDrawer.SelectedDrawings[i];
+
 				Point p = new Point((int)(e.Location.X / scaleFactor), (int)(e.Location.Y / scaleFactor));
 				p.Offset(container.HScrollBar.Value, container.VScrollBar.Value);
-				if (drawing.Bounds.Contains(e.Location)) {
+				if (selectableDrawing.Bounds.Contains(e.Location)) {
 					drawingFound = true;
-					moveLast(container.ContainerDrawer.Drawings, drawing);
+					moveLast(selectableDrawing);
 					if (Control.ModifierKeys != Keys.Control) {
 						clearSelections();
 					}
-					toggleSelection(drawing);
+					toggleSelection(selectableDrawing);
 				} else {
-					removeSelected(drawing);
+					removeSelected(selectableDrawing);
 				}
 			}
 			
@@ -62,43 +60,36 @@ namespace SamDiagrams.Actions
 
 		private void clearSelections()
 		{
-			foreach (Drawing drawing in selectedDrawings) {
+			foreach (ISelectableDrawing drawing in selectedDrawings) {
 				drawing.Selected = false;
 			}
 			selectedDrawings.Clear();
 		}
 		
-		private void toggleSelection(Drawing drawing)
+		private void toggleSelection(ISelectableDrawing selectableDrawing)
 		{
-			if (!selectedDrawings.Contains(drawing)) {
-				drawing.Selected = true;
-				selectedDrawings.Add(drawing);
+			if (!selectedDrawings.Contains(selectableDrawing)) {
+				selectableDrawing.Selected = true;
+				selectedDrawings.Add(selectableDrawing);
 			} else {
-				drawing.Selected = false;
-				selectedDrawings.Remove(drawing);
+				selectableDrawing.Selected = false;
+				selectedDrawings.Remove(selectableDrawing);
 			}
 		}
 		
-		private void addSelected(Drawing drawing)
+		
+		private void removeSelected(ISelectableDrawing selectedDrawing)
 		{
-			if (!selectedDrawings.Contains(drawing)) {
-				drawing.Selected = true;
-				selectedDrawings.Add(drawing);
+			if (selectedDrawings.Contains(selectedDrawing)) {
+				selectedDrawing.Selected = false;
+				selectedDrawings.Remove(selectedDrawing);
 			}
 		}
 		
-		private void removeSelected(Drawing drawing)
+		private void moveLast(ISelectableDrawing drawing)
 		{
-			if (selectedDrawings.Contains(drawing)) {
-				drawing.Selected = false;
-				selectedDrawings.Remove(drawing);
-			}
-		}
-		
-		private void moveLast(List<Drawing> drawings, Drawing drawing)
-		{
-			drawings.Remove(drawing);
-			drawings.Add(drawing);
+			container.ContainerDrawer.Drawings.Remove((IDrawing)drawing);
+			container.ContainerDrawer.Drawings.Add((IDrawing)drawing);
 		}
 		
 		public void OnMouseUp(object sender, System.Windows.Forms.MouseEventArgs e)

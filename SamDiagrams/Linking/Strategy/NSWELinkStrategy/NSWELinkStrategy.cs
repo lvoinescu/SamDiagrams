@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using SamDiagrams.Drawings;
+using SamDiagrams.Drawings.Geometry;
 using SamDiagrams.Linking.Strategy;
 
 namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
@@ -32,11 +33,11 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 		
 		public event LinkDirectionChangedHandler LinkDirectionChangedEvent;
 
-		private Dictionary<Drawing, NSWEStructure> virtualMapping;
+		private Dictionary<IBoundedShape, NSWEStructure> virtualMapping;
 		
 		public NSWELinkStrategy()
 		{
-			virtualMapping = new Dictionary<Drawing, NSWEStructure>();
+			virtualMapping = new Dictionary<IBoundedShape, NSWEStructure>();
 		}
 
 		
@@ -48,8 +49,8 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			NSWEStructure nsweItem = virtualMapping[structureDrawing];
 			foreach (StructureLink link in nsweItem.Links) {
 				link.Invalidated = true;
-				Drawing destinationDrawing = structureDrawing.Structure.DiagramContainer.ContainerDrawer.ModelToDrawer[link.Destination];
-				Drawing sourceDrawing = structureDrawing.Structure.DiagramContainer.ContainerDrawer.ModelToDrawer[link.Source];
+				IBoundedShape destinationDrawing = structureDrawing.Structure.DiagramContainer.ContainerDrawer.ModelToDrawer[link.Destination];
+				IBoundedShape sourceDrawing = structureDrawing.Structure.DiagramContainer.ContainerDrawer.ModelToDrawer[link.Source];
 				
 				LinkDirection prevDirection = link.Direction;
 				LinkDirection direction = LinkDirection.None;
@@ -72,13 +73,13 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 					link.Direction = direction;
 				}
 				
-				ArangeLinksForItem((Drawing)destinationDrawing);
-				ArangeLinksForItem((Drawing)sourceDrawing);
+				ArangeLinksForItem((IDrawing)destinationDrawing);
+				ArangeLinksForItem((IDrawing)sourceDrawing);
 			}
 			arrangeConnectionPoints(structureDrawing);
 		}
 		
-		public void ArangeLinksForItem(Drawing structureDrawing)
+		public void ArangeLinksForItem(IDrawing structureDrawing)
 		{
 			arrangeConnectionPoints(structureDrawing);
 			
@@ -90,8 +91,8 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			NSWEStructure nsweDestination;
 			NSWEStructure nsweSource;
 			
-			Drawing sourceDrawing = (Drawing)link.Source.DiagramContainer.ContainerDrawer.ModelToDrawer[link.Source];
-			Drawing destinationDrawing = (Drawing)link.Destination.DiagramContainer.ContainerDrawer.ModelToDrawer[link.Destination];
+			IDrawing sourceDrawing = (IDrawing)link.Source.DiagramContainer.ContainerDrawer.ModelToDrawer[link.Source];
+			IDrawing destinationDrawing = (IDrawing)link.Destination.DiagramContainer.ContainerDrawer.ModelToDrawer[link.Destination];
 			if (!virtualMapping.ContainsKey(destinationDrawing))
 				nsweDestination = new NSWEStructure(link.Destination);
 			else
@@ -112,9 +113,9 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			virtualMapping[destinationDrawing] = nsweDestination;
 		}
 		
-		private void arrangeLinks(Drawing structure)
+		private void arrangeLinks(IDrawing structure)
 		{
-			Drawing item = (Drawing)structure;
+			IDrawing item = (IDrawing)structure;
 			int iN = 0, iS = 0, iW = 0, iE = 0;
 			NSWEStructure virtualItem = virtualMapping[structure];
 			foreach (StructureLink link in virtualItem.InputLinkList) {
@@ -182,8 +183,8 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 		private void OnLinkDirectionChanged(StructureLink link, LinkDirection newDirection)
 		{
 			
-			Drawing sourceDrawing = (Drawing)link.Source.DiagramContainer.ContainerDrawer.ModelToDrawer[link.Source];
-			Drawing destinationDrawing = (Drawing)link.Destination.DiagramContainer.ContainerDrawer.ModelToDrawer[link.Destination];
+			IDrawing sourceDrawing = link.Source.DiagramContainer.ContainerDrawer.ModelToDrawer[link.Source];
+			IDrawing destinationDrawing = link.Destination.DiagramContainer.ContainerDrawer.ModelToDrawer[link.Destination];
 			
 			link.Invalidated = true;
 			NSWEStructure source = virtualMapping[sourceDrawing];
@@ -318,7 +319,7 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			}
 		}
 		
-		private void arrangeConnectionPoints(Drawing diagramItem)
+		private void arrangeConnectionPoints(IBoundedShape diagramItem)
 		{
 			
 			NSWEStructure item = virtualMapping[diagramItem];

@@ -24,6 +24,8 @@ using System.Drawing;
 using SamDiagrams.Drawers;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
+using SamDiagrams.Drawings.Geometry;
+using SamDiagrams.Drawings.Selection;
 using SamDiagrams.Linking.Strategy;
 using SamDiagrams.Linking.Strategy.NSWELinkStrategy;
 
@@ -90,6 +92,7 @@ namespace SamDiagrams.Linking.Orchestrator
 			links.Add(link);
 			LinkDrawing linkDrawer = new LinkDrawing(link, lineWidth, selectedLineWidth, LinkStyle.StreightLines);
 			containerDrawer.ModelToDrawer[link] = linkDrawer;
+			containerDrawer.DrawerToModel[linkDrawer] = link;
 			containerDrawer.Drawings.Add(linkDrawer);
 			
 			StructureDrawing sourceDrawing = (StructureDrawing)containerDrawer.ModelToDrawer[link.Source];
@@ -114,8 +117,8 @@ namespace SamDiagrams.Linking.Orchestrator
 
 		public void OnItemsMoved(object sender, ItemsMovedEventArg e)
 		{
-			foreach (StructureDrawing structureDrawing in e.Items) {
-				linkStrategy.DirectLinks(structureDrawing);
+			foreach (BorderDrawingDecorator drawing in e.Items) {
+				linkStrategy.DirectLinks((StructureDrawing)drawing.Drawing);
 			}
 		}
 

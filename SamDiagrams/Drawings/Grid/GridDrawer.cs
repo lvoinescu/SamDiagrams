@@ -14,7 +14,7 @@ namespace SamDiagrams.Drawings.Grid
 	/// <summary>
 	/// Description of GridDrawer.
 	/// </summary>
-	public class GridDrawer : Drawing
+	public class GridDrawer : IDrawing
 	{
 		
 		private const int DEFAULT_GRID_SIZE = 16;
@@ -61,6 +61,9 @@ namespace SamDiagrams.Drawings.Grid
 		public Point Location {
 			get {
 				return new Point(0, 0);
+			}
+			set {
+				throw new Exception("Cannot set location for grid.");
 			}
 		}
 
