@@ -46,11 +46,6 @@ namespace SamDiagrams
 		
 		
 		private List<IDrawing> selectedItems;
-		private Structure primarySelectedItem;
-		private bool isMouseHoldingForMovement = false;
-		private bool isMouseHoldingForResize = false;
-		private Point mouseHoldingInitial = new Point(0, 0);
-		private Point itemMouseClickLocation = new Point(0, 0);
 		List<Structure> structures;
 		private int zoomFactor;
 		private float scaleFactor = 1;
@@ -58,7 +53,6 @@ namespace SamDiagrams
 		private bool snapObjectsToGrid = false;
 		private int drawableHeight, drawableWidth;
 
-		private SelectionBorder currentResizeingBorder;
 		private bool autoSizeItem = true;
 		private Rectangle invalidatedRegion = new Rectangle();
 		private Region oldIvalidatedRegion = new Region();
@@ -77,7 +71,6 @@ namespace SamDiagrams
 				foreach (IDrawing drawer in containerDrawer.Drawings)
 					if (drawer is StructureDrawing)
 						((StructureDrawing)drawer).AutoSizeContent();
-				//Invalidate();
 			}
 		}
 
@@ -139,7 +132,6 @@ namespace SamDiagrams
 
 
 
-		private string tests;
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public List<Structure> DiagramItems {
 			get { return structures; }
@@ -197,7 +189,6 @@ namespace SamDiagrams
 			
 			BorderDrawingDecorator selectableDrawing = new BorderDrawingDecorator(structureDrawing);
 			containerDrawer.Drawings.Add(selectableDrawing);
-			containerDrawer.SelectedDrawings.Add(selectableDrawing);
 			structures.Add(structure);
 			structureDrawing.AutoSizeContent();
 		}

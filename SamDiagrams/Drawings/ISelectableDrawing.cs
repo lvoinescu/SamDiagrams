@@ -27,9 +27,6 @@ namespace SamDiagrams.Drawings
 	/// </summary>
 	public interface ISelectableDrawing : IDrawing
 	{
-		
-		bool Selected { get; set; }
-		
 		Point InitialSelectedLocation { get; set; }
 	}
 }

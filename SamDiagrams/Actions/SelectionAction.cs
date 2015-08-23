@@ -31,30 +31,36 @@ namespace SamDiagrams.Actions
 			this.container.MouseUp += new System.Windows.Forms.MouseEventHandler(OnMouseUp);
 		}
 
-		public void OnMouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+		public void OnMouseDown(object sender, MouseEventArgs e)
 		{
 			bool drawingFound = false;
 			float scaleFactor = (float)container.ZoomFactor / 100;
 			
-			for (int i = 0; i < container.ContainerDrawer.SelectedDrawings.Count && !drawingFound; i++) {
-				ISelectableDrawing selectableDrawing = container.ContainerDrawer.SelectedDrawings[i];
+			Point p = new Point((int)(e.Location.X / scaleFactor), (int)(e.Location.Y / scaleFactor));
+			p.Offset(container.HScrollBar.Value, container.VScrollBar.Value);
+			
+			for (int i = 0; i < container.ContainerDrawer.Drawings.Count && !drawingFound; i++) {
+				ISelectableDrawing selectableDrawing = container.ContainerDrawer.Drawings[i] as ISelectableDrawing;
 
-				Point p = new Point((int)(e.Location.X / scaleFactor), (int)(e.Location.Y / scaleFactor));
-				p.Offset(container.HScrollBar.Value, container.VScrollBar.Value);
-				if (selectableDrawing.Bounds.Contains(e.Location)) {
-					drawingFound = true;
-					moveLast(selectableDrawing);
-					if (Control.ModifierKeys != Keys.Control) {
-						clearSelections();
-					}
-					toggleSelection(selectableDrawing);
-				} else {
-					removeSelected(selectableDrawing);
+				if (selectableDrawing != null) {
+					if (selectableDrawing.Bounds.Contains(e.Location)) {
+						drawingFound = true;
+						if (!selectedDrawings.Contains(selectableDrawing)) {
+							if (Control.ModifierKeys != Keys.Control) {
+								clearSelections();
+								moveLast(selectableDrawing);
+								toggleSelection(selectableDrawing);
+							} else {
+								moveLast(selectableDrawing);
+								addSelected(selectableDrawing);
+							}
+						}
+					} 
 				}
 			}
 			
 			if (!drawingFound) {
-				selectedDrawings.Clear();
+				clearSelections();
 			}
 		}
 
@@ -69,20 +75,27 @@ namespace SamDiagrams.Actions
 		private void toggleSelection(ISelectableDrawing selectableDrawing)
 		{
 			if (!selectedDrawings.Contains(selectableDrawing)) {
-				selectableDrawing.Selected = true;
-				selectedDrawings.Add(selectableDrawing);
+				addSelected(selectableDrawing);
 			} else {
-				selectableDrawing.Selected = false;
-				selectedDrawings.Remove(selectableDrawing);
+				removeSelected(selectableDrawing);
 			}
 		}
 		
+		private void addSelected(ISelectableDrawing selectedDrawing)
+		{
+			if (!selectedDrawings.Contains(selectedDrawing)) {
+				selectedDrawing.Selected = true;
+				selectedDrawings.Add(selectedDrawing);
+				container.ContainerDrawer.SelectedDrawing.Add(selectedDrawing);
+			}
+		}
 		
 		private void removeSelected(ISelectableDrawing selectedDrawing)
 		{
 			if (selectedDrawings.Contains(selectedDrawing)) {
 				selectedDrawing.Selected = false;
 				selectedDrawings.Remove(selectedDrawing);
+				container.ContainerDrawer.SelectedDrawing.Remove(selectedDrawing);
 			}
 		}
 		

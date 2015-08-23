@@ -65,7 +65,7 @@ namespace SamDiagrams.Drawers
 			}
 		}
 
-		public List<ISelectableDrawing> SelectedDrawings {
+		public List<ISelectableDrawing> SelectedDrawing {
 			get {
 				return selectableDrawings;
 			}

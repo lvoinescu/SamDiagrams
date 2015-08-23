@@ -59,7 +59,6 @@
     <Compile Include="Drawings\IDrawing.cs" />
     <Compile Include="Drawings\Geometry\InflatableRectangle.cs" />
     <Compile Include="Drawings\Grid\GridDrawer.cs" />
-    <Compile Include="Drawings\IMovableDrawing.cs" />
     <Compile Include="Drawings\InvalidationStrategy.cs" />
     <Compile Include="Drawings\ISelectableDrawing.cs" />
     <Compile Include="Drawings\Selection\BorderDrawingDecorator.cs" />

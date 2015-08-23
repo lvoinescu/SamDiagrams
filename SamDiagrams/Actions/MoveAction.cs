@@ -54,7 +54,7 @@ namespace SamDiagrams.Actions
 		public void OnMouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
 			actionStarted = false;
-			foreach (ISelectableDrawing drawing in container.ContainerDrawer.SelectedDrawings) {
+			foreach (ISelectableDrawing drawing in container.ContainerDrawer.SelectedDrawing) {
 				drawing.InitialSelectedLocation = drawing.Location;
 			}
 		}
@@ -67,8 +67,8 @@ namespace SamDiagrams.Actions
 			float scaleFactor = (float)container.ZoomFactor / 100;
 			int dx = (int)((e.X - startMovePoint.X) / scaleFactor);
 			int dy = (int)((e.Y - startMovePoint.Y) / scaleFactor);
-			List<BorderDrawingDecorator> movedStructures = new List<BorderDrawingDecorator>();
-			foreach (BorderDrawingDecorator selectedDrawing in container.ContainerDrawer.SelectedDrawings) {
+			List<ISelectableDrawing> movedStructures = new List<ISelectableDrawing>();
+			foreach (ISelectableDrawing selectedDrawing in container.ContainerDrawer.SelectedDrawing) {
 				
 				if (!selectedDrawing.Selected) {
 					continue;
