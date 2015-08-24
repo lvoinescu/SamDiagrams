@@ -26,19 +26,25 @@ namespace SamDiagrams.Drawings.Selection
 	/// <summary>
 	/// Description of SelectableDrawingWrapper.
 	/// </summary>
-	public class BorderDrawingDecorator : ISelectableDrawing
+	public class SelectableDrawing : IDrawing
 	{
 		
 		readonly IDrawing drawing;
 		SelectionBorder selectionBorder;
 		Point initialSelectedLocation;
-
+		bool selected;
+		
 		public IDrawing Drawing {
 			get {
 				return drawing;
 			}
 		}
 
+		public SamDiagrams.Model.Item Item {
+			get {
+				return this.drawing.Item;
+			}
+		}
 		public Point Location {
 			get {
 				return selectionBorder.Bounds.Location;
@@ -75,10 +81,10 @@ namespace SamDiagrams.Drawings.Selection
 
 		public bool Selected {
 			get {
-				return this.drawing.Selected;
+				return this.selected;
 			}
 			set {
-				this.drawing.Selected = value;
+				this.selected = value;
 			}
 		}
 		
@@ -91,7 +97,7 @@ namespace SamDiagrams.Drawings.Selection
 			}
 		}
 		
-		public BorderDrawingDecorator(StructureDrawing drawing)
+		public SelectableDrawing(IDrawing drawing)
 		{
 			this.drawing = drawing;
 			this.selectionBorder = new SelectionBorder(drawing);
@@ -100,7 +106,7 @@ namespace SamDiagrams.Drawings.Selection
 		public void Draw(Graphics graphics)
 		{
 			this.drawing.Draw(graphics);
-			if (drawing.Selected) {
+			if (selected) {
 				this.selectionBorder.Draw(graphics);
 			}
 		}

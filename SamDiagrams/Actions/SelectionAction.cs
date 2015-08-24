@@ -21,12 +21,12 @@ namespace SamDiagrams.Actions
 	public class SelectionAction : MouseAction
 	{
 		DiagramContainer container;
-		private List<ISelectableDrawing> selectedDrawings;
+		private List<SelectableDrawing> selectedDrawings;
 		
 		public SelectionAction(DiagramContainer container)
 		{
 			this.container = container;
-			selectedDrawings = new List<ISelectableDrawing>();
+			selectedDrawings = new List<SelectableDrawing>();
 			this.container.MouseDown += new System.Windows.Forms.MouseEventHandler(OnMouseDown);
 			this.container.MouseUp += new System.Windows.Forms.MouseEventHandler(OnMouseUp);
 		}
@@ -40,7 +40,7 @@ namespace SamDiagrams.Actions
 			p.Offset(container.HScrollBar.Value, container.VScrollBar.Value);
 			
 			for (int i = 0; i < container.ContainerDrawer.Drawings.Count && !drawingFound; i++) {
-				ISelectableDrawing selectableDrawing = container.ContainerDrawer.Drawings[i] as ISelectableDrawing;
+				SelectableDrawing selectableDrawing = container.ContainerDrawer.Drawings[i] as SelectableDrawing;
 
 				if (selectableDrawing != null) {
 					if (selectableDrawing.Bounds.Contains(e.Location)) {
@@ -66,13 +66,13 @@ namespace SamDiagrams.Actions
 
 		private void clearSelections()
 		{
-			foreach (ISelectableDrawing drawing in selectedDrawings) {
+			foreach (SelectableDrawing drawing in selectedDrawings) {
 				drawing.Selected = false;
 			}
 			selectedDrawings.Clear();
 		}
 		
-		private void toggleSelection(ISelectableDrawing selectableDrawing)
+		private void toggleSelection(SelectableDrawing selectableDrawing)
 		{
 			if (!selectedDrawings.Contains(selectableDrawing)) {
 				addSelected(selectableDrawing);
@@ -81,7 +81,7 @@ namespace SamDiagrams.Actions
 			}
 		}
 		
-		private void addSelected(ISelectableDrawing selectedDrawing)
+		private void addSelected(SelectableDrawing selectedDrawing)
 		{
 			if (!selectedDrawings.Contains(selectedDrawing)) {
 				selectedDrawing.Selected = true;
@@ -90,7 +90,7 @@ namespace SamDiagrams.Actions
 			}
 		}
 		
-		private void removeSelected(ISelectableDrawing selectedDrawing)
+		private void removeSelected(SelectableDrawing selectedDrawing)
 		{
 			if (selectedDrawings.Contains(selectedDrawing)) {
 				selectedDrawing.Selected = false;
@@ -99,10 +99,10 @@ namespace SamDiagrams.Actions
 			}
 		}
 		
-		private void moveLast(ISelectableDrawing drawing)
+		private void moveLast(SelectableDrawing drawing)
 		{
-			container.ContainerDrawer.Drawings.Remove((IDrawing)drawing);
-			container.ContainerDrawer.Drawings.Add((IDrawing)drawing);
+			container.ContainerDrawer.Drawings.Remove(drawing);
+			container.ContainerDrawer.Drawings.Add(drawing);
 		}
 		
 		public void OnMouseUp(object sender, System.Windows.Forms.MouseEventArgs e)

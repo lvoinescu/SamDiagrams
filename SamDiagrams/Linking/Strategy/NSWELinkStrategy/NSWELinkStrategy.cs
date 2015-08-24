@@ -19,6 +19,7 @@
  */
 using System;
 using System.Collections.Generic;
+using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
 using SamDiagrams.Drawings.Geometry;
 using SamDiagrams.Linking.Strategy;
@@ -33,24 +34,25 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 		
 		public event LinkDirectionChangedHandler LinkDirectionChangedEvent;
 
-		private Dictionary<IBoundedShape, NSWEStructure> virtualMapping;
-		
+		private Dictionary<IBoundedShape, NSWEDrawing> virtualMapping;
+
+ 
 		public NSWELinkStrategy()
 		{
-			virtualMapping = new Dictionary<IBoundedShape, NSWEStructure>();
+			virtualMapping = new Dictionary<IBoundedShape, NSWEDrawing>();
 		}
 
 		
-		public void DirectLinks(StructureDrawing structureDrawing)
+		public void DirectLinks(IDrawing structureDrawing)
 		{
 			if (!virtualMapping.ContainsKey(structureDrawing)) {
 				return;
 			}
-			NSWEStructure nsweItem = virtualMapping[structureDrawing];
-			foreach (StructureLink link in nsweItem.Links) {
+			NSWEDrawing nsweItem = virtualMapping[structureDrawing];
+			foreach (LinkDrawing link in nsweItem.Links) {
 				link.Invalidated = true;
-				IBoundedShape destinationDrawing = structureDrawing.Structure.DiagramContainer.ContainerDrawer.ModelToDrawer[link.Destination];
-				IBoundedShape sourceDrawing = structureDrawing.Structure.DiagramContainer.ContainerDrawer.ModelToDrawer[link.Source];
+				IBoundedShape destinationDrawing = link.DestinationDrawing;
+				IBoundedShape sourceDrawing = link.SourceDrawing;
 				
 				LinkDirection prevDirection = link.Direction;
 				LinkDirection direction = LinkDirection.None;
@@ -73,33 +75,33 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 					link.Direction = direction;
 				}
 				
-				ArangeLinksForItem((IDrawing)destinationDrawing);
-				ArangeLinksForItem((IDrawing)sourceDrawing);
+				ArangeLinksForItem((StructureDrawing)destinationDrawing);
+				ArangeLinksForItem((StructureDrawing)sourceDrawing);
 			}
 			arrangeConnectionPoints(structureDrawing);
 		}
 		
-		public void ArangeLinksForItem(IDrawing structureDrawing)
+		public void ArangeLinksForItem(StructureDrawing structureDrawing)
 		{
 			arrangeConnectionPoints(structureDrawing);
 			
 			arrangeLinks(structureDrawing);
 		}
 		
-		public void RegisterLink(StructureLink link)
+		public void RegisterLink(LinkDrawing link)
 		{
-			NSWEStructure nsweDestination;
-			NSWEStructure nsweSource;
+			NSWEDrawing nsweDestination;
+			NSWEDrawing nsweSource;
 			
-			IDrawing sourceDrawing = (IDrawing)link.Source.DiagramContainer.ContainerDrawer.ModelToDrawer[link.Source];
-			IDrawing destinationDrawing = (IDrawing)link.Destination.DiagramContainer.ContainerDrawer.ModelToDrawer[link.Destination];
+			IDrawing sourceDrawing = link.SourceDrawing;
+			IDrawing destinationDrawing = link.DestinationDrawing;
 			if (!virtualMapping.ContainsKey(destinationDrawing))
-				nsweDestination = new NSWEStructure(link.Destination);
+				nsweDestination = new NSWEDrawing(destinationDrawing);
 			else
 				nsweDestination = virtualMapping[destinationDrawing];
 			
 			if (!virtualMapping.ContainsKey(sourceDrawing))
-				nsweSource = new NSWEStructure(link.Source);
+				nsweSource = new NSWEDrawing(sourceDrawing);
 			else
 				nsweSource = virtualMapping[sourceDrawing];
 			
@@ -113,12 +115,12 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			virtualMapping[destinationDrawing] = nsweDestination;
 		}
 		
-		private void arrangeLinks(IDrawing structure)
+		private void arrangeLinks(StructureDrawing structure)
 		{
-			IDrawing item = (IDrawing)structure;
+			StructureDrawing item = (StructureDrawing)structure;
 			int iN = 0, iS = 0, iW = 0, iE = 0;
-			NSWEStructure virtualItem = virtualMapping[structure];
-			foreach (StructureLink link in virtualItem.InputLinkList) {
+			NSWEDrawing virtualItem = virtualMapping[structure];
+			foreach (LinkDrawing link in virtualItem.InputLinkList) {
 				switch (link.Direction) {
 					case LinkDirection.SourceNorthDestinationSouth:
 						iS++;
@@ -148,7 +150,7 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			}
 
 
-			foreach (StructureLink link in virtualItem.OutputLinkList) {
+			foreach (LinkDrawing link in virtualItem.OutputLinkList) {
 				switch (link.Direction) {
 					case LinkDirection.SourceNorthDestinationSouth:
 						iN++;
@@ -180,24 +182,24 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			arrangeConnectionPoints(structure);
 		}
 		
-		private void OnLinkDirectionChanged(StructureLink link, LinkDirection newDirection)
+		private void OnLinkDirectionChanged(LinkDrawing link, LinkDirection newDirection)
 		{
 			
-			IDrawing sourceDrawing = link.Source.DiagramContainer.ContainerDrawer.ModelToDrawer[link.Source];
-			IDrawing destinationDrawing = link.Destination.DiagramContainer.ContainerDrawer.ModelToDrawer[link.Destination];
+			IDrawing sourceDrawing = link.SourceDrawing;
+			IDrawing destinationDrawing = link.DestinationDrawing;
 			
 			link.Invalidated = true;
-			NSWEStructure source = virtualMapping[sourceDrawing];
-			NSWEStructure destination = virtualMapping[destinationDrawing];
+			NSWEDrawing source = virtualMapping[sourceDrawing];
+			NSWEDrawing destination = virtualMapping[destinationDrawing];
 			switch (link.Direction) {
 				case LinkDirection.None:
 					source.LinkPointsNone.Remove(link.SourcePoint);
 					destination.LinkPointsNone.Remove(link.DestinationPoint);
 					source.LinksNone.Remove(link);
 					destination.LinksNone.Remove(link);
-					foreach (StructureLink l in source.LinksNone)
+					foreach (LinkDrawing l in source.LinksNone)
 						l.Invalidated = true;
-					foreach (StructureLink l in destination.LinksNone)
+					foreach (LinkDrawing l in destination.LinksNone)
 						l.Invalidated = true;
 					break;
 				case LinkDirection.SourceNorthDestinationSouth:
@@ -205,9 +207,9 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 					destination.LinkPointsSouth.Remove(link.DestinationPoint);
 					source.LinksNorth.Remove(link);
 					destination.LinksSouth.Remove(link);
-					foreach (StructureLink l in source.LinksNorth)
+					foreach (LinkDrawing l in source.LinksNorth)
 						l.Invalidated = true;
-					foreach (StructureLink l in destination.LinksSouth)
+					foreach (LinkDrawing l in destination.LinksSouth)
 						l.Invalidated = true;
 					break;
 				case LinkDirection.SourceSouthDestinationNorth:
@@ -215,9 +217,9 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 					destination.LinkPointsNorth.Remove(link.DestinationPoint);
 					source.LinksSouth.Remove(link);
 					destination.LinksNorth.Remove(link);
-					foreach (StructureLink l in source.LinksSouth)
+					foreach (LinkDrawing l in source.LinksSouth)
 						l.Invalidated = true;
-					foreach (StructureLink l in destination.LinksNorth)
+					foreach (LinkDrawing l in destination.LinksNorth)
 						l.Invalidated = true;
 					break;
 				case LinkDirection.SourceWestDestinationEast:
@@ -225,9 +227,9 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 					destination.LinkPointsEast.Remove(link.DestinationPoint);
 					source.LinksWest.Remove(link);
 					destination.LinksEast.Remove(link);
-					foreach (StructureLink l in source.LinksWest)
+					foreach (LinkDrawing l in source.LinksWest)
 						l.Invalidated = true;
-					foreach (StructureLink l in destination.LinksEast)
+					foreach (LinkDrawing l in destination.LinksEast)
 						l.Invalidated = true;
 					break;
 				case LinkDirection.SourceEastDestinationWest:
@@ -235,9 +237,9 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 					destination.LinkPointsWest.Remove(link.DestinationPoint);
 					source.LinksEast.Remove(link);
 					destination.LinksWest.Remove(link);
-					foreach (StructureLink l in source.LinksEast)
+					foreach (LinkDrawing l in source.LinksEast)
 						l.Invalidated = true;
-					foreach (StructureLink l in destination.LinksWest)
+					foreach (LinkDrawing l in destination.LinksWest)
 						l.Invalidated = true;
 					break;
 			}
@@ -255,9 +257,9 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 					destination.LinkPointsSouth.Add(link.DestinationPoint);
 					source.LinksNorth.Add(link);
 					destination.LinksSouth.Add(link);
-					foreach (StructureLink l in destination.LinksSouth)
+					foreach (LinkDrawing l in destination.LinksSouth)
 						l.Invalidated = true;
-					foreach (StructureLink l in source.LinksNorth)
+					foreach (LinkDrawing l in source.LinksNorth)
 						l.Invalidated = true;
 					break;
 				case LinkDirection.SourceSouthDestinationNorth:
@@ -265,9 +267,9 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 					destination.LinkPointsNorth.Add(link.DestinationPoint);
 					source.LinksSouth.Add(link);
 					destination.LinksNorth.Add(link);
-					foreach (StructureLink l in destination.LinksNorth)
+					foreach (LinkDrawing l in destination.LinksNorth)
 						l.Invalidated = true;
-					foreach (StructureLink l in source.LinksSouth)
+					foreach (LinkDrawing l in source.LinksSouth)
 						l.Invalidated = true;
 					break;
 				case LinkDirection.SourceWestDestinationEast:
@@ -275,9 +277,9 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 					destination.LinkPointsEast.Add(link.DestinationPoint);
 					source.LinksWest.Add(link);
 					destination.LinksEast.Add(link);
-					foreach (StructureLink l in destination.LinksEast)
+					foreach (LinkDrawing l in destination.LinksEast)
 						l.Invalidated = true;
-					foreach (StructureLink l in source.LinksWest)
+					foreach (LinkDrawing l in source.LinksWest)
 						l.Invalidated = true;
 					break;
 				case LinkDirection.SourceEastDestinationWest:
@@ -285,9 +287,9 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 					destination.LinkPointsWest.Add(link.DestinationPoint);
 					source.LinksEast.Add(link);
 					destination.LinksWest.Add(link);
-					foreach (StructureLink l in destination.LinksWest)
+					foreach (LinkDrawing l in destination.LinksWest)
 						l.Invalidated = true;
-					foreach (StructureLink l in source.LinksEast)
+					foreach (LinkDrawing l in source.LinksEast)
 						l.Invalidated = true;
 					break;
 			}
@@ -322,7 +324,7 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 		private void arrangeConnectionPoints(IBoundedShape diagramItem)
 		{
 			
-			NSWEStructure item = virtualMapping[diagramItem];
+			NSWEDrawing item = virtualMapping[diagramItem];
 			if (item.LinkPointsSouth.Count > 1)
 				SortCounterPoints(item.LinkPointsSouth, LinkDirection.SourceSouthDestinationNorth);
 			if (item.LinkPointsNorth.Count > 1)

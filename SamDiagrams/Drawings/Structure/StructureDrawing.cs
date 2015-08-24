@@ -18,18 +18,22 @@
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings.Geometry;
+using SamDiagrams.Drawings.Link;
 using SamDiagrams.Drawings.Selection;
+using SamDiagrams.Model;
 
 namespace SamDiagrams.Drawings
 {
 	/// <summary>
 	/// Description of ComponentDrawer.
 	/// </summary>
-	public class StructureDrawing : BaseDrawing, ISelectableDrawing
+	public class StructureDrawing : BaseDrawing, ILinkableDrawing
 	{
 		
 		public event BeforeNodeExpandOrCollapseHandler BeforeNodeExpandOrCollapse;
@@ -67,7 +71,12 @@ namespace SamDiagrams.Drawings
 		private int crtExpanderCheckRow = 0;
 		internal Font titleScaledFont;
 		internal Font rowScaledFont;
-		
+		private List<LinkDrawing> links;
+		public Item Item {
+			get {
+				return this.structure;
+			}
+		}
 		
 		public StructureDrawing(Structure Structure)
 		{
@@ -83,6 +92,11 @@ namespace SamDiagrams.Drawings
 			AutoSizeContent();
 		}
 
+		public List<LinkDrawing> DrawingLinks {
+			get {
+				return this.links;
+			}
+		}
 		
 		public Structure Structure {
 			get {

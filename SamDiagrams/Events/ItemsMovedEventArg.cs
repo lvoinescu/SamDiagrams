@@ -8,9 +8,9 @@ namespace SamDiagrams
 {
 	public partial class ItemsMovedEventArg : EventArgs
 	{
-		List<ISelectableDrawing> items;
+		List<SelectableDrawing> items;
 
-		public List<ISelectableDrawing> Items {
+		public List<SelectableDrawing> Items {
 			get { return items; }
 			set { items = value; }
 		}
@@ -25,7 +25,7 @@ namespace SamDiagrams
 			get { return dx; }
 			set { dx = value; }
 		}
-		public ItemsMovedEventArg(List<ISelectableDrawing> items, int dx, int dy)
+		public ItemsMovedEventArg(List<SelectableDrawing> items, int dx, int dy)
 		{
 			this.items = items;
 			this.dx = dx;

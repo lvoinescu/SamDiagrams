@@ -24,26 +24,26 @@ using System.Drawing;
 using SamDiagrams.Drawers;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
-using SamDiagrams.Drawings.Geometry;
 using SamDiagrams.Drawings.Selection;
 using SamDiagrams.Linking.Strategy;
 using SamDiagrams.Linking.Strategy.NSWELinkStrategy;
+using SamDiagrams.Model;
+using SamDiagrams.Model.Link;
 
 namespace SamDiagrams.Linking.Orchestrator
 {
 
 
 
-	public partial class LinkOrchestrator : ILinkOrchestrator
+	public class LinkOrchestrator : ILinkOrchestrator
 	{
 		ContainerDrawer containerDrawer;
 		LinkStyle linkStyle = LinkStyle.SingleLine;
 		readonly List<StructureDrawing> sturctureDrawings;
-		List<StructureLink> links = new List<StructureLink>();
+		List<LinkDrawing> links = new List<LinkDrawing>();
 		internal int lineWidth = 1;
 		internal int selectedLineWidth = 9;
 		internal ILinker linkStrategy;
-		Dictionary<Structure, List<StructureLink>> structureLinks;
 		
 		
 		public LinkStyle LinkStyle {
@@ -53,7 +53,7 @@ namespace SamDiagrams.Linking.Orchestrator
 			}
 		}
 
-		public List<StructureLink> Links {
+		public List<LinkDrawing> Links {
 			get { return links; }
 			set { links = value; }
 		}
@@ -63,49 +63,25 @@ namespace SamDiagrams.Linking.Orchestrator
 		{
 			sturctureDrawings = new List<StructureDrawing>();
 			linkStrategy = new NSWELinkStrategy();
-			structureLinks = new Dictionary<Structure, List<StructureLink>>();
 			this.containerDrawer = containerDrawer;
-			containerDrawer.ItemsMoved+= new ItemsMovedHandler(OnItemsMoved);
+			containerDrawer.ItemsMoved += new ItemsMovedHandler(OnItemsMoved);
 		}
 
-		public void AddLink(Structure source, Structure destination)
+		public void AddLink(ILink link)
 		{
-			StructureLink link = new StructureLink(source, destination);
-			RegisterLink(link);
-		}
-
-		public void AddLink(Structure source, Structure destination, Color color)
-		{
-			StructureLink link = new StructureLink(source, destination, color);
-			RegisterLink(link);
+			LinkDrawing linkDrawing= new LinkDrawing(link, lineWidth, selectedLineWidth, LinkStyle.StreightLines);
+			RegisterLink(linkDrawing);
 		}
 		
-		private void RegisterLink(StructureLink link)
+		private void RegisterLink(LinkDrawing linkDrawing)
 		{
-			Structure source = link.Source;
-			Structure destination = link.Destination;
-			
-			source.links.Add(link);
-			destination.links.Add(link);
-			
-			linkStrategy.RegisterLink(link);
-			links.Add(link);
-			LinkDrawing linkDrawer = new LinkDrawing(link, lineWidth, selectedLineWidth, LinkStyle.StreightLines);
-			containerDrawer.ModelToDrawer[link] = linkDrawer;
-			containerDrawer.DrawerToModel[linkDrawer] = link;
-			containerDrawer.Drawings.Add(linkDrawer);
-			
-			StructureDrawing sourceDrawing = (StructureDrawing)containerDrawer.ModelToDrawer[link.Source];
-			StructureDrawing destinationDrawing = (StructureDrawing)containerDrawer.ModelToDrawer[link.Destination];
-			
-			if (!sturctureDrawings.Contains(sourceDrawing)) {
-				sturctureDrawings.Add(sourceDrawing);
-			}
-			
-			if (!sturctureDrawings.Contains(destinationDrawing)) {
-				sturctureDrawings.Add(destinationDrawing);
-			}
-			
+			IDrawing sourceDrawing = linkDrawing.SourceDrawing;
+			IDrawing destinationDrawing = linkDrawing.DestinationDrawing;
+
+			containerDrawer.Drawings.Add(linkDrawing);
+			linkStrategy.RegisterLink(linkDrawing);
+			links.Add(linkDrawing);
+
 			linkStrategy.DirectLinks(sourceDrawing);
 			linkStrategy.DirectLinks(destinationDrawing);
 		}
@@ -117,8 +93,8 @@ namespace SamDiagrams.Linking.Orchestrator
 
 		public void OnItemsMoved(object sender, ItemsMovedEventArg e)
 		{
-			foreach (BorderDrawingDecorator drawing in e.Items) {
-				linkStrategy.DirectLinks((StructureDrawing)drawing.Drawing);
+			foreach (IDrawing drawing in e.Items) {
+				linkStrategy.DirectLinks(drawing);
 			}
 		}
 

@@ -41,12 +41,16 @@ namespace SamDiagrams.Actions
 			float scaleFactor = (float)container.ZoomFactor / 100;
 			
 			foreach (IDrawing drawing in container.ContainerDrawer.Drawings) {
-				Point p = new Point((int)(e.Location.X / scaleFactor), (int)(e.Location.Y / scaleFactor));
-				p.Offset(container.HScrollBar.Value, container.VScrollBar.Value);
-				if (drawing.Bounds.Contains(e.Location)) {
-					startMovePoint = new Point(e.Location.X, e.Location.Y);
-					actionStarted = true;
-					break;
+				
+				SelectableDrawing selectableDrawing = drawing as SelectableDrawing;
+				if (selectableDrawing != null) {
+					Point p = new Point((int)(e.Location.X / scaleFactor), (int)(e.Location.Y / scaleFactor));
+					p.Offset(container.HScrollBar.Value, container.VScrollBar.Value);
+					if (drawing.Bounds.Contains(e.Location)) {
+						startMovePoint = new Point(e.Location.X, e.Location.Y);
+						actionStarted = true;
+						break;
+					}
 				}
 			}
 		}
@@ -54,7 +58,7 @@ namespace SamDiagrams.Actions
 		public void OnMouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
 			actionStarted = false;
-			foreach (ISelectableDrawing drawing in container.ContainerDrawer.SelectedDrawing) {
+			foreach (SelectableDrawing drawing in container.ContainerDrawer.SelectedDrawing) {
 				drawing.InitialSelectedLocation = drawing.Location;
 			}
 		}
@@ -67,8 +71,8 @@ namespace SamDiagrams.Actions
 			float scaleFactor = (float)container.ZoomFactor / 100;
 			int dx = (int)((e.X - startMovePoint.X) / scaleFactor);
 			int dy = (int)((e.Y - startMovePoint.Y) / scaleFactor);
-			List<ISelectableDrawing> movedStructures = new List<ISelectableDrawing>();
-			foreach (ISelectableDrawing selectedDrawing in container.ContainerDrawer.SelectedDrawing) {
+			List<SelectableDrawing> movedStructures = new List<SelectableDrawing>();
+			foreach (SelectableDrawing selectedDrawing in container.ContainerDrawer.SelectedDrawing) {
 				
 				if (!selectedDrawing.Selected) {
 					continue;

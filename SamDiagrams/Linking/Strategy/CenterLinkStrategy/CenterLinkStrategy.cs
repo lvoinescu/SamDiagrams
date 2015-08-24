@@ -33,20 +33,17 @@ namespace SamDiagrams.Linking.Strategy.CenterLinkStrategy
 		public CenterLinkStrategy()
 		{
 		}
-		
-		
-		
-		public void RegisterLink(StructureLink link)
+
+		public void RegisterLink(SamDiagrams.Drawers.Links.LinkDrawing link)
 		{
 			throw new NotImplementedException();
 		}
-		
-		public void DirectLinks(StructureDrawing item)
+		public void DirectLinks(IDrawing item)
 		{
 			throw new NotImplementedException();
-		}
+		}		
 		
-		public void ArangeLinksForItem(Structure item)
+		public void ArangeLinksForItem(IDrawing item)
 		{
 			throw new NotImplementedException();
 		}

@@ -23,13 +23,17 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 using SamDiagrams.DiagramItem.NodeEditor;
 using SamDiagrams.Drawers;
+using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
 using SamDiagrams.Drawings.Geometry;
 using SamDiagrams.Drawings.Selection;
+using SamDiagrams.Model;
+using SamDiagrams.Model.Link;
 
 namespace SamDiagrams
 {
@@ -45,7 +49,7 @@ namespace SamDiagrams
 
 		
 		
-		private List<IDrawing> selectedItems;
+		private List<StructureDrawing> selectedItems;
 		List<Structure> structures;
 		private int zoomFactor;
 		private float scaleFactor = 1;
@@ -68,7 +72,7 @@ namespace SamDiagrams
 			get { return autoSizeItem; }
 			set {
 				autoSizeItem = value;
-				foreach (IDrawing drawer in containerDrawer.Drawings)
+				foreach (StructureDrawing drawer in containerDrawer.Drawings)
 					if (drawer is StructureDrawing)
 						((StructureDrawing)drawer).AutoSizeContent();
 			}
@@ -143,7 +147,7 @@ namespace SamDiagrams
 		{
 			zoomFactor = 100;
 			structures = new List<Structure>();
-			selectedItems = new List<IDrawing>();
+			selectedItems = new List<StructureDrawing>();
 			SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw |
 			ControlStyles.DoubleBuffer | ControlStyles.UserPaint, true);
 			hScrollBar = new HScrollBar();
@@ -187,15 +191,16 @@ namespace SamDiagrams
 			containerDrawer.ModelToDrawer[structure] = structureDrawing;
 			containerDrawer.DrawerToModel[structureDrawing] = structure;
 			
-			BorderDrawingDecorator selectableDrawing = new BorderDrawingDecorator(structureDrawing);
+			SelectableDrawing selectableDrawing = new SelectableDrawing(structureDrawing);
 			containerDrawer.Drawings.Add(selectableDrawing);
 			structures.Add(structure);
 			structureDrawing.AutoSizeContent();
 		}
 		
-		public void AddLink(Structure source, Structure destination)
+		public void AddLink(ILinkable source, ILinkable destination)
 		{
-			this.ContainerDrawer.LinkOrchestrator.AddLink(source, destination);
+			Link link = new Link(source, destination, Color.Black);
+			ContainerDrawer.LinkOrchestrator.AddLink(link);
 		}
 
 		void linkManager_LinkDirectionChangedEvent(object sender, LinkDirectionChangedArg e)

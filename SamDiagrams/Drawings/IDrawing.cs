@@ -20,6 +20,7 @@
 using System;
 using System.Drawing;
 using SamDiagrams.Drawings.Geometry;
+using SamDiagrams.Model;
 
 namespace SamDiagrams.Drawings
 {
@@ -28,8 +29,9 @@ namespace SamDiagrams.Drawings
 	/// </summary>
 	public interface IDrawing : IBoundedShape
 	{
+		Item Item{get;}
 		bool Invalidated { get; set; }
-		bool Selected {get; set;}
+		
 		void Draw(Graphics graphics);
 	}
 }

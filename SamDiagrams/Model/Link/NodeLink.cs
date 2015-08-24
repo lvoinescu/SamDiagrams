@@ -28,8 +28,7 @@ namespace SamDiagrams.Linking
 	{
 		private Color color = Color.Black;
 
-		public Color Color
-		{
+		public Color Color {
 			get { return color; }
 			set { color = value; }
 		}
@@ -38,55 +37,55 @@ namespace SamDiagrams.Linking
 
 		bool invalidated = true;
 
-		public bool Invalidated
-		{
+		public bool Invalidated {
 			get { return invalidated; }
 			set { invalidated = value; }
 		}
-		public LinkPoint DestinationPoint
-		{
+		public LinkPoint DestinationPoint {
 			get { return destinationPoint; }
 			set { destinationPoint = value; }
 		}
 
+		public string Name {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
+				throw new NotImplementedException();
+			}
+		}
 
-		public LinkPoint SourcePoint
-		{
+		public LinkPoint SourcePoint {
 			get { return sourcePoint; }
 			set { sourcePoint = value; }
 		}
 
 
-		public Rectangle Bounds
-		{
-			get
-			{
+		public Rectangle Bounds {
+			get {
 				Rectangle r = new Rectangle(Math.Min(sourcePoint.X, destinationPoint.X), 
-				                            Math.Min(sourcePoint.Y, destinationPoint.Y),
-				                            Math.Abs(sourcePoint.X - destinationPoint.X),
-				                            Math.Abs(sourcePoint.Y - destinationPoint.Y));
+					              Math.Min(sourcePoint.Y, destinationPoint.Y),
+					              Math.Abs(sourcePoint.X - destinationPoint.X),
+					              Math.Abs(sourcePoint.Y - destinationPoint.Y));
 				return r;
 			}
 		}
 
-		private LinkDirection direction = LinkDirection.None ;
+		private LinkDirection direction = LinkDirection.None;
 
-		public LinkDirection Direction
-		{
+		public LinkDirection Direction {
 			get { return direction; }
 			set { direction = value; }
 		}
 		
-		public Node Source
-		{
+		public Node Source {
 			get { return source; }
 			set { source = value; }
 		}
 		
 		private Node destination;
 
-		public Node Destination
-		{
+		public Node Destination {
 			get { return destination; }
 			set { destination = value; }
 		}
@@ -102,7 +101,7 @@ namespace SamDiagrams.Linking
 
 		public Size getSize()
 		{
-			return new Size(Math.Abs(sourcePoint.X-destinationPoint.X), Math.Abs(sourcePoint.Y- destinationPoint.Y));
+			return new Size(Math.Abs(sourcePoint.X - destinationPoint.X), Math.Abs(sourcePoint.Y - destinationPoint.Y));
 		}
 
 		public Point getLocation()

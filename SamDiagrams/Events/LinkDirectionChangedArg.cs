@@ -1,4 +1,5 @@
 using System;
+using SamDiagrams.Drawers.Links;
 using SamDiagrams.Linking;
 
 namespace SamDiagrams
@@ -8,7 +9,7 @@ namespace SamDiagrams
 	{
 		private LinkDirection newDirection;
 		private LinkDirection prevDirection;
-		private StructureLink link;
+		private LinkDrawing link;
 		
 		public LinkDirection NewDirection {
 			get { return newDirection; }
@@ -20,13 +21,13 @@ namespace SamDiagrams
 			set { prevDirection = value; }
 		}
 
-		public StructureLink Link {
+		public LinkDrawing Link {
 			get {
 				return link;
 			}
 		}
 		
-		public LinkDirectionChangedArg(StructureLink link, LinkDirection newDirection, LinkDirection prevDirection)
+		public LinkDirectionChangedArg(LinkDrawing link, LinkDirection newDirection, LinkDirection prevDirection)
 		{
 			this.link = link;
 			this.newDirection = newDirection;

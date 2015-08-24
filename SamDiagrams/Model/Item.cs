@@ -18,6 +18,7 @@
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
+using System.Drawing;
 
 namespace SamDiagrams.Model
 {
@@ -26,6 +27,7 @@ namespace SamDiagrams.Model
 	/// </summary>
 	public interface Item
 	{
-		
+		String Name { get; set; }
+		Color Color { get; set; }
 	}
 }

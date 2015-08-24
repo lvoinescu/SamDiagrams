@@ -23,11 +23,12 @@ using System.Collections.Generic;
 using SamDiagrams.Drawings.Selection;
 using SamDiagrams.Linking;
 using SamDiagrams.Model;
+using SamDiagrams.Model.Link;
 namespace SamDiagrams
 {
 
 	[Serializable]
-	public class Structure : Item
+	public class Structure : ILinkable
 	{
 		
 		private Color color = Color.LightSteelBlue;
@@ -36,7 +37,7 @@ namespace SamDiagrams
 		private string title;
 		
 		private bool invalidated;
-		internal List<StructureLink> links;
+		internal List<ILink> links;
 		private Image titleImage;
 		internal SelectionBorder selectionBorder = null;
 		
@@ -46,7 +47,16 @@ namespace SamDiagrams
 			set { color = value; }
 		}
 
-		public List<StructureLink> Links {
+		public string Name {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
+				throw new NotImplementedException();
+			}
+		}
+		
+		public  List<ILink> Links {
 			get {
 				return links;
 			}
@@ -91,7 +101,7 @@ namespace SamDiagrams
 			this.diagramContainer = p;
 			this.title = title;
 			nodes = new List<Node>();
-			links = new List<StructureLink>();
+			links = new  List<ILink>();
 		}
 		
 
@@ -106,10 +116,6 @@ namespace SamDiagrams
 		{
 			return string.Format("[Structure Title={0}]", title);
 		}
-
-		
-		
-
 
 	}
 }

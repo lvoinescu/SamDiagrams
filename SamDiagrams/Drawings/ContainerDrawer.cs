@@ -40,13 +40,13 @@ namespace SamDiagrams.Drawers
 		
 		private readonly List<IDrawing> drawings;
 		private readonly DiagramContainer diagramContainer;
-		private readonly Dictionary<Item, IDrawing> modelToDrawer;
-		private readonly Dictionary<IDrawing,Item > drawerToModel;
+		private readonly Dictionary<Item, StructureDrawing> modelToDrawer;
+		private readonly Dictionary<StructureDrawing,Item > drawerToModel;
 		private InvalidationStrategy invalidationStrategy;
 		private LinkOrchestrator linkOrchestrator;
 		private MoveAction moveAction;
 		private SelectionAction selectAction;
-		private List<ISelectableDrawing> selectableDrawings;
+		private List<SelectableDrawing> selectableDrawings;
 		
 		public LinkOrchestrator LinkOrchestrator {
 			get {
@@ -65,7 +65,7 @@ namespace SamDiagrams.Drawers
 			}
 		}
 
-		public List<ISelectableDrawing> SelectedDrawing {
+		public List<SelectableDrawing> SelectedDrawing {
 			get {
 				return selectableDrawings;
 			}
@@ -74,13 +74,13 @@ namespace SamDiagrams.Drawers
 			}
 		}
 		
-		public Dictionary<Item, IDrawing> ModelToDrawer {
+		public Dictionary<Item, StructureDrawing> ModelToDrawer {
 			get {
 				return modelToDrawer;
 			}
 		}
 
-		public Dictionary<IDrawing, Item> DrawerToModel {
+		public Dictionary<StructureDrawing, Item> DrawerToModel {
 			get {
 				return drawerToModel;
 			}
@@ -91,9 +91,9 @@ namespace SamDiagrams.Drawers
 			
 			this.diagramContainer = diagramContainer;
 			linkOrchestrator = new LinkOrchestrator(this);
-			modelToDrawer = new Dictionary<Item, IDrawing>();
+			modelToDrawer = new Dictionary<Item, StructureDrawing>();
 			
-			drawerToModel = new Dictionary<IDrawing, Item>();
+			drawerToModel = new Dictionary<StructureDrawing, Item>();
 			moveAction = new MoveAction(diagramContainer);
 			
 			moveAction.ItemsMoved += new ItemsMovedHandler(OnItemsMoved);
@@ -102,7 +102,7 @@ namespace SamDiagrams.Drawers
 			invalidationStrategy = new InvalidationStrategy(this);
 
 			this.drawings = new List<IDrawing>();
-			this.selectableDrawings = new List<ISelectableDrawing>();
+			this.selectableDrawings = new List<SelectableDrawing>();
 		}
 		
 		

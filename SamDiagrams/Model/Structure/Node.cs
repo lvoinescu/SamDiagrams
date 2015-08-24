@@ -42,12 +42,30 @@ namespace SamDiagrams
 			get { return parent; }
 			set { parent = value; }
 		}
-		
+
+		public Color Color {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
+				throw new NotImplementedException();
+			}
+		}
 		public List<Image> Images
 		{
 			get { return images; }
 			set { images = value; }
 		}
+
+		public string Name {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
+				throw new NotImplementedException();
+			}
+		}
+
 		public bool Editable
 		{
 			get { return editable; }

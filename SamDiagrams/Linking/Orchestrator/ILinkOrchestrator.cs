@@ -21,16 +21,17 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using SamDiagrams.Drawers.Links;
+using SamDiagrams.Drawings;
+using SamDiagrams.Model;
 
 namespace SamDiagrams.Linking.Orchestrator
 {
 	public interface ILinkOrchestrator
 	{
-		void AddLink(Structure source, Structure destination);
+		void AddLink(ILink link);
 		
-		void AddLink(Structure source, Structure destination, Color color);
-		
-		List<StructureLink> Links { get; set; }
+		List<LinkDrawing> Links { get; set; }
 		
 		LinkStyle LinkStyle { get; set; }
 	}

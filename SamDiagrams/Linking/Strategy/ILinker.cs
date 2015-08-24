@@ -18,6 +18,7 @@
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
+using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
 
 namespace SamDiagrams.Linking.Strategy
@@ -31,14 +32,14 @@ namespace SamDiagrams.Linking.Strategy
 		/// Registers a link to be handled by a link strategy.
 		/// </summary>
 		/// <param name="link"></param>
-		void RegisterLink(StructureLink link);
+		void RegisterLink(LinkDrawing link);
 		
 		/// <summary>
 		/// Computes the end points of all links associated with an item.
 		/// This handled input links and output links.
 		/// </summary>
 		/// <param name="item"></param>
-		void DirectLinks(StructureDrawing item);
+		void DirectLinks(IDrawing item);
 		
 		
 	}

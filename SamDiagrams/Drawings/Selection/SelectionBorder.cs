@@ -34,10 +34,12 @@ namespace SamDiagrams.Drawings.Selection
 			get { return invalidated; }
 			set { invalidated = value; }
 		}
+		
 		public IDrawing Drawing {
 			get { return drawing; }
 			set { drawing = value; }
 		}
+		
 		public SelectionBorder(IDrawing item)
 		{
 			this.drawing = item;

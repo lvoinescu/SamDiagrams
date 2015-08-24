@@ -23,8 +23,10 @@ using System.Windows.Forms;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
 using SamDiagrams.Drawings.Geometry;
+using SamDiagrams.Drawings.Link;
 using SamDiagrams.Drawings.Selection;
 using SamDiagrams.Linking;
+using SamDiagrams.Model;
 
 namespace SamDiagrams.Drawers
 {
@@ -57,20 +59,20 @@ namespace SamDiagrams.Drawers
 
 		void OnItemsMoved(object sender, ItemsMovedEventArg e)
 		{
-			foreach (BorderDrawingDecorator drawer in e.Items) {
+			foreach (IDrawing drawer in e.Items) {
 				InvalidateStructureDrawing(drawer);
 			}
 		}
 
 		void OnLinkDirectionChanged(object sender, LinkDirectionChangedArg e)
 		{
-			InvalidateLinkDrawing((LinkDrawing)containerDrawer.ModelToDrawer[e.Link]);
+			InvalidateLinkDrawing((LinkDrawing)e.Link);
 		}
 		
-		void InvalidateStructureDrawing(BorderDrawingDecorator drawer)
+		void InvalidateStructureDrawing(IDrawing drawer)
 		{
 			InflatableRectangle newRectangleToInvalidate = new InflatableRectangle(drawer.Bounds);
-			newRectangleToInvalidate.Inflate(getStructureInvalidatedRegion((StructureDrawing)drawer.Drawing));
+			newRectangleToInvalidate.Inflate(getStructureInvalidatedRegion(drawer));
 			Rectangle auxRectangle = newRectangleToInvalidate.Bounds;
 			invalidateOverlappingDrawings(previouslyInvalidatedRectangle);
 			newRectangleToInvalidate.Inflate(previouslyInvalidatedRectangle);
@@ -82,14 +84,14 @@ namespace SamDiagrams.Drawers
 			containerDrawer.DiagramContainer.Validate();
 		}
 		
-		void InvalidateLinkDrawing(LinkDrawing drawer)
+		void InvalidateLinkDrawing(LinkDrawing linkDrawing)
 		{
-			InflatableRectangle newRectangleToInvalidate = new InflatableRectangle(drawer.Bounds);
-			newRectangleToInvalidate.Inflate(getLinkInvalidatedRegion(drawer.Link));
+			InflatableRectangle newRectangleToInvalidate = new InflatableRectangle(linkDrawing.Bounds);
+			newRectangleToInvalidate.Inflate(getLinkInvalidatedRegion(linkDrawing));
 			newRectangleToInvalidate.Inflate(
-				getStructureInvalidatedRegion((StructureDrawing)containerDrawer.ModelToDrawer[drawer.Link.Source]));
+				getStructureInvalidatedRegion(linkDrawing.SourceDrawing));
 			newRectangleToInvalidate.Inflate(
-				getStructureInvalidatedRegion((StructureDrawing)containerDrawer.ModelToDrawer[drawer.Link.Destination]));
+				getStructureInvalidatedRegion(linkDrawing.DestinationDrawing));
 			Rectangle auxRectangle = newRectangleToInvalidate.Bounds;
 			invalidateOverlappingDrawings(previouslyInvalidatedRectangle);
 			newRectangleToInvalidate.Inflate(previouslyInvalidatedRectangle);
@@ -101,14 +103,13 @@ namespace SamDiagrams.Drawers
 			containerDrawer.DiagramContainer.Validate();
 		}
 		
-		Rectangle getStructureInvalidatedRegion(StructureDrawing structureDrawing)
+		Rectangle getStructureInvalidatedRegion(IDrawing targetDrawing)
 		{
-			structureDrawing.Invalidated = true;
-			InflatableRectangle rectangle = new InflatableRectangle(structureDrawing.Bounds);
-			Structure structure = containerDrawer.DrawerToModel[structureDrawing] as Structure;
-			
-			appendLinksToRegion(rectangle, structure);
-			
+			targetDrawing.Invalidated = true;
+			InflatableRectangle rectangle = new InflatableRectangle(targetDrawing.Bounds);
+			if (targetDrawing is ILinkableDrawing) {
+				appendLinksToRegion(rectangle, targetDrawing as ILinkableDrawing);
+			}
 			for (int i = 0; i < containerDrawer.Drawings.Count; i++) {
 				IDrawing drawing = containerDrawer.Drawings[i];
 				if (drawing.Bounds.IntersectsWith(rectangle.Bounds) && drawing.Invalidated == false) {
@@ -120,24 +121,23 @@ namespace SamDiagrams.Drawers
 		}
 		
 		
-		Rectangle getLinkInvalidatedRegion(StructureLink structureLink)
+		Rectangle getLinkInvalidatedRegion(LinkDrawing linkDrawing)
 		{
-			LinkDrawing linkDrawing = (LinkDrawing)containerDrawer.ModelToDrawer[structureLink];
 			InflatableRectangle rectangle = new InflatableRectangle(linkDrawing.Bounds);
 			linkDrawing.Invalidated = true;
-			StructureDrawing sourceDrawing = containerDrawer.ModelToDrawer[structureLink.Source] as StructureDrawing;
-			StructureDrawing destinationDrawing = containerDrawer.ModelToDrawer[structureLink.Destination] as StructureDrawing;
+			ILinkableDrawing sourceDrawing = linkDrawing.SourceDrawing;
+			ILinkableDrawing destinationDrawing = linkDrawing.DestinationDrawing;
 			sourceDrawing.Invalidated = true;
 			destinationDrawing.Invalidated = true;
 			rectangle.Inflate(sourceDrawing.Bounds);
 			rectangle.Inflate(destinationDrawing.Bounds);
 			
 			
-			appendLinksToRegion(rectangle, sourceDrawing.Structure);
-			appendLinksToRegion(rectangle, destinationDrawing.Structure);
+			appendLinksToRegion(rectangle, sourceDrawing);
+			appendLinksToRegion(rectangle, destinationDrawing);
 			
 			
-			foreach (IDrawing drawing in containerDrawer.Drawings) {
+			foreach (StructureDrawing drawing in containerDrawer.Drawings) {
 				if (drawing.Bounds.IntersectsWith(rectangle.Bounds)) {
 					drawing.Invalidated = true;
 					rectangle.Inflate(drawing.Bounds);
@@ -146,11 +146,10 @@ namespace SamDiagrams.Drawers
 			return rectangle.Bounds;
 		}
 
-		void appendLinksToRegion(InflatableRectangle rectangle, Structure structure)
+		void appendLinksToRegion(InflatableRectangle rectangle, ILinkableDrawing drawing)
 		{
-			foreach (StructureLink link in structure.Links) {
-				containerDrawer.ModelToDrawer[link].Invalidated = true;
-				rectangle.Inflate(containerDrawer.ModelToDrawer[link].Bounds);
+			foreach (LinkDrawing link in drawing.DrawingLinks) {
+				rectangle.Inflate(link.Bounds);
 			}
 		}
 		

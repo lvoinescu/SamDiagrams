@@ -1,4 +1,4 @@
-/*
+﻿/*
  *   SamDiagrams - diagram component for .NET
  *   Copyright (C) 2011  Lucian Voinescu
  *
@@ -17,29 +17,17 @@
  *   You should have received a copy of the GNU Lesser General Public License
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
-
 using System;
 using System.Collections.Generic;
-using SamDiagrams.Drawers;
-using SamDiagrams.Drawings;
-namespace SamDiagrams
+using SamDiagrams.Drawers.Links;
+
+namespace SamDiagrams.Drawings.Link
 {
 	/// <summary>
-	/// Description of SelectedItemsChangeArgs.
+	/// Description of ILinkableDrawing.
 	/// </summary>
-	public class SelectedItemsChangeArgs:EventArgs
+	public interface ILinkableDrawing : IDrawing
 	{
-
-		private List<StructureDrawing> selectedItems;
-		
-		public List<StructureDrawing> SelectedItems {
-			get { return selectedItems; }
-		}
-		public SelectedItemsChangeArgs(List<StructureDrawing> items)
-		{
-			this.selectedItems = items;
-		}
-
+		List<LinkDrawing> DrawingLinks{ get; }
 	}
-	
 }

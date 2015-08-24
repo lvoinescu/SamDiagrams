@@ -27,7 +27,12 @@ namespace SamDiagrams.Drawings.Grid
 		{
 			this.diagramContainer = diagramContainer;
 		}
-		
+
+		public SamDiagrams.Model.Item Item {
+			get {
+				throw new NotImplementedException();
+			}
+		}
 		public GridDrawer(DiagramContainer diagramContainer, int gridSize)
 			: this(diagramContainer)
 		{

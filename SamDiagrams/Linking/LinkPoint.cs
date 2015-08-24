@@ -18,23 +18,24 @@
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
+using SamDiagrams.Drawers.Links;
 using SamDiagrams.Linking;
 
 namespace SamDiagrams
 {
 	/// <summary>
-	/// A simple class describing the end point of a link described
+	/// A simple class representing the end point of a link described
 	/// by a cartesian pair (x, y).
 	/// </summary>
 	public class LinkPoint
 	{
 		private int x = 0;
 		private int y = 0;
-		private StructureLink link;
+		private LinkDrawing linkDrawing;
 		
-		public StructureLink Link {
-			get { return link; }
-			set { link = value; }
+		public LinkDrawing Link {
+			get { return linkDrawing; }
+			set { linkDrawing = value; }
 		}
 		
 		public int X {
@@ -47,16 +48,16 @@ namespace SamDiagrams
 			set { y = value; }
 		}
 
-		public LinkPoint(StructureLink link)
+		public LinkPoint(LinkDrawing linkDrawing)
 		{
-			this.link = link;
+			this.linkDrawing = linkDrawing;
 		}
 
 		internal LinkPoint GetCounterPoint()
 		{
-			if (link.DestinationPoint == this)
-				return link.SourcePoint;
-			return link.DestinationPoint;
+			if (linkDrawing.DestinationPoint == this)
+				return linkDrawing.SourcePoint;
+			return linkDrawing.DestinationPoint;
 		}
 
 		internal void SetCounterPoint(int x, int y)

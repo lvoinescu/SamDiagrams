@@ -19,57 +19,98 @@
  */
 using System;
 using System.Collections.Generic;
+using SamDiagrams.Drawers.Links;
+using SamDiagrams.Drawings;
+using SamDiagrams.Model;
 
 namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 {
 	/// <summary>
 	/// Description of NSWEDiagramItem.
 	/// </summary>
-	public class NSWEStructure
+	public class NSWEDrawing : IDrawing
 	{
 		
-		private List<StructureLink> linksNorth, linksSouth, linksWest, linksEast, linksNone;
+		private List<LinkDrawing> linksNorth, linksSouth, linksWest, linksEast, linksNone;
 		private List<LinkPoint> linkPointsSouth, linkPointsNorth, linkPointsWest, linkPointsEast, linkPointsNone;
-		private List<StructureLink> inputLinkList, outputLinkList, links;
-		
-		private Structure structure;
+		private List<LinkDrawing> inputLinkList, outputLinkList, links;
+		private readonly IDrawing structureDrawing;
 
-		public List<StructureLink> Links {
+		#region IDrawing implementation
+		public void Draw(System.Drawing.Graphics graphics)
+		{
+			structureDrawing.Draw(graphics);
+		}
+		public Item Item {
+			get {
+				return this.structureDrawing.Item;
+			}
+		}
+		public bool Invalidated {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
+				throw new NotImplementedException();
+			}
+		}
+		#endregion
+		#region IBoundedShape implementation
+		public System.Drawing.Point Location {
+			get {
+				return this.structureDrawing.Location;
+			}
+			set {
+				this.structureDrawing.Location = value;
+			}
+		}
+		public System.Drawing.Size Size {
+			get {
+				return this.structureDrawing.Size;
+			}
+		}
+		public System.Drawing.Rectangle Bounds {
+			get {
+				return this.structureDrawing.Bounds;
+			}
+		}
+		#endregion
+		public List<LinkDrawing> Links {
 			get { return links; }
 			set { links = value; }
 		}
 		
-		internal List<StructureLink> InputLinkList {
+		internal List<LinkDrawing> InputLinkList {
 			get { return inputLinkList; }
 			set { inputLinkList = value; }
 		}
 
-		internal List<StructureLink> OutputLinkList {
+		internal List<LinkDrawing> OutputLinkList {
 			get { return outputLinkList; }
 			set { outputLinkList = value; }
 		}
 
-		public List<StructureLink> LinksNone {
+		public List<LinkDrawing> LinksNone {
 			get { return linksNone; }
 			set { linksNone = value; }
 		}
 
-		internal List<StructureLink> LinksEast {
+		internal List<LinkDrawing> LinksEast {
 			get { return linksEast; }
 			set { linksEast = value; }
 		}
 
-		internal List<StructureLink> LinksWest {
+		internal List<LinkDrawing> LinksWest {
 			get { return linksWest; }
 			set { linksWest = value; }
 		}
 
-		internal List<StructureLink> LinksSouth {
+		internal List<LinkDrawing> LinksSouth {
 			get { return linksSouth; }
 			set { linksSouth = value; }
 		}
 
-		internal List<StructureLink> LinksNorth {
+		internal List<LinkDrawing> LinksNorth {
 			get { return linksNorth; }
 			set { linksNorth = value; }
 		}
@@ -99,19 +140,20 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			get { return linkPointsSouth; }
 			set { linkPointsSouth = value; }
 		}
-		public NSWEStructure(Structure item)
+		
+		public NSWEDrawing(IDrawing structureDrawing)
 		{
-			this.structure = item;
-			links = new List<StructureLink>();
+			this.structureDrawing = structureDrawing;
+			links = new List<LinkDrawing>();
 			
-			inputLinkList = new List<StructureLink>();
-			outputLinkList = new List<StructureLink>();
+			inputLinkList = new List<LinkDrawing>();
+			outputLinkList = new List<LinkDrawing>();
 			
-			linksNone = new List<StructureLink>();
-			linksNorth = new List<StructureLink>();
-			linksSouth = new List<StructureLink>();
-			linksWest = new List<StructureLink>();
-			linksEast = new List<StructureLink>();
+			linksNone = new List<LinkDrawing>();
+			linksNorth = new List<LinkDrawing>();
+			linksSouth = new List<LinkDrawing>();
+			linksWest = new List<LinkDrawing>();
+			linksEast = new List<LinkDrawing>();
 			
 			linkPointsNone = new List<LinkPoint>();
 			linkPointsNorth = new List<LinkPoint>();

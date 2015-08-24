@@ -49,6 +49,13 @@ namespace SamDiagrams.DiagramItem.NodeEditor
 				timer.Stop();
 			}
 		}
+
+		public SamDiagrams.Model.Item Item {
+			get {
+				throw new NotImplementedException();
+			}
+		}
+
 		public NodeTextEditor(DiagramContainer container)
 		{
 			this.container = container;
