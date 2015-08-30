@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using SamDiagrams.Actions;
 using SamDiagrams.Drawings;
-using SamDiagrams.Drawings.Geometry;
 using SamDiagrams.Drawings.Selection;
 using SamDiagrams.Linking.Orchestrator;
 using SamDiagrams.Model;
@@ -34,19 +33,18 @@ namespace SamDiagrams.Drawers
 	/// </summary>
 	public class ContainerDrawer
 	{
-		public event ItemsMovedHandler ItemsMoved;
-		public event LinkDirectionChangedHandler LinkDirectionChanged;
-		
-		
 		private readonly List<IDrawing> drawings;
 		private readonly DiagramContainer diagramContainer;
-		private readonly Dictionary<Item, StructureDrawing> modelToDrawer;
-		private readonly Dictionary<StructureDrawing,Item > drawerToModel;
 		private InvalidationStrategy invalidationStrategy;
 		private LinkOrchestrator linkOrchestrator;
-		private MoveAction moveAction;
-		private SelectionAction selectAction;
+		private ActionListener actionListener;
 		private List<SelectableDrawing> selectableDrawings;
+
+		public ActionListener ActionListener {
+			get {
+				return actionListener;
+			}
+		}
 		
 		public LinkOrchestrator LinkOrchestrator {
 			get {
@@ -73,34 +71,16 @@ namespace SamDiagrams.Drawers
 				selectableDrawings = value;
 			}
 		}
-		
-		public Dictionary<Item, StructureDrawing> ModelToDrawer {
-			get {
-				return modelToDrawer;
-			}
-		}
-
-		public Dictionary<StructureDrawing, Item> DrawerToModel {
-			get {
-				return drawerToModel;
-			}
-		}
 
 		public ContainerDrawer(DiagramContainer diagramContainer)
 		{
 			
 			this.diagramContainer = diagramContainer;
+			actionListener = new ActionListener(diagramContainer);
+			
 			linkOrchestrator = new LinkOrchestrator(this);
-			modelToDrawer = new Dictionary<Item, StructureDrawing>();
-			
-			drawerToModel = new Dictionary<StructureDrawing, Item>();
-			moveAction = new MoveAction(diagramContainer);
-			
-			moveAction.ItemsMoved += new ItemsMovedHandler(OnItemsMoved);
-			
-			selectAction = new SelectionAction(diagramContainer);
 			invalidationStrategy = new InvalidationStrategy(this);
-
+			
 			this.drawings = new List<IDrawing>();
 			this.selectableDrawings = new List<SelectableDrawing>();
 		}
@@ -134,12 +114,6 @@ namespace SamDiagrams.Drawers
 				(float)(drawer.Size.Width * scaleFactor),
 				(float)(drawer.Size.Height * scaleFactor)
 			);
-		}
-		
-		void OnItemsMoved(object sender, ItemsMovedEventArg e)
-		{
-			if (ItemsMoved != null)
-				this.ItemsMoved(sender, e);
 		}
 
 	}

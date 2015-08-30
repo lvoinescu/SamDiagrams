@@ -32,6 +32,7 @@ namespace SamDiagrams.Drawings
 		protected Size size;
 		protected Point location;
 		protected bool invalidated;
+		protected bool movable;
 		
 		public BaseDrawing()
 		{
@@ -40,7 +41,15 @@ namespace SamDiagrams.Drawings
 		#region Drawing implementation
 
 		public abstract void Draw(Graphics graphics);
-		
+
+		public bool Movable {
+			get {
+				return movable;
+			}
+			set {
+				movable = value;
+			}
+		}
 
 		public Point Location {
 			get {

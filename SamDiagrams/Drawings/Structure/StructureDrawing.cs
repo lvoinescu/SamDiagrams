@@ -89,6 +89,7 @@ namespace SamDiagrams.Drawings
 			this.structure.DiagramContainer.ZoomFactorChanged += new ZoomFactorChangedHandler(OnZoomFactorChanged);
 			rowScaledHeight = CalculateRowHeight();
 			this.size.Width = DEFAULT_WIDTH;
+			this.links = new List<LinkDrawing>();
 			AutoSizeContent();
 		}
 
@@ -107,15 +108,14 @@ namespace SamDiagrams.Drawings
 			}
 		}
 
-		public Point InitialSelectedLocation {
-			get {
-				throw new NotImplementedException();
+		public Rectangle InvalidatedRegion()
+		{
+			InflatableRectangle rectangle = new InflatableRectangle(this.Bounds);
+			foreach (LinkDrawing link in links) {
+				rectangle.Inflate(link.Bounds);
 			}
-			set {
-				throw new NotImplementedException();
-			}
+			return rectangle.Bounds;
 		}
-		
 		public bool Selected {
 			get {
 				return selected;

@@ -19,6 +19,7 @@
  */
 using System;
 using System.Drawing;
+using SamDiagrams.Drawings;
 using SamDiagrams.Model;
 
 
@@ -34,7 +35,7 @@ namespace SamDiagrams.Linking
 		}
 		private Node source;
 		private LinkPoint sourcePoint, destinationPoint;
-
+		private IDrawing drawing;
 		bool invalidated = true;
 
 		public bool Invalidated {
@@ -46,6 +47,15 @@ namespace SamDiagrams.Linking
 			set { destinationPoint = value; }
 		}
 
+		public IDrawing Drawing {
+			get {
+				return this.drawing;
+			}
+			set {
+				this.drawing = value;
+			}
+		}
+		
 		public string Name {
 			get {
 				throw new NotImplementedException();

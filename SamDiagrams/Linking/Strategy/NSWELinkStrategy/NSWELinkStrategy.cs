@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
 using SamDiagrams.Drawings.Geometry;
+using SamDiagrams.Drawings.Selection;
 using SamDiagrams.Linking.Strategy;
 
 namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
@@ -34,20 +35,22 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 		
 		public event LinkDirectionChangedHandler LinkDirectionChangedEvent;
 
-		private Dictionary<IBoundedShape, NSWEDrawing> virtualMapping;
+		private Dictionary<IDrawing, NSWEDrawing> virtualMapping;
 
  
 		public NSWELinkStrategy()
 		{
-			virtualMapping = new Dictionary<IBoundedShape, NSWEDrawing>();
+			virtualMapping = new Dictionary<IDrawing, NSWEDrawing>();
 		}
 
 		
-		public void DirectLinks(IDrawing structureDrawing)
+		public void DirectLinks(IDrawing drawing)
 		{
-			if (!virtualMapping.ContainsKey(structureDrawing)) {
-				return;
-			}
+ 
+			IDrawing structureDrawing = drawing;
+			if(drawing is SelectableDrawing)
+				structureDrawing = (drawing as SelectableDrawing).Drawing;
+			
 			NSWEDrawing nsweItem = virtualMapping[structureDrawing];
 			foreach (LinkDrawing link in nsweItem.Links) {
 				link.Invalidated = true;
@@ -321,7 +324,7 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			}
 		}
 		
-		private void arrangeConnectionPoints(IBoundedShape diagramItem)
+		private void arrangeConnectionPoints(IDrawing diagramItem)
 		{
 			
 			NSWEDrawing item = virtualMapping[diagramItem];

@@ -18,6 +18,7 @@
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using SamDiagrams.Drawers.Links;
@@ -25,8 +26,6 @@ using SamDiagrams.Drawings;
 using SamDiagrams.Drawings.Geometry;
 using SamDiagrams.Drawings.Link;
 using SamDiagrams.Drawings.Selection;
-using SamDiagrams.Linking;
-using SamDiagrams.Model;
 
 namespace SamDiagrams.Drawers
 {
@@ -43,8 +42,8 @@ namespace SamDiagrams.Drawers
 		public InvalidationStrategy(ContainerDrawer container)
 		{
 			this.containerDrawer = container;
-			this.containerDrawer.DiagramContainer.MouseDown += OnMouseDown;
-			this.containerDrawer.ItemsMoved += new ItemsMovedHandler(OnItemsMoved);
+			this.containerDrawer.ActionListener.ItemsMoved += new ItemsMovedHandler(OnItemsMoved);
+			this.containerDrawer.ActionListener.SelectionChanged +=	new SelectedItemsChangedHandler(OnSelectionChanged);
 			this.containerDrawer.LinkOrchestrator.linkStrategy.LinkDirectionChangedEvent +=
 				new LinkDirectionChangedHandler(OnLinkDirectionChanged);
 		}
@@ -56,12 +55,22 @@ namespace SamDiagrams.Drawers
 			}
 		}
 
+		void OnSelectionChanged(object sender, SelectedItemsChangedArgs e)
+		{
+			List<IDrawing> invalidatedGroup = new List<IDrawing>();
+			foreach (SelectableDrawing selectableDrawing in e.SelectedDrawings) {
+				invalidatedGroup.Add(selectableDrawing.Drawing);
+			}
+			
+			foreach (SelectableDrawing selectableDrawing in e.PreviouslySelectedDrawings) {
+				invalidatedGroup.Add(selectableDrawing.Drawing);
+			}
+			InvalidateDrawingGroup(invalidatedGroup);
+		}
 
 		void OnItemsMoved(object sender, ItemsMovedEventArg e)
 		{
-			foreach (IDrawing drawer in e.Items) {
-				InvalidateStructureDrawing(drawer);
-			}
+			InvalidateDrawingGroup(e.Items);
 		}
 
 		void OnLinkDirectionChanged(object sender, LinkDirectionChangedArg e)
@@ -69,19 +78,36 @@ namespace SamDiagrams.Drawers
 			InvalidateLinkDrawing((LinkDrawing)e.Link);
 		}
 		
-		void InvalidateStructureDrawing(IDrawing drawer)
+		void InvalidateDrawingGroup(List<IDrawing> drawings)
 		{
-			InflatableRectangle newRectangleToInvalidate = new InflatableRectangle(drawer.Bounds);
-			newRectangleToInvalidate.Inflate(getStructureInvalidatedRegion(drawer));
+			if (drawings.Count < 1)
+				return;
+			
+			InflatableRectangle newRectangleToInvalidate = new InflatableRectangle(drawings[0].InvalidatedRegion());
+			foreach (IDrawing drawing in drawings) {
+				drawing.Invalidated = true;
+				newRectangleToInvalidate.Inflate(drawing.InvalidatedRegion());
+				invalidateOverlappingDrawings(previouslyInvalidatedRectangle);
+			}
+			
 			Rectangle auxRectangle = newRectangleToInvalidate.Bounds;
 			invalidateOverlappingDrawings(previouslyInvalidatedRectangle);
 			newRectangleToInvalidate.Inflate(previouslyInvalidatedRectangle);
 			previouslyInvalidatedRectangle = auxRectangle;
-			
+			containerDrawer.DiagramContainer.Invalidate(newRectangleToInvalidate.Bounds);
+		}
+		
+		void InvalidateDrawing(IDrawing drawing)
+		{
+			drawing.Invalidated = true;
+			InflatableRectangle newRectangleToInvalidate = new InflatableRectangle(drawing.InvalidatedRegion());
+			Rectangle auxRectangle = newRectangleToInvalidate.Bounds;
+			invalidateOverlappingDrawings(previouslyInvalidatedRectangle);
+			newRectangleToInvalidate.Inflate(previouslyInvalidatedRectangle);
+			previouslyInvalidatedRectangle = auxRectangle;
 			invalidateOverlappingDrawings(previouslyInvalidatedRectangle);
 			
 			containerDrawer.DiagramContainer.Invalidate(newRectangleToInvalidate.Bounds);
-			containerDrawer.DiagramContainer.Validate();
 		}
 		
 		void InvalidateLinkDrawing(LinkDrawing linkDrawing)
@@ -106,10 +132,8 @@ namespace SamDiagrams.Drawers
 		Rectangle getStructureInvalidatedRegion(IDrawing targetDrawing)
 		{
 			targetDrawing.Invalidated = true;
-			InflatableRectangle rectangle = new InflatableRectangle(targetDrawing.Bounds);
-			if (targetDrawing is ILinkableDrawing) {
-				appendLinksToRegion(rectangle, targetDrawing as ILinkableDrawing);
-			}
+			InflatableRectangle rectangle = new InflatableRectangle(targetDrawing.InvalidatedRegion());
+
 			for (int i = 0; i < containerDrawer.Drawings.Count; i++) {
 				IDrawing drawing = containerDrawer.Drawings[i];
 				if (drawing.Bounds.IntersectsWith(rectangle.Bounds) && drawing.Invalidated == false) {
@@ -129,15 +153,12 @@ namespace SamDiagrams.Drawers
 			ILinkableDrawing destinationDrawing = linkDrawing.DestinationDrawing;
 			sourceDrawing.Invalidated = true;
 			destinationDrawing.Invalidated = true;
-			rectangle.Inflate(sourceDrawing.Bounds);
-			rectangle.Inflate(destinationDrawing.Bounds);
+			rectangle.Inflate(sourceDrawing.InvalidatedRegion());
+			rectangle.Inflate(sourceDrawing.InvalidatedRegion());
 			
+ 
 			
-			appendLinksToRegion(rectangle, sourceDrawing);
-			appendLinksToRegion(rectangle, destinationDrawing);
-			
-			
-			foreach (StructureDrawing drawing in containerDrawer.Drawings) {
+			foreach (IDrawing drawing in containerDrawer.Drawings) {
 				if (drawing.Bounds.IntersectsWith(rectangle.Bounds)) {
 					drawing.Invalidated = true;
 					rectangle.Inflate(drawing.Bounds);
@@ -146,13 +167,6 @@ namespace SamDiagrams.Drawers
 			return rectangle.Bounds;
 		}
 
-		void appendLinksToRegion(InflatableRectangle rectangle, ILinkableDrawing drawing)
-		{
-			foreach (LinkDrawing link in drawing.DrawingLinks) {
-				rectangle.Inflate(link.Bounds);
-			}
-		}
-		
 		void invalidateOverlappingDrawings(Rectangle rectangle)
 		{
 			for (int i = 0; i < containerDrawer.Drawings.Count; i++) {

@@ -26,41 +26,56 @@ namespace SamDiagrams.Actions
 		readonly DiagramContainer container;
 		private Point startMovePoint;
 		private bool actionStarted;
+		private List<MovableDrawing> drawingsToMove;
+
+		public  List<MovableDrawing> DrawingsToMove {
+			get {
+				return drawingsToMove;
+			}
+		}
 		
 		public MoveAction(DiagramContainer container)
 		{
 			actionStarted = false;
 			this.container = container;
-			this.container.MouseDown += new System.Windows.Forms.MouseEventHandler(OnMouseDown);
-			this.container.MouseUp += new System.Windows.Forms.MouseEventHandler(OnMouseUp);
-			this.container.MouseMove += new System.Windows.Forms.MouseEventHandler(OnMouseMove);
+			drawingsToMove = new List<MovableDrawing>();
 		}
-
+		
+		public void ClearDrawing()
+		{
+			drawingsToMove.Clear();
+		}
+		
+		public void AddDrawing(IDrawing drawing)
+		{
+			drawingsToMove.Add(new MovableDrawing(drawing));
+		}
+		
+		public void RemoveDrawing(IDrawing drawing)
+		{
+			drawingsToMove.Remove(new MovableDrawing(drawing));
+		}
+ 
 		public void OnMouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
 			float scaleFactor = (float)container.ZoomFactor / 100;
-			
-			foreach (IDrawing drawing in container.ContainerDrawer.Drawings) {
+			foreach (MovableDrawing drawing in drawingsToMove) {
+				Point p = new Point((int)(e.Location.X / scaleFactor), (int)(e.Location.Y / scaleFactor));
+				p.Offset(container.HScrollBar.Value, container.VScrollBar.Value);
 				
-				SelectableDrawing selectableDrawing = drawing as SelectableDrawing;
-				if (selectableDrawing != null) {
-					Point p = new Point((int)(e.Location.X / scaleFactor), (int)(e.Location.Y / scaleFactor));
-					p.Offset(container.HScrollBar.Value, container.VScrollBar.Value);
-					if (drawing.Bounds.Contains(e.Location)) {
-						startMovePoint = new Point(e.Location.X, e.Location.Y);
-						actionStarted = true;
-						break;
-					}
+				if (drawing.Bounds.Contains(e.Location)) {
+					startMovePoint = new Point(e.X, e.Y);
+					actionStarted = true;
 				}
+				
+				drawing.InitialLocation = drawing.Drawing.Location;
 			}
 		}
 
 		public void OnMouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
 			actionStarted = false;
-			foreach (SelectableDrawing drawing in container.ContainerDrawer.SelectedDrawing) {
-				drawing.InitialSelectedLocation = drawing.Location;
-			}
+			startMovePoint = new Point(e.Location.X, e.Location.Y);
 		}
 
 		public void OnMouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -71,31 +86,29 @@ namespace SamDiagrams.Actions
 			float scaleFactor = (float)container.ZoomFactor / 100;
 			int dx = (int)((e.X - startMovePoint.X) / scaleFactor);
 			int dy = (int)((e.Y - startMovePoint.Y) / scaleFactor);
-			List<SelectableDrawing> movedStructures = new List<SelectableDrawing>();
-			foreach (SelectableDrawing selectedDrawing in container.ContainerDrawer.SelectedDrawing) {
-				
-				if (!selectedDrawing.Selected) {
-					continue;
-				}
-				
-				int x = (int)(selectedDrawing.InitialSelectedLocation.X + dx);
-				int y = (int)(selectedDrawing.InitialSelectedLocation.Y + dy);
+			List<IDrawing> movedDrawing = new List<IDrawing>();
+			foreach (MovableDrawing movableDrawing in drawingsToMove) {
+				int x = (int)(movableDrawing.InitialLocation.X + dx);
+				int y = (int)(movableDrawing.InitialLocation.Y + dy);
 
-				int inf = SelectionBorder.squareSize + SelectionBorder.inflate;
 				if (x < 0)
 					x = 0;
-				if (x > container.Width - selectedDrawing.Size.Width)
-					x = (int)(container.Width - selectedDrawing.Size.Width);
+				
+				if (x > container.Width - movableDrawing.Size.Width)
+					x = (int)(container.Width - movableDrawing.Size.Width);
+				
 				if (y < 0)
 					y = 0;
-				if (y > container.Height - selectedDrawing.Size.Height)
-					y = (int)(container.Height - selectedDrawing.Size.Height);
-				selectedDrawing.Location = new Point(x, y);
-				movedStructures.Add(selectedDrawing);
+				
+				if (y > container.Height - movableDrawing.Size.Height)
+					y = (int)(container.Height - movableDrawing.Size.Height);
+				movedDrawing.Add(movableDrawing.Drawing);
+				movableDrawing.Location = new Point(x, y);
 			}
 			
+			
 			if (ItemsMoved != null) {
-				ItemsMoved(this, new ItemsMovedEventArg(movedStructures, dx, dy));
+				ItemsMoved(this, new ItemsMovedEventArg(movedDrawing, dx, dy));
 			}
 		}
 

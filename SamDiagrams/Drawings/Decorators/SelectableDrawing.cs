@@ -20,11 +20,12 @@
 using System;
 using System.Drawing;
 using SamDiagrams.Drawings.Geometry;
+using SamDiagrams.Model;
 
 namespace SamDiagrams.Drawings.Selection
 {
 	/// <summary>
-	/// Description of SelectableDrawingWrapper.
+	/// A Decorator that handles drawing the selection border
 	/// </summary>
 	public class SelectableDrawing : IDrawing
 	{
@@ -40,7 +41,7 @@ namespace SamDiagrams.Drawings.Selection
 			}
 		}
 
-		public SamDiagrams.Model.Item Item {
+		public Item Item {
 			get {
 				return this.drawing.Item;
 			}
@@ -79,6 +80,21 @@ namespace SamDiagrams.Drawings.Selection
 			}
 		}
 
+		public bool Movable {
+			get {
+				return drawing.Movable;
+			}
+			set {
+				drawing.Movable = value;
+			}
+		}
+		
+		public Rectangle InvalidatedRegion(){
+			InflatableRectangle rectangle =  new InflatableRectangle(selectionBorder.Bounds);
+			rectangle.Inflate(this.drawing.InvalidatedRegion());
+			return rectangle.Bounds;
+		}
+		
 		public bool Selected {
 			get {
 				return this.selected;
@@ -97,23 +113,20 @@ namespace SamDiagrams.Drawings.Selection
 			}
 		}
 		
-		public SelectableDrawing(IDrawing drawing)
-		{
+		public SelectableDrawing(IDrawing drawing){
 			this.drawing = drawing;
 			this.selectionBorder = new SelectionBorder(drawing);
 		}
 		
-		public void Draw(Graphics graphics)
-		{
+		public void Draw(Graphics graphics)	{
 			this.drawing.Draw(graphics);
 			if (selected) {
 				this.selectionBorder.Draw(graphics);
 			}
 		}
 		
-		public override String ToString()
-		{
-			return drawing.ToString();
+		public override String ToString(){
+			return "SelectableDrawing; " + drawing.ToString();
 		}
 		
 	}

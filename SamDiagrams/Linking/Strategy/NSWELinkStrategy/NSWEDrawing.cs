@@ -19,6 +19,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
 using SamDiagrams.Model;
@@ -54,6 +55,16 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 				throw new NotImplementedException();
 			}
 		}
+
+		public bool Movable {
+			get {
+				return structureDrawing.Movable;
+			}
+			set {
+				structureDrawing.Movable = value;
+			}
+		}
+
 		#endregion
 		#region IBoundedShape implementation
 		public System.Drawing.Point Location {
@@ -160,6 +171,11 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			linkPointsSouth = new List<LinkPoint>();
 			linkPointsWest = new List<LinkPoint>();
 			LinkPointsEast = new List<LinkPoint>();
+		}
+
+		public Rectangle InvalidatedRegion()
+		{
+			return structureDrawing.InvalidatedRegion();
 		}
 	}
 }

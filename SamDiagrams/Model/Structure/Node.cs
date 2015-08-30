@@ -27,7 +27,7 @@ namespace SamDiagrams
 	/// <summary>
 	/// Description of DiagramItemNode.
 	/// </summary>
-	public class Node : CollectionBase, Item
+	public class Node : CollectionBase
 	{
 		private String nodeText;
 		private Hashtable asoc = new Hashtable();

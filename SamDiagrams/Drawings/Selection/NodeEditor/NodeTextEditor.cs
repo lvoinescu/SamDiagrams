@@ -56,6 +56,19 @@ namespace SamDiagrams.DiagramItem.NodeEditor
 			}
 		}
 
+		public bool Movable {
+			get {
+				return false;
+			}
+			set {
+				throw new NotImplementedException();
+			}
+		}
+		public Rectangle InvalidatedRegion()
+		{
+			throw new NotImplementedException();
+		}
+		
 		public NodeTextEditor(DiagramContainer container)
 		{
 			this.container = container;

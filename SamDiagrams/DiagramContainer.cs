@@ -23,14 +23,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 using SamDiagrams.DiagramItem.NodeEditor;
 using SamDiagrams.Drawers;
-using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
-using SamDiagrams.Drawings.Geometry;
 using SamDiagrams.Drawings.Selection;
 using SamDiagrams.Model;
 using SamDiagrams.Model.Link;
@@ -44,7 +41,6 @@ namespace SamDiagrams
 	{
 
 		public event DiagramItemClickHandler DiagramItemClick;
-		public event SelectedItemsChangeHandler SelectedItemsChanged;
 		public event ZoomFactorChangedHandler ZoomFactorChanged;
 
 		
@@ -187,11 +183,11 @@ namespace SamDiagrams
 		public void AddStructure(Structure structure)
 		{
 			StructureDrawing structureDrawing = new StructureDrawing(structure);
+			structure.Drawing = structureDrawing;
 			structureDrawing.Invalidated = true;
-			containerDrawer.ModelToDrawer[structure] = structureDrawing;
-			containerDrawer.DrawerToModel[structureDrawing] = structure;
 			
 			SelectableDrawing selectableDrawing = new SelectableDrawing(structureDrawing);
+
 			containerDrawer.Drawings.Add(selectableDrawing);
 			structures.Add(structure);
 			structureDrawing.AutoSizeContent();
@@ -219,7 +215,7 @@ namespace SamDiagrams
 				#endif
 				containerDrawer.Draw(scaleFactor, e.Graphics);
 			} catch (Exception ex) {
-				
+				MessageBox.Show(ex.Message);
 			}
 		}
 

@@ -20,7 +20,6 @@
 using System;
 using System.Drawing;
 using SamDiagrams.Drawings;
-using SamDiagrams.Drawings.Geometry;
 using SamDiagrams.Drawings.Link;
 using SamDiagrams.Linking;
 using SamDiagrams.Model;
@@ -32,7 +31,7 @@ namespace SamDiagrams.Drawers.Links
 	/// </summary>
 	public class LinkDrawing : IDrawing
 	{
-		private Item link;
+		private ILink link;
 		private float lineWidth;
 		private float selectedLineWidth;
 		private LinkStyle linkStyle;
@@ -51,22 +50,24 @@ namespace SamDiagrams.Drawers.Links
 
 		public  ILinkableDrawing SourceDrawing {
 			get {
-				return sourceDrawing;
-			}
-			set {
-				sourceDrawing = value;
+				return (ILinkableDrawing)this.link.Source.Drawing;
 			}
 		}
 
 		public  ILinkableDrawing DestinationDrawing {
 			get {
-				return destinationDrawing;
-			}
-			set {
-				destinationDrawing = value;
+				return (ILinkableDrawing)this.link.Destination.Drawing;
 			}
 		}
-		
+
+		public bool Movable {
+			get {
+				return false;
+			}
+			set {
+				throw new NotImplementedException();
+			}
+		}
 		public LinkDirection Direction {
 			get { return direction; }
 			set { direction = value; }
@@ -96,6 +97,10 @@ namespace SamDiagrams.Drawers.Links
 			set { sourcePoint = value; }
 		}
 
+		public Rectangle InvalidatedRegion()
+		{
+			return this.Bounds;
+		}
 
 		public int CompareTo(object obj)
 		{
@@ -113,12 +118,14 @@ namespace SamDiagrams.Drawers.Links
 		}
 		public LinkDrawing(ILink link, float lineWidth, float selectedLineWidth, LinkStyle linkStyle)
 		{
-			this.link = (Item)link;
+			this.link = (ILink)link;
 			this.lineWidth = lineWidth;
 			this.selectedLineWidth = selectedLineWidth;
 			this.linkStyle = linkStyle;
 			this.sourcePoint = new LinkPoint(this);
 			this.destinationPoint = new LinkPoint(this);
+			this.sourceDrawing = (ILinkableDrawing)(link.Source.Drawing);
+			this.destinationDrawing = (ILinkableDrawing)(link.Destination.Drawing);
 		}
 		
 		public void Draw(Graphics graphics)

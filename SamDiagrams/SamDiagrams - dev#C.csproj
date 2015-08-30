@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\ActionListener.cs" />
     <Compile Include="Actions\MouseAction.cs" />
     <Compile Include="Actions\MoveAction.cs" />
     <Compile Include="Actions\SelectionAction.cs" />
@@ -55,14 +56,14 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Drawings\BaseDrawing.cs" />
+    <Compile Include="Drawings\Decorators\MovableDrawing.cs" />
+    <Compile Include="Drawings\Decorators\SelectableDrawing.cs" />
     <Compile Include="Drawings\IBoundedShape.cs" />
     <Compile Include="Drawings\IDrawing.cs" />
     <Compile Include="Drawings\Geometry\InflatableRectangle.cs" />
     <Compile Include="Drawings\Grid\GridDrawer.cs" />
     <Compile Include="Drawings\InvalidationStrategy.cs" />
-    <Compile Include="Drawings\ISelectableDrawing.cs" />
     <Compile Include="Drawings\Link\ILinkableDrawing.cs" />
-    <Compile Include="Drawings\SelectableDrawing.cs" />
     <Compile Include="Drawings\Selection\SelectionBorder.cs" />
     <Compile Include="Drawings\Structure\StructureNodeInfo.cs" />
     <Compile Include="Linking\LinkStyle.cs" />
@@ -82,7 +83,7 @@
     <Compile Include="Events\ItemResizedEventArg.cs" />
     <Compile Include="Events\ItemsMovedEventArg.cs" />
     <Compile Include="Events\LinkDirectionChangedArg.cs" />
-    <Compile Include="Events\SelectedItemsChangeArgs.cs" />
+    <Compile Include="Events\SelectedItemsChangedArgs.cs" />
     <Compile Include="Events\ZoomFactorChangedArg.cs" />
     <Compile Include="Model\Structure\Structure.cs" />
     <Compile Include="Model\Structure\Node.cs" />
@@ -103,6 +104,7 @@
   <ItemGroup>
     <Folder Include="Drawings\Grid" />
     <Folder Include="Drawings\Geometry" />
+    <Folder Include="Drawings\Decorators" />
     <Folder Include="Drawings\Selection" />
     <Folder Include="Model\Link" />
     <Folder Include="Model\Structure" />
@@ -118,9 +120,5 @@
     <Folder Include="Linking\Strategy\NSWELinkStrategy" />
     <Folder Include="Drawings" />
     <Folder Include="Actions" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="SamDiagrams - dev#C.cd" />
-    <Content Include="SamDiagrams - dev#C.cd" />
   </ItemGroup>
 </Project>

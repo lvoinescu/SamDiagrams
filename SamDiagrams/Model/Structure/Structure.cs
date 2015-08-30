@@ -20,6 +20,7 @@
 using System;
 using System.Drawing;
 using System.Collections.Generic;
+using SamDiagrams.Drawings;
 using SamDiagrams.Drawings.Selection;
 using SamDiagrams.Linking;
 using SamDiagrams.Model;
@@ -35,6 +36,7 @@ namespace SamDiagrams
 		private List<Node> nodes;
 		private DiagramContainer diagramContainer;
 		private string title;
+		private IDrawing drawing;
 		
 		private bool invalidated;
 		internal List<ILink> links;
@@ -53,6 +55,15 @@ namespace SamDiagrams
 			}
 			set {
 				throw new NotImplementedException();
+			}
+		}
+
+		public IDrawing Drawing {
+			get {
+				return this.drawing;
+			}
+			set {
+				this.drawing = value;
 			}
 		}
 		

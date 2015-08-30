@@ -19,65 +19,90 @@
  */
 using System;
 using System.Drawing;
-using SamDiagrams.Drawings;
 
-namespace SamDiagrams.Model.Link
+namespace SamDiagrams.Drawings
 {
 	/// <summary>
-	/// Description of Link.
+	/// A decorator-wrapper that represents a drawing that can be moved.
 	/// </summary>
-	public class Link : ILink
+	public class MovableDrawing : IDrawing
 	{
-
-		private ILinkable source;
-		private ILinkable destination;
-		private String name;
-		private Color color;
 		private IDrawing drawing;
-		
-		public Item Source {
-			get {
-				return source;
-			}
-		}
+		private Point initialLocation;
 
-		public Item Destination {
+		public Point InitialLocation {
 			get {
-				return destination;
-			}
-		}
-
-		public string Name {
-			get {
-				return this.name;
+				return initialLocation;
 			}
 			set {
-				this.name = value;
+				initialLocation = value;
 			}
 		}
-
+		
 		public IDrawing Drawing {
 			get {
 				return drawing;
 			}
-			set {
-				this.drawing = value;
-			}
 		}
-		public Color Color {
+		public MovableDrawing(IDrawing drawing)
+		{
+			this.drawing = drawing;
+		}
+
+		public void Draw(System.Drawing.Graphics graphics)
+		{
+			drawing.Draw(graphics);
+		}
+
+		public Rectangle InvalidatedRegion()
+		{
+			return drawing.InvalidatedRegion();
+		}
+
+		public SamDiagrams.Model.Item Item {
 			get {
-				return color;
-			}
-			set {
-				color = value;
+				return drawing.Item;
 			}
 		}
 
-		public Link(ILinkable source, ILinkable destination, Color color)
-		{
-			this.source = source;
-			this.destination = destination;
-			this.color = color;
+		public bool Invalidated {
+			get {
+				return drawing.Invalidated;
+			}
+			set {
+				drawing.Invalidated = value;
+			}
+		}
+
+		public bool Movable {
+			get {
+				return drawing.Movable;
+			}
+			set {
+				drawing.Movable = value;
+			}
+		}
+
+
+		public Point Location {
+			get {
+				return drawing.Location;
+			}
+			set {
+				drawing.Location = value;
+			}
+		}
+
+		public Size Size {
+			get {
+				return drawing.Size;
+			}
+		}
+
+		public Rectangle Bounds {
+			get {
+				return drawing.Bounds;
+			}
 		}
 	}
 }

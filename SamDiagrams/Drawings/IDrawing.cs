@@ -19,7 +19,6 @@
  */
 using System;
 using System.Drawing;
-using SamDiagrams.Drawings.Geometry;
 using SamDiagrams.Model;
 
 namespace SamDiagrams.Drawings
@@ -33,5 +32,7 @@ namespace SamDiagrams.Drawings
 		bool Invalidated { get; set; }
 		
 		void Draw(Graphics graphics);
+		bool Movable{get; set;}
+		Rectangle InvalidatedRegion();
 	}
 }

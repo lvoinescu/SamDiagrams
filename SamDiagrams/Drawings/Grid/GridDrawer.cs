@@ -28,11 +28,25 @@ namespace SamDiagrams.Drawings.Grid
 			this.diagramContainer = diagramContainer;
 		}
 
+		public bool Movable {
+			get {
+				return true;
+			}
+			set {
+				throw new NotImplementedException();
+			}
+		}
 		public SamDiagrams.Model.Item Item {
 			get {
 				throw new NotImplementedException();
 			}
 		}
+
+		public Rectangle InvalidatedRegion()
+		{
+			throw new NotImplementedException();
+		}
+
 		public GridDrawer(DiagramContainer diagramContainer, int gridSize)
 			: this(diagramContainer)
 		{

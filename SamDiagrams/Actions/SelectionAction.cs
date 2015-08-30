@@ -20,15 +20,17 @@ namespace SamDiagrams.Actions
 	/// </summary>
 	public class SelectionAction : MouseAction
 	{
+		public event SelectedItemsChangedHandler SelectedItemsChanged;
 		DiagramContainer container;
 		private List<SelectableDrawing> selectedDrawings;
+		private List<SelectableDrawing> removedFromSelection;
 		
 		public SelectionAction(DiagramContainer container)
 		{
 			this.container = container;
 			selectedDrawings = new List<SelectableDrawing>();
-			this.container.MouseDown += new System.Windows.Forms.MouseEventHandler(OnMouseDown);
-			this.container.MouseUp += new System.Windows.Forms.MouseEventHandler(OnMouseUp);
+			removedFromSelection = new List<SelectableDrawing>();
+			
 		}
 
 		public void OnMouseDown(object sender, MouseEventArgs e)
@@ -55,17 +57,24 @@ namespace SamDiagrams.Actions
 								addSelected(selectableDrawing);
 							}
 						}
+						if (SelectedItemsChanged != null)
+							SelectedItemsChanged(this, new SelectedItemsChangedArgs(selectedDrawings, removedFromSelection));
+						break;
 					} 
 				}
 			}
 			
 			if (!drawingFound) {
 				clearSelections();
+				if (SelectedItemsChanged != null)
+					SelectedItemsChanged(this, new SelectedItemsChangedArgs(selectedDrawings, removedFromSelection));
 			}
 		}
 
 		private void clearSelections()
 		{
+			removedFromSelection = new List<SelectableDrawing>();
+			removedFromSelection.AddRange(selectedDrawings);
 			foreach (SelectableDrawing drawing in selectedDrawings) {
 				drawing.Selected = false;
 			}
@@ -96,6 +105,7 @@ namespace SamDiagrams.Actions
 				selectedDrawing.Selected = false;
 				selectedDrawings.Remove(selectedDrawing);
 				container.ContainerDrawer.SelectedDrawing.Remove(selectedDrawing);
+				removedFromSelection.Remove(selectedDrawing);
 			}
 		}
 		

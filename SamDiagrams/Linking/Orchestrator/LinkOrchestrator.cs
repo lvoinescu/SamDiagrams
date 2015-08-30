@@ -24,6 +24,7 @@ using System.Drawing;
 using SamDiagrams.Drawers;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
+using SamDiagrams.Drawings.Link;
 using SamDiagrams.Drawings.Selection;
 using SamDiagrams.Linking.Strategy;
 using SamDiagrams.Linking.Strategy.NSWELinkStrategy;
@@ -64,20 +65,25 @@ namespace SamDiagrams.Linking.Orchestrator
 			sturctureDrawings = new List<StructureDrawing>();
 			linkStrategy = new NSWELinkStrategy();
 			this.containerDrawer = containerDrawer;
-			containerDrawer.ItemsMoved += new ItemsMovedHandler(OnItemsMoved);
+			containerDrawer.ActionListener.ItemsMoved += new ItemsMovedHandler(OnItemsMoved);
 		}
 
 		public void AddLink(ILink link)
 		{
-			LinkDrawing linkDrawing= new LinkDrawing(link, lineWidth, selectedLineWidth, LinkStyle.StreightLines);
+			LinkDrawing linkDrawing = new LinkDrawing(link, lineWidth, selectedLineWidth, LinkStyle.StreightLines);
+			link.Drawing = linkDrawing;
 			RegisterLink(linkDrawing);
 		}
 		
 		private void RegisterLink(LinkDrawing linkDrawing)
 		{
-			IDrawing sourceDrawing = linkDrawing.SourceDrawing;
-			IDrawing destinationDrawing = linkDrawing.DestinationDrawing;
+			ILinkableDrawing sourceDrawing = linkDrawing.SourceDrawing;
+			ILinkableDrawing destinationDrawing = linkDrawing.DestinationDrawing;
 
+			
+			sourceDrawing.DrawingLinks.Add(linkDrawing);
+			destinationDrawing.DrawingLinks.Add(linkDrawing);
+			
 			containerDrawer.Drawings.Add(linkDrawing);
 			linkStrategy.RegisterLink(linkDrawing);
 			links.Add(linkDrawing);

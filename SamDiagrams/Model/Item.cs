@@ -19,6 +19,7 @@
  */
 using System;
 using System.Drawing;
+using SamDiagrams.Drawings;
 
 namespace SamDiagrams.Model
 {
@@ -29,5 +30,6 @@ namespace SamDiagrams.Model
 	{
 		String Name { get; set; }
 		Color Color { get; set; }
+		IDrawing Drawing{get ;set;}
 	}
 }

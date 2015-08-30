@@ -25,7 +25,7 @@ namespace SamDiagrams
 	/// <summary>
 	/// Description of Delegates.
 	/// </summary>
-	public delegate void SelectedItemsChangeHandler(object sender, SelectedItemsChangeArgs e);
+	public delegate void SelectedItemsChangedHandler(object sender, SelectedItemsChangedArgs e);
 	public delegate void BeforeNodeExpandOrCollapseHandler(object sender, BeforeNodeExpandOrCollapseArg e);
 	public delegate void ZoomFactorChangedHandler(object sender, ZoomFactorChangedArg e);
 	public delegate void LinkDirectionChangedHandler(object sender, LinkDirectionChangedArg e);

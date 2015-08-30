@@ -22,22 +22,32 @@ using System;
 using System.Collections.Generic;
 using SamDiagrams.Drawers;
 using SamDiagrams.Drawings;
+using SamDiagrams.Drawings.Selection;
 namespace SamDiagrams
 {
 	/// <summary>
 	/// Description of SelectedItemsChangeArgs.
 	/// </summary>
-	public class SelectedItemsChangeArgs:EventArgs
+	public class SelectedItemsChangedArgs:EventArgs
 	{
 
-		private List<StructureDrawing> selectedItems;
+		private List<SelectableDrawing> selectedDrawings;
+		private List<SelectableDrawing> previouslySelected;
 		
-		public List<StructureDrawing> SelectedItems {
-			get { return selectedItems; }
+		public List<SelectableDrawing> SelectedDrawings {
+			get { return selectedDrawings; }
 		}
-		public SelectedItemsChangeArgs(List<StructureDrawing> items)
+
+		public List<SelectableDrawing> PreviouslySelectedDrawings {
+			get {
+				return previouslySelected;
+			}
+		}
+
+		public SelectedItemsChangedArgs(List<SelectableDrawing> selectedDrawings, List<SelectableDrawing> previouslySelected)
 		{
-			this.selectedItems = items;
+			this.selectedDrawings = selectedDrawings;
+			this.previouslySelected = previouslySelected;
 		}
 
 	}

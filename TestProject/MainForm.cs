@@ -13,9 +13,11 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
+using System.Windows.Forms.VisualStyles;
 using SamDiagrams;
 using SamDiagrams.Drawers;
 using SamDiagrams.Drawings;
+using SamDiagrams.Drawings.Selection;
 using SamDiagrams.Linking;
 
 namespace TestProject
@@ -175,11 +177,11 @@ namespace TestProject
 			textBox2.Text = trackBar1.Value.ToString();
 		}
 		
-		void DiagramContainer1SelectedItemsChanged(object sender, SelectedItemsChangeArgs e)
+		void DiagramContainer1SelectedItemsChanged(object sender, SelectedItemsChangedArgs e)
 		{
 			listBox1.Items.Clear();
-			foreach (StructureDrawing structureDrawing in e.SelectedItems)
-				listBox1.Items.Add(structureDrawing.Structure.Title);
+			foreach (SelectableDrawing structureDrawing in e.SelectedDrawings)
+				listBox1.Items.Add(structureDrawing.Drawing.Item.Name);
 		}
 
 		private void button1_Click(object sender, EventArgs e)
