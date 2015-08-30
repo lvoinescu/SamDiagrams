@@ -42,9 +42,10 @@ namespace SamDiagrams.Drawings.Grid
 			}
 		}
 
-		public Rectangle InvalidatedRegion()
-		{
-			throw new NotImplementedException();
+		public Rectangle InvalidatedRegion {
+			get {
+				throw new NotImplementedException();
+			}
 		}
 
 		public GridDrawer(DiagramContainer diagramContainer, int gridSize)

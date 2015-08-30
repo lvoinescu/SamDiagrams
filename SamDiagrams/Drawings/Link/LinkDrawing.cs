@@ -97,9 +97,10 @@ namespace SamDiagrams.Drawers.Links
 			set { sourcePoint = value; }
 		}
 
-		public Rectangle InvalidatedRegion()
-		{
-			return this.Bounds;
+		public Rectangle InvalidatedRegion {
+			get {
+				return this.Bounds;
+			}
 		}
 
 		public int CompareTo(object obj)
@@ -143,7 +144,7 @@ namespace SamDiagrams.Drawers.Links
 							new Point(destinationPoint.X, destinationPoint.Y)
 						};
 						
-						if (((sourceDrawing is StructureDrawing) && (sourceDrawing as StructureDrawing).Selected) ||
+						if (((sourceDrawing is ISelectable) && (sourceDrawing as ISelectable).Selected) ||
 						    ((destinationDrawing is StructureDrawing) && (destinationDrawing as StructureDrawing).Selected)) {
 							graphics.DrawLines(selectionPen, ps);
 						}
@@ -166,8 +167,8 @@ namespace SamDiagrams.Drawers.Links
 							new Point((int)(destinationPoint.X), (int)(midY)),
 							new Point((int)(destinationPoint.X), (int)(destinationPoint.Y))
 						};
-						if (((sourceDrawing is StructureDrawing) && (sourceDrawing as StructureDrawing).Selected) ||
-						    ((destinationDrawing is StructureDrawing) && (destinationDrawing as StructureDrawing).Selected)) {
+						if (((sourceDrawing is ISelectable) && (sourceDrawing as ISelectable).Selected) ||
+						    ((destinationDrawing is ISelectable) && (destinationDrawing as ISelectable).Selected)) {
 							graphics.DrawLines(selectionPen, ps);
 						}
 						graphics.DrawLines(linePen, ps);

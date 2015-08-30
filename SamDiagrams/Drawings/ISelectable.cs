@@ -18,21 +18,14 @@
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
-using System.Drawing;
-using SamDiagrams.Model;
 
 namespace SamDiagrams.Drawings
 {
 	/// <summary>
-	/// Description of Drawing.
+	/// Description of ISelectable.
 	/// </summary>
-	public interface IDrawing : IBoundedShape
+	public interface ISelectable : IDrawing
 	{
-		Item Item{get;}
-		bool Invalidated { get; set; }
-		
-		void Draw(Graphics graphics);
-		bool Movable{get; set;}
-		Rectangle InvalidatedRegion {get;}
+		bool Selected {get; set;}
 	}
 }

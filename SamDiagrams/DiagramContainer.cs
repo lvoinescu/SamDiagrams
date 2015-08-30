@@ -211,7 +211,7 @@ namespace SamDiagrams
 			try {
 				RectangleF rectangle = e.Graphics.ClipBounds;
 				#if DEBUG
-			e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(rd.Next(255), rd.Next(255), rd.Next(255))), new Rectangle((int)rectangle.X, (int)rectangle.Y, (int)rectangle.Width, (int)rectangle.Height));
+			//e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(rd.Next(255), rd.Next(255), rd.Next(255))), new Rectangle((int)rectangle.X, (int)rectangle.Y, (int)rectangle.Width, (int)rectangle.Height));
 				#endif
 				containerDrawer.Draw(scaleFactor, e.Graphics);
 			} catch (Exception ex) {

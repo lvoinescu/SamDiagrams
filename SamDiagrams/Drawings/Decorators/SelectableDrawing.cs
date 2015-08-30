@@ -30,10 +30,9 @@ namespace SamDiagrams.Drawings.Selection
 	public class SelectableDrawing : IDrawing
 	{
 		
-		readonly IDrawing drawing;
+		readonly ISelectable drawing;
 		SelectionBorder selectionBorder;
 		Point initialSelectedLocation;
-		bool selected;
 		
 		public IDrawing Drawing {
 			get {
@@ -89,18 +88,20 @@ namespace SamDiagrams.Drawings.Selection
 			}
 		}
 		
-		public Rectangle InvalidatedRegion(){
-			InflatableRectangle rectangle =  new InflatableRectangle(selectionBorder.Bounds);
-			rectangle.Inflate(this.drawing.InvalidatedRegion());
-			return rectangle.Bounds;
+		public Rectangle InvalidatedRegion {
+			get {
+				InflatableRectangle rectangle = new InflatableRectangle(selectionBorder.Bounds);
+				rectangle.Inflate(this.drawing.InvalidatedRegion);
+				return rectangle.Bounds;
+			}
 		}
 		
 		public bool Selected {
 			get {
-				return this.selected;
+				return this.drawing.Selected;
 			}
 			set {
-				this.selected = value;
+				this.drawing.Selected = value;
 			}
 		}
 		
@@ -113,19 +114,22 @@ namespace SamDiagrams.Drawings.Selection
 			}
 		}
 		
-		public SelectableDrawing(IDrawing drawing){
+		public SelectableDrawing(ISelectable drawing)
+		{
 			this.drawing = drawing;
 			this.selectionBorder = new SelectionBorder(drawing);
 		}
 		
-		public void Draw(Graphics graphics)	{
+		public void Draw(Graphics graphics)
+		{
 			this.drawing.Draw(graphics);
-			if (selected) {
+			if (drawing.Selected) {
 				this.selectionBorder.Draw(graphics);
 			}
 		}
 		
-		public override String ToString(){
+		public override String ToString()
+		{
 			return "SelectableDrawing; " + drawing.ToString();
 		}
 		

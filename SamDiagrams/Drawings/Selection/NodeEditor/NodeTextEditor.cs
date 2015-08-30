@@ -64,9 +64,10 @@ namespace SamDiagrams.DiagramItem.NodeEditor
 				throw new NotImplementedException();
 			}
 		}
-		public Rectangle InvalidatedRegion()
-		{
-			throw new NotImplementedException();
+		public Rectangle InvalidatedRegion {
+			get {
+				throw new NotImplementedException();
+			}
 		}
 		
 		public NodeTextEditor(DiagramContainer container)

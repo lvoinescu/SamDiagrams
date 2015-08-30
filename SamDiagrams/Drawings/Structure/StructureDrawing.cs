@@ -33,7 +33,7 @@ namespace SamDiagrams.Drawings
 	/// <summary>
 	/// Description of ComponentDrawer.
 	/// </summary>
-	public class StructureDrawing : BaseDrawing, ILinkableDrawing
+	public class StructureDrawing : BaseDrawing, ILinkableDrawing, ISelectable
 	{
 		
 		public event BeforeNodeExpandOrCollapseHandler BeforeNodeExpandOrCollapse;
@@ -108,14 +108,16 @@ namespace SamDiagrams.Drawings
 			}
 		}
 
-		public Rectangle InvalidatedRegion()
-		{
-			InflatableRectangle rectangle = new InflatableRectangle(this.Bounds);
-			foreach (LinkDrawing link in links) {
-				rectangle.Inflate(link.Bounds);
+		public Rectangle InvalidatedRegion {
+			get {
+				InflatableRectangle rectangle = new InflatableRectangle(this.Bounds);
+				foreach (LinkDrawing link in links) {
+					rectangle.Inflate(link.Bounds);
+				}
+				return rectangle.Bounds;
 			}
-			return rectangle.Bounds;
 		}
+		
 		public bool Selected {
 			get {
 				return selected;

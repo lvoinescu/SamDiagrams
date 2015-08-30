@@ -173,9 +173,10 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			LinkPointsEast = new List<LinkPoint>();
 		}
 
-		public Rectangle InvalidatedRegion()
-		{
-			return structureDrawing.InvalidatedRegion();
+		public Rectangle InvalidatedRegion {
+			get {
+				return structureDrawing.InvalidatedRegion;
+			}
 		}
 	}
 }

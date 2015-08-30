@@ -83,16 +83,16 @@ namespace SamDiagrams.Drawers
 			if (drawings.Count < 1)
 				return;
 			
-			InflatableRectangle newRectangleToInvalidate = new InflatableRectangle(drawings[0].InvalidatedRegion());
+			InflatableRectangle newRectangleToInvalidate = new InflatableRectangle(drawings[0].InvalidatedRegion);
 			foreach (IDrawing drawing in drawings) {
 				drawing.Invalidated = true;
-				newRectangleToInvalidate.Inflate(drawing.InvalidatedRegion());
-				invalidateOverlappingDrawings(previouslyInvalidatedRectangle);
+				newRectangleToInvalidate.Inflate(drawing.InvalidatedRegion);
 			}
 			
 			Rectangle auxRectangle = newRectangleToInvalidate.Bounds;
 			invalidateOverlappingDrawings(previouslyInvalidatedRectangle);
 			newRectangleToInvalidate.Inflate(previouslyInvalidatedRectangle);
+			invalidateOverlappingDrawings(newRectangleToInvalidate.Bounds);
 			previouslyInvalidatedRectangle = auxRectangle;
 			containerDrawer.DiagramContainer.Invalidate(newRectangleToInvalidate.Bounds);
 		}
@@ -100,7 +100,7 @@ namespace SamDiagrams.Drawers
 		void InvalidateDrawing(IDrawing drawing)
 		{
 			drawing.Invalidated = true;
-			InflatableRectangle newRectangleToInvalidate = new InflatableRectangle(drawing.InvalidatedRegion());
+			InflatableRectangle newRectangleToInvalidate = new InflatableRectangle(drawing.InvalidatedRegion);
 			Rectangle auxRectangle = newRectangleToInvalidate.Bounds;
 			invalidateOverlappingDrawings(previouslyInvalidatedRectangle);
 			newRectangleToInvalidate.Inflate(previouslyInvalidatedRectangle);
@@ -132,7 +132,7 @@ namespace SamDiagrams.Drawers
 		Rectangle getStructureInvalidatedRegion(IDrawing targetDrawing)
 		{
 			targetDrawing.Invalidated = true;
-			InflatableRectangle rectangle = new InflatableRectangle(targetDrawing.InvalidatedRegion());
+			InflatableRectangle rectangle = new InflatableRectangle(targetDrawing.InvalidatedRegion);
 
 			for (int i = 0; i < containerDrawer.Drawings.Count; i++) {
 				IDrawing drawing = containerDrawer.Drawings[i];
@@ -153,8 +153,8 @@ namespace SamDiagrams.Drawers
 			ILinkableDrawing destinationDrawing = linkDrawing.DestinationDrawing;
 			sourceDrawing.Invalidated = true;
 			destinationDrawing.Invalidated = true;
-			rectangle.Inflate(sourceDrawing.InvalidatedRegion());
-			rectangle.Inflate(sourceDrawing.InvalidatedRegion());
+			rectangle.Inflate(sourceDrawing.InvalidatedRegion);
+			rectangle.Inflate(sourceDrawing.InvalidatedRegion);
 			
  
 			

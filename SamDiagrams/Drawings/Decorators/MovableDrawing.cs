@@ -54,9 +54,10 @@ namespace SamDiagrams.Drawings
 			drawing.Draw(graphics);
 		}
 
-		public Rectangle InvalidatedRegion()
-		{
-			return drawing.InvalidatedRegion();
+		public Rectangle InvalidatedRegion {
+			get {
+				return drawing.InvalidatedRegion;
+			}
 		}
 
 		public SamDiagrams.Model.Item Item {
