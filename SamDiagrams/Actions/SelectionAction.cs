@@ -56,9 +56,10 @@ namespace SamDiagrams.Actions
 								moveLast(selectableDrawing);
 								addSelected(selectableDrawing);
 							}
+							if (SelectedItemsChanged != null)
+								SelectedItemsChanged(this, new SelectedItemsChangedArgs(selectedDrawings, removedFromSelection));
 						}
-						if (SelectedItemsChanged != null)
-							SelectedItemsChanged(this, new SelectedItemsChangedArgs(selectedDrawings, removedFromSelection));
+
 						break;
 					} 
 				}

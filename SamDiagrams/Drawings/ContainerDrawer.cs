@@ -85,9 +85,16 @@ namespace SamDiagrams.Drawers
 			this.selectableDrawings = new List<SelectableDrawing>();
 		}
 		
-		
+		Random rd = new Random();
 		public void Draw(float scaleFactor, Graphics graphics)
 		{
+			RectangleF rectangle = graphics.ClipBounds;
+			#if DEBUG
+			graphics.FillRectangle(new SolidBrush(Color.FromArgb(rd.Next(255), rd.Next(255), rd.Next(255))), 
+			                       new Rectangle((int)rectangle.X, (int)rectangle.Y, 
+			                                     (int)rectangle.Width, (int)rectangle.Height));
+			#endif
+			
 			graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
 			graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
 

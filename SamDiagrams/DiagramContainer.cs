@@ -205,15 +205,11 @@ namespace SamDiagrams
 		}
 
 
-		Random rd = new Random();
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			try {
-				RectangleF rectangle = e.Graphics.ClipBounds;
-				#if DEBUG
-			//e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(rd.Next(255), rd.Next(255), rd.Next(255))), new Rectangle((int)rectangle.X, (int)rectangle.Y, (int)rectangle.Width, (int)rectangle.Height));
-				#endif
 				containerDrawer.Draw(scaleFactor, e.Graphics);
+				base.OnPaint(e);
 			} catch (Exception ex) {
 				MessageBox.Show(ex.Message);
 			}

@@ -38,7 +38,6 @@ namespace SamDiagrams.Drawers
 		readonly ContainerDrawer containerDrawer;
 		private Rectangle previouslyInvalidatedRectangle;
 		
-		
 		public InvalidationStrategy(ContainerDrawer container)
 		{
 			this.containerDrawer = container;
@@ -46,6 +45,26 @@ namespace SamDiagrams.Drawers
 			this.containerDrawer.ActionListener.SelectionChanged +=	new SelectedItemsChangedHandler(OnSelectionChanged);
 			this.containerDrawer.LinkOrchestrator.linkStrategy.LinkDirectionChangedEvent +=
 				new LinkDirectionChangedHandler(OnLinkDirectionChanged);
+			this.containerDrawer.DiagramContainer.Paint += new PaintEventHandler(OnPaint);
+		}
+
+		/// <summary>
+		/// This method handles drawing invalidation that is not triggered by
+		/// selections or movement; for instance: control resize, form overlapping, etc.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		void OnPaint(object sender, PaintEventArgs e)
+		{
+			foreach (IDrawing drawing in containerDrawer.Drawings) {
+				if (!drawing.Invalidated && e.ClipRectangle.IntersectsWith(drawing.Bounds))
+					drawing.Invalidated = true;
+			}
+		}
+
+		void OnIvalidated(object sender, InvalidateEventArgs e)
+		{
+			throw new NotImplementedException();
 		}
 
 		void OnMouseDown(object sender, MouseEventArgs e)
@@ -93,8 +112,10 @@ namespace SamDiagrams.Drawers
 			invalidateOverlappingDrawings(previouslyInvalidatedRectangle);
 			newRectangleToInvalidate.Inflate(previouslyInvalidatedRectangle);
 			invalidateOverlappingDrawings(newRectangleToInvalidate.Bounds);
+			containerDrawer.DiagramContainer.Invalidate(previouslyInvalidatedRectangle);
 			previouslyInvalidatedRectangle = auxRectangle;
 			containerDrawer.DiagramContainer.Invalidate(newRectangleToInvalidate.Bounds);
+
 		}
 		
 		void InvalidateDrawing(IDrawing drawing)
@@ -105,7 +126,7 @@ namespace SamDiagrams.Drawers
 			invalidateOverlappingDrawings(previouslyInvalidatedRectangle);
 			newRectangleToInvalidate.Inflate(previouslyInvalidatedRectangle);
 			previouslyInvalidatedRectangle = auxRectangle;
-			invalidateOverlappingDrawings(previouslyInvalidatedRectangle);
+			invalidateOverlappingDrawings(newRectangleToInvalidate.Bounds);
 			
 			containerDrawer.DiagramContainer.Invalidate(newRectangleToInvalidate.Bounds);
 		}
