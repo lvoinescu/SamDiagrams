@@ -62,11 +62,6 @@ namespace SamDiagrams.Drawers
 			}
 		}
 
-		void OnIvalidated(object sender, InvalidateEventArgs e)
-		{
-			throw new NotImplementedException();
-		}
-
 		void OnMouseDown(object sender, MouseEventArgs e)
 		{
 			foreach (IDrawing drawer in containerDrawer.Drawings) {
@@ -112,8 +107,8 @@ namespace SamDiagrams.Drawers
 			invalidateOverlappingDrawings(previouslyInvalidatedRectangle);
 			newRectangleToInvalidate.Inflate(previouslyInvalidatedRectangle);
 			invalidateOverlappingDrawings(newRectangleToInvalidate.Bounds);
-			containerDrawer.DiagramContainer.Invalidate(previouslyInvalidatedRectangle);
 			previouslyInvalidatedRectangle = auxRectangle;
+			
 			containerDrawer.DiagramContainer.Invalidate(newRectangleToInvalidate.Bounds);
 
 		}

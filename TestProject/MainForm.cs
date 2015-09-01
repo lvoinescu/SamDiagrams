@@ -49,7 +49,7 @@ namespace TestProject
 		{
 			Image intImg = Image.FromFile("diamond.png");
 			Image tImg = Image.FromFile("table.png");
-			var k = 5;
+			var k = 6;
 			Random r = new Random(255);
 			try {
 				for (int i = 0; i < k; i++) {
@@ -59,9 +59,10 @@ namespace TestProject
 					cols.AddNode(new Node("id", true, intImg, di));
 					cols.AddNode(new Node("type", true, intImg, di));
 					cols.AddNode(new Node("nume", di));
-					cols.AddNode(new Node("prenume", di));
+					cols.AddNode(new Node("prenume", di)).AddNode(new Node("test2", di)).AddNode(new Node("test3",di));
 					cols.AddNode(new Node("cheie", di));
 					cols.AddNode(new Node("altacheia", di));
+					cols.AddNode(new Node("prenume2", di)).AddNode(new Node("test2", di)).AddNode(new Node("test3",di));
 					di.Nodes.Add(cols);
 					di.AddOnDiagram(diagramContainer1, Color.FromArgb(r.Next(255), r.Next(255), r.Next(255)));
 					//di.SetLocation(r.Next(300), r.Next(300));

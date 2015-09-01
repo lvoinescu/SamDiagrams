@@ -33,7 +33,7 @@ namespace SamDiagrams.Drawings
 	/// <summary>
 	/// Description of ComponentDrawer.
 	/// </summary>
-	public class StructureDrawing : BaseDrawing, ILinkableDrawing, ISelectable
+	public class StructureDrawing : BaseDrawing, ILinkableDrawing, ISelectable, IClickable
 	{
 		
 		public event BeforeNodeExpandOrCollapseHandler BeforeNodeExpandOrCollapse;
@@ -60,15 +60,14 @@ namespace SamDiagrams.Drawings
 		private Pen contur;
 		private float scaleFactor = 1;
 		private int crtDrawingRow = 0;
-		private int nodsYOffset = 0;
-		private int yScaledOffset;
+		private int nodesTopPosition = 0;
+		private int nodesDrawingTopPosition;
 		private int titleWidth;
 		private int nodDblX, nodDblY;
 		private int nrOfDisplayedRows = 0;
 		private int crtNodCheck = 0;
 		private bool selected;
 
-		private int crtExpanderCheckRow = 0;
 		internal Font titleScaledFont;
 		internal Font rowScaledFont;
 		private List<LinkDrawing> links;
@@ -152,18 +151,18 @@ namespace SamDiagrams.Drawings
 
 
 			int xscaledOffset = (int)((this.location.X + LEFT_PADDING));
-			yScaledOffset = location.Y + titleHeight + (int)(SCALED_CORNER_RADIUS / 2);
+			nodesDrawingTopPosition = location.Y + titleHeight + (int)(SCALED_CORNER_RADIUS / 2);
 			int mainHeightScaled = rowScaledHeight * nrOfDisplayedRows + TITLE_OFFSET;
 			if (!Structure.DiagramContainer.AutoSizeItem) {
 				mainHeightScaled = this.size.Height - TITLE_OFFSET - rowScaledHeight - SCALED_CORNER_RADIUS;
 			}
-			Rectangle lineMainR = new Rectangle(location.X, yScaledOffset, size.Width, mainHeightScaled);
+			Rectangle lineMainR = new Rectangle(location.X, nodesDrawingTopPosition, size.Width, mainHeightScaled);
 			graphics.FillRectangle(Brushes.White, lineMainR);
 			graphics.DrawRectangle(contur, lineMainR);
 
 			crtDrawingRow = 0;
 			foreach (Node node in Structure.Nodes) {
-				RecursiveDraw(graphics, rowScaledFont, scaleFactor, node, xscaledOffset, yScaledOffset + TITLE_OFFSET);
+				RecursiveDraw(graphics, rowScaledFont, scaleFactor, node, xscaledOffset, nodesDrawingTopPosition + TITLE_OFFSET);
 				crtDrawingRow++;
 			}
 			
@@ -268,7 +267,7 @@ namespace SamDiagrams.Drawings
 			RectangleF r = new RectangleF(cX, yT, size.Width, rowScaledHeight);
 			if (r.Contains(mouseX, mouseY)) {
 				nodDblX = location.X + (int)(x) + (int)(EXPANDER_SIZE);
-				nodDblY = location.Y + (int)(nodsYOffset) + (int)(crtNodCheck * rowScaledHeight);
+				nodDblY = location.Y + (int)(nodesDrawingTopPosition) + (int)(crtNodCheck * rowScaledHeight);
 				return nod;
 			}
 			if (nod.IsExpanded) {
@@ -281,7 +280,7 @@ namespace SamDiagrams.Drawings
 				ndr = GetNodAtXYRec(nod[i], x, y, mouseX, mouseY, parentIsExpanded && nod[i].IsExpanded);
 				if (ndr != null) {
 					nodDblX = location.X + (int)(x) + (int)(LEFT_PADDING);
-					nodDblY = location.Y + (int)(nodsYOffset) + (int)(crtNodCheck * rowScaledHeight);
+					nodDblY = location.Y + (int)(nodesDrawingTopPosition) + (int)(crtNodCheck * rowScaledHeight);
 					return ndr;
 				}
 			}
@@ -301,47 +300,60 @@ namespace SamDiagrams.Drawings
 		}
 		
 		
-		public void OnClick(MouseEventArgs e, float scaleFactor)
+		public void OnClick(MouseEventArgs e)
 		{
-			crtExpanderCheckRow = 0;
-			for (int i = 0; i < structure.Nodes.Count; i++) {
-				Node nod = RecursiveExpanderCheck(structure.Nodes[i], (int)(LEFT_PADDING), nodsYOffset, scaleFactor, e.X, e.Y, structure.Nodes[i].IsExpanded);
-				if (nod != null) {
+			int crtExpanderRow = 0;
+			foreach (Node node in  structure.Nodes) {
+				
+				Point insideClickPoint = new Point(e.X - location.X, e.Y - location.Y);
+				Node nodeToToggle = RecursiveExpanderCheck(node, 0, ref crtExpanderRow, insideClickPoint, node.IsExpanded);
+				
+				if (nodeToToggle != null) {
 					if (BeforeNodeExpandOrCollapse != null) {
-						this.BeforeNodeExpandOrCollapse(this, new BeforeNodeExpandOrCollapseArg(nod));
+						BeforeNodeExpandOrCollapse(this, new BeforeNodeExpandOrCollapseArg(nodeToToggle));
 					}
-					nod.IsExpanded = !nod.IsExpanded;
+					nodeToToggle.IsExpanded = !nodeToToggle.IsExpanded;
 					structure.DiagramContainer.Invalidate(new Rectangle(Location, size));
 					return;
 				}
-				crtExpanderCheckRow++;
+				crtExpanderRow++;
 			}
 		}
 		
-		
-		private Node RecursiveExpanderCheck(Node nod, int x, int y, float scaleFactor, int mouseX, int mouseY, bool parentIsExpanded)
+		/// <summary>
+		/// Method that find the node for which the expander was triggered
+		/// </summary>
+		/// <param name="node"> the node to be checked</param>
+		/// <param name="nodeLevel"> the level of the node</param>
+		/// <param name="crtExpanderCheckRow"> the row associated with the node</param>
+		/// <param name="insideClickPoint">the location inside the structure where de mouse was clicked</param>
+		/// <param name="parentIsExpanded">true if parent node is expanded, false otherwhise</param>
+		/// <returns></returns>
+		private Node RecursiveExpanderCheck(Node node, int nodeLevel, ref int crtExpanderRow, Point insideClickPoint, bool parentIsExpanded)
 		{
-			int cY = (int)(y + rowScaledHeight * crtExpanderCheckRow);
-			int cX = (int)(x);
+			int cY = (int)(rowScaledHeight * crtExpanderRow) + (nodesDrawingTopPosition - location.Y) + TITLE_OFFSET;
 			const int expanderScaledSize = (int)(EXPANDER_SIZE);
-			if (!nod.IsLeaf) {
-				float yT = cY;
-				RectangleF r = new RectangleF(cX, yT, expanderScaledSize, expanderScaledSize);
-				if (r.Contains(mouseX, mouseY))
-					return nod;
-				if (nod.IsExpanded) {
-					x += (int)(TAB_NOD_SIZE);
+			RectangleF rowRectangleToCheck = new RectangleF(LEFT_PADDING, cY, expanderScaledSize, expanderScaledSize);
+			
+			if (!node.IsLeaf) {
+				
+				if (node.Parent != null && node.Parent.IsExpanded) {
+					rowRectangleToCheck.Offset(nodeLevel * TAB_NOD_SIZE, 0);
 				}
-				for (int i = 0; i < nod.Count; i++) {
+				
+				if (rowRectangleToCheck.Contains(insideClickPoint))
+					return node;
+				
+				foreach (Node childNode in node) {
 					Node ndr = null;
-					if (parentIsExpanded)
-						crtExpanderCheckRow++;
-					ndr = RecursiveExpanderCheck(nod[i], x, y, scaleFactor, mouseX, mouseY, parentIsExpanded && nod[i].IsExpanded);
+					if (parentIsExpanded) {
+						crtExpanderRow++;
+					}
+					ndr = RecursiveExpanderCheck(childNode, nodeLevel + 1, ref crtExpanderRow, insideClickPoint, parentIsExpanded && childNode.IsExpanded);
 					if (ndr != null)
 						return ndr;
 				}
 			}
-			
 			return null;
 		}
 
@@ -350,7 +362,7 @@ namespace SamDiagrams.Drawings
 		{
 			crtNodCheck = 0;
 			for (int i = 0; i < structure.Nodes.Count; i++) {
-				Node nod = GetNodAtXYRec(structure.Nodes[i], (int)(LEFT_PADDING), nodsYOffset, x, y, structure.Nodes[i].IsExpanded);
+				Node nod = GetNodAtXYRec(structure.Nodes[i], (int)(LEFT_PADDING), nodesDrawingTopPosition, x, y, structure.Nodes[i].IsExpanded);
 				if (nod != null) {
 					return new StructureNodeInfo(nod, this, new Rectangle(nodDblX, nodDblY, this.Location.X + this.size.Width - nodDblX, this.rowScaledHeight));
 				}

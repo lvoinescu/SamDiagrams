@@ -90,9 +90,9 @@ namespace SamDiagrams.Drawers
 		{
 			RectangleF rectangle = graphics.ClipBounds;
 			#if DEBUG
-			graphics.FillRectangle(new SolidBrush(Color.FromArgb(rd.Next(255), rd.Next(255), rd.Next(255))), 
-			                       new Rectangle((int)rectangle.X, (int)rectangle.Y, 
-			                                     (int)rectangle.Width, (int)rectangle.Height));
+//			graphics.FillRectangle(new SolidBrush(Color.FromArgb(rd.Next(255), rd.Next(255), rd.Next(255))), 
+//			                       new Rectangle((int)rectangle.X, (int)rectangle.Y, 
+//			                                     (int)rectangle.Width, (int)rectangle.Height));
 			#endif
 			
 			graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;

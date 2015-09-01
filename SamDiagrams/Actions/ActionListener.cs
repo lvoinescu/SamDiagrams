@@ -18,6 +18,7 @@
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
+using SamDiagrams.Drawings;
 using SamDiagrams.Drawings.Selection;
 
 namespace SamDiagrams.Actions
@@ -44,6 +45,7 @@ namespace SamDiagrams.Actions
 			this.container.MouseDown += new System.Windows.Forms.MouseEventHandler(OnMouseDown);
 			this.container.MouseUp += new System.Windows.Forms.MouseEventHandler(OnMouseUp);
 			this.container.MouseMove += new System.Windows.Forms.MouseEventHandler(OnMouseMove);
+			this.container.MouseClick += new System.Windows.Forms.MouseEventHandler(OnMouseClick);
 		}
 
 		void OnSelectionChanged(object sender, SelectedItemsChangedArgs e)
@@ -72,6 +74,15 @@ namespace SamDiagrams.Actions
 			moveAction.OnMouseMove(sender, e);
 		}
 
+		void OnMouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+		{
+			foreach (IDrawing selectedDrawing in container.ContainerDrawer.Drawings) {
+				if (selectedDrawing is IClickable && selectedDrawing.Bounds.Contains(e.Location)) {
+					(selectedDrawing as IClickable).OnClick(e);
+				}
+			}
+		}
+		
 		void OnItemsMoved(object sender, ItemsMovedEventArg e)
 		{
 			if (ItemsMoved != null)

@@ -129,11 +129,12 @@ namespace SamDiagrams
 			
 		}
 
-		public void AddNode(Node nod)
+		public Node AddNode(Node nod)
 		{
 			this.List.Add(nod);
 			nod.parent = this;
 			asoc.Add(nod.Text, nod);
+			return nod;
 		}
 		
 		public IList getNodes() {

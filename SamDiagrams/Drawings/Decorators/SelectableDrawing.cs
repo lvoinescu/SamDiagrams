@@ -27,7 +27,7 @@ namespace SamDiagrams.Drawings.Selection
 	/// <summary>
 	/// A Decorator that handles drawing the selection border
 	/// </summary>
-	public class SelectableDrawing : IDrawing
+	public class SelectableDrawing : IDrawing, IClickable
 	{
 		
 		readonly ISelectable drawing;
@@ -125,6 +125,14 @@ namespace SamDiagrams.Drawings.Selection
 			this.drawing.Draw(graphics);
 			if (drawing.Selected) {
 				this.selectionBorder.Draw(graphics);
+			}
+		}
+
+		public void OnClick(System.Windows.Forms.MouseEventArgs e)
+		{
+			if(drawing is IClickable)
+			{
+				(drawing as IClickable).OnClick(e);
 			}
 		}
 		

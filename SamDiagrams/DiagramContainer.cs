@@ -238,32 +238,32 @@ namespace SamDiagrams
 			}
 		}
 
-		protected override void OnMouseClick(MouseEventArgs e)
-		{
-			for (int i = containerDrawer.Drawings.Count - 1; i >= 0; i--) {
-				IBoundedShape drawer = containerDrawer.Drawings[i];
-				if (drawer is Structure) {
-					StructureDrawing structureDrawing = (StructureDrawing)drawer;
-					Rectangle r = new Rectangle((int)(structureDrawing.Location.X * scaleFactor), 
-						              (int)(structureDrawing.Location.Y * scaleFactor), 
-						              (int)(structureDrawing.Size.Width * scaleFactor), 
-						              (int)(structureDrawing.Size.Height * scaleFactor));
-					Point p = e.Location;
-					p.Offset(hScrollBar.Value, vScrollBar.Value);
-					if (r.Contains(p)) {
-						Point pInside = new Point(e.Location.X, e.Location.Y);
-						pInside.Offset(hScrollBar.Value, vScrollBar.Value);
-						int x = (int)(pInside.X - structureDrawing.Location.X * scaleFactor);
-						int y = (int)(pInside.Y - structureDrawing.Location.Y * scaleFactor);
-						structureDrawing.OnClick(new MouseEventArgs(e.Button, e.Clicks, x, y, e.Delta), scaleFactor);
-						if (this.DiagramItemClick != null)
-							DiagramItemClick(structureDrawing, e);
-						return;
-					}
-				}
-
-			}
-		}
+//		protected override void OnMouseClick(MouseEventArgs e)
+//		{
+//			for (int i = containerDrawer.Drawings.Count - 1; i >= 0; i--) {
+//				IBoundedShape drawer = containerDrawer.Drawings[i];
+//				if (drawer is Structure) {
+//					StructureDrawing structureDrawing = (StructureDrawing)drawer;
+//					Rectangle r = new Rectangle((int)(structureDrawing.Location.X * scaleFactor), 
+//						              (int)(structureDrawing.Location.Y * scaleFactor), 
+//						              (int)(structureDrawing.Size.Width * scaleFactor), 
+//						              (int)(structureDrawing.Size.Height * scaleFactor));
+//					Point p = e.Location;
+//					p.Offset(hScrollBar.Value, vScrollBar.Value);
+//					if (r.Contains(p)) {
+//						Point pInside = new Point(e.Location.X, e.Location.Y);
+//						pInside.Offset(hScrollBar.Value, vScrollBar.Value);
+//						int x = (int)(pInside.X - structureDrawing.Location.X * scaleFactor);
+//						int y = (int)(pInside.Y - structureDrawing.Location.Y * scaleFactor);
+//						structureDrawing.OnClick(new MouseEventArgs(e.Button, e.Clicks, x, y, e.Delta));
+//						if (this.DiagramItemClick != null)
+//							DiagramItemClick(structureDrawing, e);
+//						return;
+//					}
+//				}
+//
+//			}
+//		}
 
 		//		protected override void OnMouseDoubleClick(MouseEventArgs e)
 		//		{

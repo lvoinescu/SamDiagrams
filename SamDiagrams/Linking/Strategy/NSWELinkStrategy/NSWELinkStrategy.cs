@@ -51,6 +51,9 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			if(drawing is SelectableDrawing)
 				structureDrawing = (drawing as SelectableDrawing).Drawing;
 			
+			if(!virtualMapping.ContainsKey(structureDrawing))
+				return;
+			
 			NSWEDrawing nsweItem = virtualMapping[structureDrawing];
 			foreach (LinkDrawing link in nsweItem.Links) {
 				link.Invalidated = true;

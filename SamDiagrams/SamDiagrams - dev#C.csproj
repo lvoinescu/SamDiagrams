@@ -59,6 +59,7 @@
     <Compile Include="Drawings\Decorators\MovableDrawing.cs" />
     <Compile Include="Drawings\Decorators\SelectableDrawing.cs" />
     <Compile Include="Drawings\IBoundedShape.cs" />
+    <Compile Include="Drawings\IClickable.cs" />
     <Compile Include="Drawings\IDrawing.cs" />
     <Compile Include="Drawings\Geometry\InflatableRectangle.cs" />
     <Compile Include="Drawings\Grid\GridDrawer.cs" />
