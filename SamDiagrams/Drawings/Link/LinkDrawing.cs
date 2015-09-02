@@ -40,7 +40,7 @@ namespace SamDiagrams.Drawers.Links
 		private ILinkableDrawing destinationDrawing;
 		private LinkPoint sourcePoint, destinationPoint;
 		private LinkDirection direction = LinkDirection.None;
-
+		private bool selected;
 
 		public Item Item {
 			get {
@@ -60,6 +60,14 @@ namespace SamDiagrams.Drawers.Links
 			}
 		}
 
+		public bool Selected {
+			get {
+				return selected;
+			}
+			set {
+				selected = value;
+			}
+		}
 		public bool Movable {
 			get {
 				return false;
@@ -144,8 +152,7 @@ namespace SamDiagrams.Drawers.Links
 							new Point(destinationPoint.X, destinationPoint.Y)
 						};
 						
-						if (((sourceDrawing is ISelectable) && (sourceDrawing as ISelectable).Selected) ||
-						    ((destinationDrawing is StructureDrawing) && (destinationDrawing as StructureDrawing).Selected)) {
+						if (sourceDrawing.Selected || destinationDrawing.Selected) {
 							graphics.DrawLines(selectionPen, ps);
 						}
 						graphics.DrawLines(linePen, ps);
@@ -167,14 +174,12 @@ namespace SamDiagrams.Drawers.Links
 							new Point((int)(destinationPoint.X), (int)(midY)),
 							new Point((int)(destinationPoint.X), (int)(destinationPoint.Y))
 						};
-						if (((sourceDrawing is ISelectable) && (sourceDrawing as ISelectable).Selected) ||
-						    ((destinationDrawing is ISelectable) && (destinationDrawing as ISelectable).Selected)) {
+						if (sourceDrawing.Selected || destinationDrawing.Selected) {
 							graphics.DrawLines(selectionPen, ps);
 						}
 						graphics.DrawLines(linePen, ps);
 					} else {
-						if (((sourceDrawing is StructureDrawing) && (sourceDrawing as StructureDrawing).Selected) ||
-						    ((destinationDrawing is StructureDrawing) && (destinationDrawing as StructureDrawing).Selected)) {
+						if (sourceDrawing.Selected || destinationDrawing.Selected) {
 							graphics.DrawLine(selectionPen, sourcePoint.X, sourcePoint.Y, destinationPoint.X, destinationPoint.Y);
 						}
 						graphics.DrawLine(linePen, sourcePoint.X, sourcePoint.Y, destinationPoint.X, destinationPoint.Y);

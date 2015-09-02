@@ -30,7 +30,7 @@ namespace SamDiagrams.Drawings.Selection
 	public class SelectableDrawing : IDrawing, IClickable
 	{
 		
-		readonly ISelectable drawing;
+		readonly IDrawing drawing;
 		SelectionBorder selectionBorder;
 		Point initialSelectedLocation;
 		
@@ -114,7 +114,7 @@ namespace SamDiagrams.Drawings.Selection
 			}
 		}
 		
-		public SelectableDrawing(ISelectable drawing)
+		public SelectableDrawing(IDrawing drawing)
 		{
 			this.drawing = drawing;
 			this.selectionBorder = new SelectionBorder(drawing);

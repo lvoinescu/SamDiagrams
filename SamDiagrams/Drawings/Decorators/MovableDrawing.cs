@@ -44,6 +44,16 @@ namespace SamDiagrams.Drawings
 				return drawing;
 			}
 		}
+
+		public bool Selected {
+			get {
+				return this.drawing.Selected;
+			}
+			set {
+				this.drawing.Selected = value;
+			}
+		}
+
 		public MovableDrawing(IDrawing drawing)
 		{
 			this.drawing = drawing;

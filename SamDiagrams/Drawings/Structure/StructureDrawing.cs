@@ -33,7 +33,7 @@ namespace SamDiagrams.Drawings
 	/// <summary>
 	/// Description of ComponentDrawer.
 	/// </summary>
-	public class StructureDrawing : BaseDrawing, ILinkableDrawing, ISelectable, IClickable
+	public class StructureDrawing : BaseDrawing, ILinkableDrawing, IClickable
 	{
 		
 		public event BeforeNodeExpandOrCollapseHandler BeforeNodeExpandOrCollapse;

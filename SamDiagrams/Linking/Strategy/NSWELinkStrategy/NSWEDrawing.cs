@@ -35,16 +35,15 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 		private List<LinkDrawing> linksNorth, linksSouth, linksWest, linksEast, linksNone;
 		private List<LinkPoint> linkPointsSouth, linkPointsNorth, linkPointsWest, linkPointsEast, linkPointsNone;
 		private List<LinkDrawing> inputLinkList, outputLinkList, links;
-		private readonly IDrawing structureDrawing;
+		private readonly IDrawing drawing;
 
-		#region IDrawing implementation
-		public void Draw(System.Drawing.Graphics graphics)
+		public void Draw(Graphics graphics)
 		{
-			structureDrawing.Draw(graphics);
+			drawing.Draw(graphics);
 		}
 		public Item Item {
 			get {
-				return this.structureDrawing.Item;
+				return this.drawing.Item;
 			}
 		}
 		public bool Invalidated {
@@ -56,36 +55,44 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			}
 		}
 
-		public bool Movable {
+		public bool Selected {
 			get {
-				return structureDrawing.Movable;
+				return drawing.Selected;
 			}
 			set {
-				structureDrawing.Movable = value;
+				drawing.Selected = value;
+			}
+		}
+		public bool Movable {
+			get {
+				return drawing.Movable;
+			}
+			set {
+				drawing.Movable = value;
 			}
 		}
 
-		#endregion
-		#region IBoundedShape implementation
-		public System.Drawing.Point Location {
+		public Point Location {
 			get {
-				return this.structureDrawing.Location;
+				return this.drawing.Location;
 			}
 			set {
-				this.structureDrawing.Location = value;
+				this.drawing.Location = value;
 			}
 		}
-		public System.Drawing.Size Size {
+		
+		public Size Size {
 			get {
-				return this.structureDrawing.Size;
+				return this.drawing.Size;
 			}
 		}
-		public System.Drawing.Rectangle Bounds {
+		
+		public Rectangle Bounds {
 			get {
-				return this.structureDrawing.Bounds;
+				return this.drawing.Bounds;
 			}
 		}
-		#endregion
+		
 		public List<LinkDrawing> Links {
 			get { return links; }
 			set { links = value; }
@@ -154,7 +161,7 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 		
 		public NSWEDrawing(IDrawing structureDrawing)
 		{
-			this.structureDrawing = structureDrawing;
+			this.drawing = structureDrawing;
 			links = new List<LinkDrawing>();
 			
 			inputLinkList = new List<LinkDrawing>();
@@ -175,7 +182,7 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 
 		public Rectangle InvalidatedRegion {
 			get {
-				return structureDrawing.InvalidatedRegion;
+				return drawing.InvalidatedRegion;
 			}
 		}
 	}

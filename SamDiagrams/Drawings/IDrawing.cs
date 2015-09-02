@@ -30,7 +30,7 @@ namespace SamDiagrams.Drawings
 	{
 		Item Item{get;}
 		bool Invalidated { get; set; }
-		
+		bool Selected {get; set;}
 		void Draw(Graphics graphics);
 		bool Movable{get; set;}
 		Rectangle InvalidatedRegion {get;}
