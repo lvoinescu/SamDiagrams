@@ -18,79 +18,45 @@
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
+using System.Collections.Generic;
 using System.Drawing;
-using SamDiagrams.Drawings.Geometry;
+using SamDiagrams.Drawers.Links;
+using SamDiagrams.Drawings.Link;
+using SamDiagrams.Model;
 
 namespace SamDiagrams.Drawings
 {
 	/// <summary>
-	/// Description of BaseDrawing.
+	/// Description of BaseLinkableDrawing.
 	/// </summary>
-	public abstract class BaseDrawing : IBoundedShape
+	public abstract class BaseLinkableDrawing : BaseDrawing, ILinkableDrawing
 	{
+		private List<LinkDrawing> drawingLinks;
+		private Item item;
 		
-		protected Size size;
-		protected Point location;
-		protected bool invalidated;
-		protected bool movable;
-		protected bool selected;
-		
-		public BaseDrawing()
+		protected BaseLinkableDrawing(Item item)
+			: base()
 		{
+			this.item = item;
+			this.drawingLinks = new List<LinkDrawing>();
 		}
-
-		public abstract void Draw(Graphics graphics);
-
-		public bool Movable {
+		
+		
+		public List<LinkDrawing> DrawingLinks {
 			get {
-				return movable;
-			}
-			set {
-				movable = value;
-			}
-		}
-
-		public Point Location {
-			get {
-				return this.location;
-			}
-			set {
-				this.location = value;
-			}
-		}
-
-		public Size Size {
-			get {
-				return this.size;
-			}
-			set {
-				this.size = value;
-			}
-		}
-
-		public bool Selected {
-			get {
-				return selected;
-			}
-			set {
-				selected = value;
+				return this.drawingLinks;
 			}
 		}
 		
-		public Rectangle Bounds {
+		public Item Item {
 			get {
-				return new Rectangle(this.location, this.size);
+				return this.item;
 			}
 		}
 
-		public bool Invalidated {
-			get {
-				return this.invalidated;
-			}
-			set {
-				this.invalidated = value;
-			}
+		public abstract Rectangle InvalidatedRegion {
+			get;
 		}
-
+		
 	}
 }
