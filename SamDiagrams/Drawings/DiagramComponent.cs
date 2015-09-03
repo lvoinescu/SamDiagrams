@@ -29,12 +29,12 @@ namespace SamDiagrams.Drawings
 	/// <summary>
 	/// Description of BaseLinkableDrawing.
 	/// </summary>
-	public abstract class BaseLinkableDrawing : BaseDrawing, ILinkableDrawing
+	public abstract class DiagramComponent : BaseDrawing, ILinkableDrawing
 	{
 		private List<LinkDrawing> drawingLinks;
 		private Item item;
 		
-		protected BaseLinkableDrawing(Item item)
+		protected DiagramComponent(Item item)
 			: base()
 		{
 			this.item = item;

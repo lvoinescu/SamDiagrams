@@ -56,7 +56,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Drawings\BaseDrawing.cs" />
-    <Compile Include="Drawings\BaseLinkableDrawing.cs" />
+    <Compile Include="Drawings\DiagramComponent.cs" />
     <Compile Include="Drawings\Decorators\MovableDrawing.cs" />
     <Compile Include="Drawings\Decorators\SelectableDrawing.cs" />
     <Compile Include="Drawings\IBoundedShape.cs" />

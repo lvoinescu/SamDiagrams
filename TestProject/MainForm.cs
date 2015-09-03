@@ -53,7 +53,7 @@ namespace TestProject
 			
 		}
 		
-		private class CustomDrawing : BaseLinkableDrawing
+		private class CustomDrawing : DiagramComponent
 		{
 
 			public CustomDrawing(Item item)
