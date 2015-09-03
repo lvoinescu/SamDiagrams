@@ -84,7 +84,7 @@ namespace SamDiagrams.Linking.Orchestrator
 			sourceDrawing.DrawingLinks.Add(linkDrawing);
 			destinationDrawing.DrawingLinks.Add(linkDrawing);
 			
-			containerDrawer.Drawings.Add(linkDrawing);
+			containerDrawer.Drawings.Insert(0, linkDrawing);
 			linkStrategy.RegisterLink(linkDrawing);
 			links.Add(linkDrawing);
 

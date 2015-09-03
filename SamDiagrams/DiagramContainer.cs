@@ -188,7 +188,7 @@ namespace SamDiagrams
 			
 			SelectableDrawing selectableDrawing = new SelectableDrawing(structureDrawing);
 
-			containerDrawer.Drawings.Add(selectableDrawing);
+			containerDrawer.Drawings.Insert(0, selectableDrawing);
 			structures.Add(structure);
 			structureDrawing.AutoSizeContent();
 		}

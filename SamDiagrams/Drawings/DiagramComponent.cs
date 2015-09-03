@@ -27,7 +27,8 @@ using SamDiagrams.Model;
 namespace SamDiagrams.Drawings
 {
 	/// <summary>
-	/// Description of BaseLinkableDrawing.
+	/// Represent an abtract class that can be linkable, selectable. 
+	/// By extending this class the client can define his own drawing component;
 	/// </summary>
 	public abstract class DiagramComponent : BaseDrawing, ILinkableDrawing
 	{
