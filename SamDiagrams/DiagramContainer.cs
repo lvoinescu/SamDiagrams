@@ -46,7 +46,7 @@ namespace SamDiagrams
 		
 		
 		private List<StructureDrawing> selectedItems;
-		List<Structure> structures;
+		List<ILinkable> structures;
 		private int zoomFactor;
 		private float scaleFactor = 1;
 		private int gridSize = 16;
@@ -133,7 +133,7 @@ namespace SamDiagrams
 
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public List<Structure> DiagramItems {
+		public List<ILinkable> DiagramItems {
 			get { return structures; }
 			set { structures = value; }
 		}
@@ -142,7 +142,7 @@ namespace SamDiagrams
 		public DiagramContainer()
 		{
 			zoomFactor = 100;
-			structures = new List<Structure>();
+			structures = new List<ILinkable>();
 			selectedItems = new List<StructureDrawing>();
 			SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw |
 			ControlStyles.DoubleBuffer | ControlStyles.UserPaint, true);
@@ -193,6 +193,19 @@ namespace SamDiagrams
 			structureDrawing.AutoSizeContent();
 		}
 		
+		public void AddItem(Item item, IDrawing drawing, bool selectable, bool movable)
+		{
+			IDrawing drawingToAdd;
+			if (selectable) {
+				drawingToAdd = new SelectableDrawing(drawing);
+
+			} else {
+				drawingToAdd = drawing;
+			}
+			item.Drawing = drawing;
+			containerDrawer.Drawings.Add(drawingToAdd);
+		}
+		
 		public void AddLink(ILinkable source, ILinkable destination)
 		{
 			Link link = new Link(source, destination, Color.Black);
@@ -238,32 +251,32 @@ namespace SamDiagrams
 			}
 		}
 
-//		protected override void OnMouseClick(MouseEventArgs e)
-//		{
-//			for (int i = containerDrawer.Drawings.Count - 1; i >= 0; i--) {
-//				IBoundedShape drawer = containerDrawer.Drawings[i];
-//				if (drawer is Structure) {
-//					StructureDrawing structureDrawing = (StructureDrawing)drawer;
-//					Rectangle r = new Rectangle((int)(structureDrawing.Location.X * scaleFactor), 
-//						              (int)(structureDrawing.Location.Y * scaleFactor), 
-//						              (int)(structureDrawing.Size.Width * scaleFactor), 
-//						              (int)(structureDrawing.Size.Height * scaleFactor));
-//					Point p = e.Location;
-//					p.Offset(hScrollBar.Value, vScrollBar.Value);
-//					if (r.Contains(p)) {
-//						Point pInside = new Point(e.Location.X, e.Location.Y);
-//						pInside.Offset(hScrollBar.Value, vScrollBar.Value);
-//						int x = (int)(pInside.X - structureDrawing.Location.X * scaleFactor);
-//						int y = (int)(pInside.Y - structureDrawing.Location.Y * scaleFactor);
-//						structureDrawing.OnClick(new MouseEventArgs(e.Button, e.Clicks, x, y, e.Delta));
-//						if (this.DiagramItemClick != null)
-//							DiagramItemClick(structureDrawing, e);
-//						return;
-//					}
-//				}
-//
-//			}
-//		}
+		//		protected override void OnMouseClick(MouseEventArgs e)
+		//		{
+		//			for (int i = containerDrawer.Drawings.Count - 1; i >= 0; i--) {
+		//				IBoundedShape drawer = containerDrawer.Drawings[i];
+		//				if (drawer is Structure) {
+		//					StructureDrawing structureDrawing = (StructureDrawing)drawer;
+		//					Rectangle r = new Rectangle((int)(structureDrawing.Location.X * scaleFactor),
+		//						              (int)(structureDrawing.Location.Y * scaleFactor),
+		//						              (int)(structureDrawing.Size.Width * scaleFactor),
+		//						              (int)(structureDrawing.Size.Height * scaleFactor));
+		//					Point p = e.Location;
+		//					p.Offset(hScrollBar.Value, vScrollBar.Value);
+		//					if (r.Contains(p)) {
+		//						Point pInside = new Point(e.Location.X, e.Location.Y);
+		//						pInside.Offset(hScrollBar.Value, vScrollBar.Value);
+		//						int x = (int)(pInside.X - structureDrawing.Location.X * scaleFactor);
+		//						int y = (int)(pInside.Y - structureDrawing.Location.Y * scaleFactor);
+		//						structureDrawing.OnClick(new MouseEventArgs(e.Button, e.Clicks, x, y, e.Delta));
+		//						if (this.DiagramItemClick != null)
+		//							DiagramItemClick(structureDrawing, e);
+		//						return;
+		//					}
+		//				}
+		//
+		//			}
+		//		}
 
 		//		protected override void OnMouseDoubleClick(MouseEventArgs e)
 		//		{

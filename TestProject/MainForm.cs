@@ -10,15 +10,13 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-using System.Windows.Forms.VisualStyles;
 using SamDiagrams;
-using SamDiagrams.Drawers;
+using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
-using SamDiagrams.Drawings.Selection;
-using SamDiagrams.Linking;
+using SamDiagrams.Drawings.Geometry;
+using SamDiagrams.Model;
 
 namespace TestProject
 {
@@ -29,27 +27,63 @@ namespace TestProject
 	{
 		public MainForm()
 		{
-			//
-			// The InitializeComponent() call is required for Windows Forms designer support.
-			//
-
 			InitializeComponent();
-			
-			//
-			// TODO: Add constructor code after the InitializeComponent() call.
-			//
 		}
 		
-		private void test(object sender, BeforeNodeExpandOrCollapseArg e)
+ 
+		private class CustomItem : Item, ILinkable
 		{
-			textBox1.Text = e.Nod.Text;
+			public List<ILink> Links {
+				get;
+				set;
+			}
+
+			public string Name {
+				get;
+				set ;
+			}
+			public Color Color {
+				get;
+				set ;
+			}
+			public IDrawing Drawing {
+				get;
+				set ;
+			}
+			
+		}
+		
+		private class CustomDrawing : BaseLinkableDrawing
+		{
+
+			public CustomDrawing(Item item)
+				: base(item)
+			{
+				
+			}
+
+			public override void Draw(Graphics graphics)
+			{
+				graphics.DrawRectangle(Pens.Black, new Rectangle(location, size));
+			}
+
+			public override Rectangle InvalidatedRegion {
+				get {
+					InflatableRectangle rectangle = new InflatableRectangle(new Rectangle(this.location, this.size));
+					foreach (LinkDrawing link in this.DrawingLinks) {
+						rectangle.Inflate(link.Bounds);
+					}					
+					return rectangle.Bounds;
+				}
+			}
+			
 		}
 		
 		void MainFormLoad(object sender, EventArgs e)
 		{
 			Image intImg = Image.FromFile("diamond.png");
 			Image tImg = Image.FromFile("table.png");
-			var k = 6;
+			const int k = 3;
 			Random r = new Random(255);
 			try {
 				for (int i = 0; i < k; i++) {
@@ -59,13 +93,13 @@ namespace TestProject
 					cols.AddNode(new Node("id", true, intImg, di));
 					cols.AddNode(new Node("type", true, intImg, di));
 					cols.AddNode(new Node("nume", di));
-					cols.AddNode(new Node("prenume", di)).AddNode(new Node("test2", di)).AddNode(new Node("test3",di));
+					cols.AddNode(new Node("prenume", di)).AddNode(new Node("test2", di)).AddNode(new Node("test3", di));
 					cols.AddNode(new Node("cheie", di));
 					cols.AddNode(new Node("altacheia", di));
-					cols.AddNode(new Node("prenume2", di)).AddNode(new Node("test2", di)).AddNode(new Node("test3",di));
+					cols.AddNode(new Node("prenume2", di)).AddNode(new Node("test2", di)).AddNode(new Node("test3", di));
 					di.Nodes.Add(cols);
 					di.AddOnDiagram(diagramContainer1, Color.FromArgb(r.Next(255), r.Next(255), r.Next(255)));
-					//di.SetLocation(r.Next(300), r.Next(300));
+					di.Drawing.Location = new Point(r.Next(300), r.Next(300));
 				}
 			} catch (Exception ex) {
 				MessageBox.Show(ex.Message);
@@ -82,6 +116,20 @@ namespace TestProject
 			diagramContainer1.Invalidate();
 
 
+			
+			CustomItem customItem = new CustomItem();
+			customItem.Color = Color.Red;
+			customItem.Name = "CustomItem";
+			
+			CustomDrawing customDrawing = new CustomDrawing(customItem);
+			customDrawing.Movable = true;
+			customDrawing.Size = new Size(100, 100);
+			
+			
+			diagramContainer1.AddItem(customItem, customDrawing, true, true);
+			diagramContainer1.AddLink(customItem, diagramContainer1.DiagramItems[0]);
+			
+			
 			//DiagramItem item1 = new DiagramItem(this.diagramContainer1, "Table1",   new Point(0,0), new Size(100,250));
 			//item1.TitleImage = Image.FromFile("table.png");
 			//item1.BeforeNodeExpandOrCollapse += new BeforeNodeExpandOrCollapseHandler(test);
@@ -171,50 +219,8 @@ namespace TestProject
 			this.diagramContainer1.DrawableWidth = 758;
 		}
 
-		void TrackBar1Scroll(object sender, EventArgs e)
-		{
-			diagramContainer1.ZoomFactor = trackBar1.Value;
-			diagramContainer1.Refresh();
-			textBox2.Text = trackBar1.Value.ToString();
-		}
-		
-		void DiagramContainer1SelectedItemsChanged(object sender, SelectedItemsChangedArgs e)
-		{
-			listBox1.Items.Clear();
-			foreach (SelectableDrawing structureDrawing in e.SelectedDrawings)
-				listBox1.Items.Add(structureDrawing.Drawing.Item.Name);
-		}
-
-		private void button1_Click(object sender, EventArgs e)
-		{
-			diagramContainer1.SnapObjectsToGrid = true;
-		}
-
-		private void trackBar2_Scroll(object sender, EventArgs e)
-		{
-			diagramContainer1.DrawableWidth = trackBar2.Value;
-		}
-
-		private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
-		{
-
-		}
-
-		private void button2_Click(object sender, EventArgs e)
-		{
-			 
-		}
-
  
-
-		private void button3_Click(object sender, EventArgs e)
-		{
-			diagramContainer1.AutoSizeItem = !diagramContainer1.AutoSizeItem;
-		}
 		
-		void DiagramContainer1Load(object sender, EventArgs e)
-		{
-			
-		}
+  
 	}
 }
