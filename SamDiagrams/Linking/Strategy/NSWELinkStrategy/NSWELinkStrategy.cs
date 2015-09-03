@@ -58,8 +58,8 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			NSWEDrawing nsweItem = virtualMapping[structureDrawing];
 			foreach (LinkDrawing link in nsweItem.Links) {
 				link.Invalidated = true;
-				IBoundedShape destinationDrawing = link.DestinationDrawing;
-				IBoundedShape sourceDrawing = link.SourceDrawing;
+				IDrawing destinationDrawing = link.DestinationDrawing;
+				IDrawing sourceDrawing = link.SourceDrawing;
 				
 				LinkDirection prevDirection = link.Direction;
 				LinkDirection direction = LinkDirection.None;
@@ -82,8 +82,8 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 					link.Direction = direction;
 				}
 				
-				ArangeLinksForItem((IDrawing)destinationDrawing);
-				ArangeLinksForItem((IDrawing)sourceDrawing);
+				ArangeLinksForItem(destinationDrawing);
+				ArangeLinksForItem(sourceDrawing);
 			}
 			arrangeConnectionPoints(structureDrawing);
 		}
