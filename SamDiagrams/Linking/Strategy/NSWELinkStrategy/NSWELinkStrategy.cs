@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
 using SamDiagrams.Drawings.Geometry;
+using SamDiagrams.Drawings.Link;
 using SamDiagrams.Drawings.Selection;
 using SamDiagrams.Linking.Strategy;
 
@@ -81,13 +82,13 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 					link.Direction = direction;
 				}
 				
-				ArangeLinksForItem((StructureDrawing)destinationDrawing);
-				ArangeLinksForItem((StructureDrawing)sourceDrawing);
+				ArangeLinksForItem((IDrawing)destinationDrawing);
+				ArangeLinksForItem((IDrawing)sourceDrawing);
 			}
 			arrangeConnectionPoints(structureDrawing);
 		}
 		
-		public void ArangeLinksForItem(StructureDrawing structureDrawing)
+		public void ArangeLinksForItem(IDrawing structureDrawing)
 		{
 			arrangeConnectionPoints(structureDrawing);
 			
@@ -121,11 +122,10 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			virtualMapping[destinationDrawing] = nsweDestination;
 		}
 		
-		private void arrangeLinks(StructureDrawing structure)
+		private void arrangeLinks(IDrawing item)
 		{
-			StructureDrawing item = (StructureDrawing)structure;
 			int iN = 0, iS = 0, iW = 0, iE = 0;
-			NSWEDrawing virtualItem = virtualMapping[structure];
+			NSWEDrawing virtualItem = virtualMapping[item];
 			foreach (LinkDrawing link in virtualItem.InputLinkList) {
 				switch (link.Direction) {
 					case LinkDirection.SourceNorthDestinationSouth:
@@ -185,7 +185,7 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 				}
 
 			}
-			arrangeConnectionPoints(structure);
+			arrangeConnectionPoints(item);
 		}
 		
 		private void OnLinkDirectionChanged(LinkDrawing link, LinkDirection newDirection)
