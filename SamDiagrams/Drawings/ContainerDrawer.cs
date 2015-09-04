@@ -24,7 +24,6 @@ using SamDiagrams.Actions;
 using SamDiagrams.Drawings;
 using SamDiagrams.Drawings.Selection;
 using SamDiagrams.Linking.Orchestrator;
-using SamDiagrams.Model;
 
 namespace SamDiagrams.Drawers
 {
@@ -105,7 +104,7 @@ namespace SamDiagrams.Drawers
 			graphics.TranslateTransform(-diagramContainer.HScrollBar.Value, -diagramContainer.VScrollBar.Value);
 			graphics.ScaleTransform(scaleFactor, scaleFactor, System.Drawing.Drawing2D.MatrixOrder.Append);
 			foreach (IDrawing drawing in drawings) {
-				if (drawing.Invalidated && getDrawerScaledBounds(scaleFactor, drawing).IntersectsWith(clipRectangle)) {
+				if (drawing.Invalidated) {
 					drawing.Draw(graphics);
 					drawing.Invalidated = false;
 				}

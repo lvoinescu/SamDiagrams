@@ -104,7 +104,7 @@ namespace SamDiagrams.Drawers
 			}
 			
 			Rectangle auxRectangle = newRectangleToInvalidate.Bounds;
-			invalidateOverlappingDrawings(previouslyInvalidatedRectangle);
+
 			newRectangleToInvalidate.Inflate(previouslyInvalidatedRectangle);
 			invalidateOverlappingDrawings(newRectangleToInvalidate.Bounds);
 			previouslyInvalidatedRectangle = auxRectangle;
@@ -142,7 +142,7 @@ namespace SamDiagrams.Drawers
 			
 			containerDrawer.DiagramContainer.Invalidate(newRectangleToInvalidate.Bounds);
 			previouslyInvalidatedRectangle = newRectangleToInvalidate.Bounds;
-			containerDrawer.DiagramContainer.Validate();
+			//containerDrawer.DiagramContainer.Invalidate();
 		}
 		
 		Rectangle getStructureInvalidatedRegion(IDrawing targetDrawing)
@@ -185,8 +185,7 @@ namespace SamDiagrams.Drawers
 
 		void invalidateOverlappingDrawings(Rectangle rectangle)
 		{
-			for (int i = 0; i < containerDrawer.Drawings.Count; i++) {
-				IDrawing drawing = containerDrawer.Drawings[i];
+			foreach (IDrawing drawing in containerDrawer.Drawings) {
 				if (!drawing.Invalidated && drawing.Bounds.IntersectsWith(rectangle)) {
 					drawing.Invalidated = true;
 				}
