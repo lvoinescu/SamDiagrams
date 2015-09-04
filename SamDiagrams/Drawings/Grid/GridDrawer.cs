@@ -14,13 +14,12 @@ namespace SamDiagrams.Drawings.Grid
 	/// <summary>
 	/// Description of GridDrawer.
 	/// </summary>
-	public class GridDrawer : IDrawing
+	public class GridDrawer
 	{
 		
 		private const int DEFAULT_GRID_SIZE = 16;
 		
 		private int gridSize = DEFAULT_GRID_SIZE;
-		private bool invalidated = true;
 		private readonly DiagramContainer diagramContainer;
 		
 		public GridDrawer(DiagramContainer diagramContainer)
@@ -28,25 +27,6 @@ namespace SamDiagrams.Drawings.Grid
 			this.diagramContainer = diagramContainer;
 		}
 
-		public bool Movable {
-			get {
-				return true;
-			}
-			set {
-				throw new NotImplementedException();
-			}
-		}
-		public SamDiagrams.Model.Item Item {
-			get {
-				throw new NotImplementedException();
-			}
-		}
-
-		public Rectangle InvalidatedRegion {
-			get {
-				throw new NotImplementedException();
-			}
-		}
 
 		public GridDrawer(DiagramContainer diagramContainer, int gridSize)
 			: this(diagramContainer)
@@ -54,18 +34,26 @@ namespace SamDiagrams.Drawings.Grid
 			this.gridSize = gridSize;
 		}
 
-		#region IDrawer implementation
-
-		public void Draw(System.Drawing.Graphics graphics)
+		public void Draw(Graphics graphics)
 		{
+			RectangleF redrawRectangle = graphics.ClipBounds;
+			
 			Pen p = new Pen(Color.FromArgb(100, 200, 200, 200));
 			float step = gridSize;
+			
+			int fromLeft = Math.Max(0, ((int)(redrawRectangle.Left / gridSize) + 1) * gridSize);
+			int toLeft = Math.Min(diagramContainer.Width, 
+				             (((int)(redrawRectangle.Left + redrawRectangle.Width)) / gridSize + 1) * gridSize);
+			int fromTop = Math.Max(0, ((int)(redrawRectangle.Top / gridSize) - 1) * gridSize);
+			int toTop = Math.Min(diagramContainer.Height, 
+				            ((int)((redrawRectangle.Top + redrawRectangle.Height) / gridSize) + 1) * gridSize);
+			;
 			if (step < 1)
 				step = 1;
-			for (float i = 0; i < diagramContainer.Width; i += step) {
+			for (float i = fromLeft; i < toLeft; i += step) {
 				graphics.DrawLine(p, i, 0, i, diagramContainer.Height);
 			}
-			for (float j = 0; j < diagramContainer.Height; j += step) {
+			for (float j = fromTop; j < toTop; j += step) {
 				graphics.DrawLine(p, 0, j, diagramContainer.Width, j);
 			}
 		}
@@ -78,46 +66,5 @@ namespace SamDiagrams.Drawings.Grid
 				gridSize = value;
 			}
 		}
-		public Point Location {
-			get {
-				return new Point(0, 0);
-			}
-			set {
-				throw new Exception("Cannot set location for grid.");
-			}
-		}
-
-		public Size Size {
-			get {
-				return new Size(diagramContainer.Width, diagramContainer.Height);
-			}
-		}
-
-		public Rectangle Bounds {
-			get {
-				return new Rectangle(Location, Size);
-			}
-			
-		}
-
-		public bool Selected {
-			get {
-				throw new NotImplementedException();
-			}
-			set {
-				throw new NotImplementedException();
-			}
-		}
-		
-		public bool Invalidated {
-			get {
-				return false;
-			}
-			set {
-				this.invalidated = false;
-			}
-		}
-
-		#endregion
 	}
 }

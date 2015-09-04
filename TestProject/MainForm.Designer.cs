@@ -61,6 +61,7 @@ namespace TestProject
 			// diagramContainer1
 			// 
 			this.diagramContainer1.AutoSizeItem = true;
+			this.diagramContainer1.BackColor = System.Drawing.SystemColors.ControlLightLight;
 			this.diagramContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.diagramContainer1.DrawableHeight = 705;
 			this.diagramContainer1.DrawableWidth = 758;

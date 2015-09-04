@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using SamDiagrams.Actions;
 using SamDiagrams.Drawings;
+using SamDiagrams.Drawings.Grid;
 using SamDiagrams.Drawings.Selection;
 using SamDiagrams.Linking.Orchestrator;
 
@@ -38,7 +39,8 @@ namespace SamDiagrams.Drawers
 		private LinkOrchestrator linkOrchestrator;
 		private ActionListener actionListener;
 		private List<SelectableDrawing> selectableDrawings;
-
+		private GridDrawer gridDrawer;
+		
 		public ActionListener ActionListener {
 			get {
 				return actionListener;
@@ -75,6 +77,7 @@ namespace SamDiagrams.Drawers
 		{
 			
 			this.diagramContainer = diagramContainer;
+			this.gridDrawer = new GridDrawer(diagramContainer);
 			actionListener = new ActionListener(diagramContainer);
 			
 			linkOrchestrator = new LinkOrchestrator(this);
@@ -88,15 +91,14 @@ namespace SamDiagrams.Drawers
 		public void Draw(float scaleFactor, Graphics graphics)
 		{
 			RectangleF rectangle = graphics.ClipBounds;
-			#if DEBUG
 //			graphics.FillRectangle(new SolidBrush(Color.FromArgb(rd.Next(255), rd.Next(255), rd.Next(255))), 
 //			                       new Rectangle((int)rectangle.X, (int)rectangle.Y, 
 //			                                     (int)rectangle.Width, (int)rectangle.Height));
-			#endif
 			
 			graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
 			graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-
+			
+			gridDrawer.Draw(graphics);
 			Point pt = new Point(diagramContainer.HScrollBar.Value, diagramContainer.VScrollBar.Value);
 			Rectangle r = new Rectangle(pt, diagramContainer.Size);
 			RectangleF clipRectangle = graphics.ClipBounds;
