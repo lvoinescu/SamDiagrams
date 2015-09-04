@@ -50,10 +50,10 @@ namespace SamDiagrams.Actions
 						if (!selectedDrawings.Contains(selectableDrawing)) {
 							if (Control.ModifierKeys != Keys.Control) {
 								clearSelections();
-								moveLast(selectableDrawing);
+								bringToFront(selectableDrawing);
 								toggleSelection(selectableDrawing);
 							} else {
-								moveLast(selectableDrawing);
+								bringToFront(selectableDrawing);
 								addSelected(selectableDrawing);
 							}
 							if (SelectedItemsChanged != null)
@@ -110,7 +110,7 @@ namespace SamDiagrams.Actions
 			}
 		}
 		
-		private void moveLast(SelectableDrawing drawing)
+		private void bringToFront(SelectableDrawing drawing)
 		{
 			container.ContainerDrawer.Drawings.Remove(drawing);
 			container.ContainerDrawer.Drawings.Add(drawing);
