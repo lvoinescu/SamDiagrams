@@ -107,7 +107,7 @@ namespace SamDiagrams.Actions
 			}
 			
 			
-			if (ItemsMoved != null) {
+			if ((dx != 0 || dy != 0) && ItemsMoved != null) {
 				ItemsMoved(this, new ItemsMovedEventArg(movedDrawing, dx, dy));
 			}
 		}
