@@ -75,7 +75,6 @@ namespace SamDiagrams.Drawings
 			this.selected = false;
 			this.rowFont = new Font(this.structure.DiagramContainer.Font.FontFamily, 9.0F);
 			this.titleFont = new Font(this.structure.DiagramContainer.Font.FontFamily, 9.0F, FontStyle.Bold);
-			this.structure.DiagramContainer.ZoomFactorChanged += new ZoomFactorChangedHandler(OnZoomFactorChanged);
 			rowHeight = CalculateRowHeight();
 			this.size.Width = DEFAULT_WIDTH;
 			AutoSizeContent();
@@ -154,11 +153,6 @@ namespace SamDiagrams.Drawings
 			graphics.FillPath(new SolidBrush(color), path);
 			graphics.DrawPath(conturPen, path);
 			
-		}
-		
-		private void OnZoomFactorChanged(object sender, ZoomFactorChangedArg e)
-		{
-			AutoSizeContent();
 		}
 		
 		private int CalculateDisplayedRows(Node nod, bool parentIsExpanded)
