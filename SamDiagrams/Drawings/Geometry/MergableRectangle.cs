@@ -24,42 +24,46 @@ using System.Drawing;
 namespace SamDiagrams.Drawings.Geometry
 {
 	/// <summary>
-	/// Represents an rectangle that can be "inflatable"
+	/// Represents an rectangle that can be merged with a Rectangle.
 	/// </summary>
-	public class InflatableRectangle
+	public class MergableRectangle
 	{
-		private Rectangle r1;
+		private Rectangle rectangle;
 		
-		public InflatableRectangle(Rectangle rectangle)
+		public MergableRectangle(Rectangle rectangle)
 		{
-			this.r1 = rectangle;
+			this.rectangle = rectangle;
 		}
 
 		public Rectangle Bounds {
 			get {
-				return r1;
+				return rectangle;
 			}
 		}
 		
-		public void Inflate(Rectangle r2)
+		public void Merge(Rectangle target)
 		{
-			if (r2.Width == 0 || r2.Height == 0)
+			if (target.Width == 0 || target.Height == 0)
 				return;
 			
-			int maxX = Math.Max(r1.X + r1.Width, r2.X + r2.Width + 1);
-			int maxY = Math.Max(r1.Y + r1.Height, r2.Y + r2.Height + 1);
-			int minX = Math.Min(r1.X, r2.X);
-			int minY = Math.Min(r1.Y, r2.Y);
+			int maxX = Math.Max(rectangle.X + rectangle.Width, target.X + target.Width + 1);
+			int maxY = Math.Max(rectangle.Y + rectangle.Height, target.Y + target.Height + 1);
+			int minX = Math.Min(rectangle.X, target.X);
+			int minY = Math.Min(rectangle.Y, target.Y);
 			
-			r1.Location = new Point(minX, minY);
+			rectangle.Location = new Point(minX, minY);
 			
-			r1.Width = maxX - minX;
-			r1.Height = maxY - minY;
+			rectangle.Width = maxX - minX;
+			rectangle.Height = maxY - minY;
+		}
+		
+		public void Inflate(int ammount){
+			this.rectangle.Inflate(ammount, ammount);
 		}
 		
 		public override string ToString()
 		{
-			return string.Format("[InflatableRectangle R1={0}]", r1);
+			return string.Format("[InflatableRectangle R1={0}]", rectangle);
 		}
 
 		

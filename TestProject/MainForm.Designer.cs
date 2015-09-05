@@ -38,9 +38,13 @@ namespace TestProject
 		{
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.diagramContainer1 = new SamDiagrams.DiagramContainer();
+			this.trackBar1 = new System.Windows.Forms.TrackBar();
+			this.label1 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
+			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// splitContainer1
@@ -53,6 +57,11 @@ namespace TestProject
 			// splitContainer1.Panel1
 			// 
 			this.splitContainer1.Panel1.Controls.Add(this.diagramContainer1);
+			// 
+			// splitContainer1.Panel2
+			// 
+			this.splitContainer1.Panel2.Controls.Add(this.label1);
+			this.splitContainer1.Panel2.Controls.Add(this.trackBar1);
 			this.splitContainer1.Size = new System.Drawing.Size(1245, 705);
 			this.splitContainer1.SplitterDistance = 758;
 			this.splitContainer1.SplitterWidth = 3;
@@ -74,6 +83,25 @@ namespace TestProject
 			this.diagramContainer1.TabIndex = 0;
 			this.diagramContainer1.ZoomFactor = 100;
 			// 
+			// trackBar1
+			// 
+			this.trackBar1.Location = new System.Drawing.Point(75, 12);
+			this.trackBar1.Maximum = 200;
+			this.trackBar1.Name = "trackBar1";
+			this.trackBar1.Size = new System.Drawing.Size(397, 42);
+			this.trackBar1.TabIndex = 0;
+			this.trackBar1.Value = 100;
+			this.trackBar1.Scroll += new System.EventHandler(this.TrackBar1Scroll);
+			// 
+			// label1
+			// 
+			this.label1.Location = new System.Drawing.Point(13, 12);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(56, 23);
+			this.label1.TabIndex = 1;
+			this.label1.Text = "Zoom";
+			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -86,13 +114,18 @@ namespace TestProject
 			this.Text = "SamDiagrams";
 			this.Load += new System.EventHandler(this.MainFormLoad);
 			this.splitContainer1.Panel1.ResumeLayout(false);
+			this.splitContainer1.Panel2.ResumeLayout(false);
+			this.splitContainer1.Panel2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
 			this.ResumeLayout(false);
 
 		}
 		private SamDiagrams.DiagramContainer diagramContainer1;
  
         private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TrackBar trackBar1;
 	}
 }

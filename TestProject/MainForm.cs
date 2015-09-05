@@ -65,13 +65,14 @@ namespace TestProject
 			public override void Draw(Graphics graphics)
 			{
 				graphics.DrawRectangle(Pens.Black, new Rectangle(location, size));
+				graphics.DrawEllipse(Pens.Red, this.Bounds);
 			}
 
 			public override Rectangle InvalidatedRegion {
 				get {
-					InflatableRectangle rectangle = new InflatableRectangle(new Rectangle(this.location, this.size));
+					MergableRectangle rectangle = new MergableRectangle(new Rectangle(this.location, this.size));
 					foreach (LinkDrawing link in this.DrawingLinks) {
-						rectangle.Inflate(link.Bounds);
+						rectangle.Merge(link.Bounds);
 					}					
 					return rectangle.Bounds;
 				}
@@ -131,6 +132,10 @@ namespace TestProject
 
 			diagramContainer1.DrawableHeight = 705;
 			diagramContainer1.DrawableWidth = 758;
+		}
+		void TrackBar1Scroll(object sender, EventArgs e)
+		{
+			diagramContainer1.ZoomFactor = trackBar1.Value;
 		}
 
  

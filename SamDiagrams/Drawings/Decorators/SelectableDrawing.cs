@@ -90,8 +90,8 @@ namespace SamDiagrams.Drawings.Selection
 		
 		public Rectangle InvalidatedRegion {
 			get {
-				InflatableRectangle rectangle = new InflatableRectangle(selectionBorder.Bounds);
-				rectangle.Inflate(this.drawing.InvalidatedRegion);
+				MergableRectangle rectangle = new MergableRectangle(selectionBorder.Bounds);
+				rectangle.Merge(this.drawing.InvalidatedRegion);
 				return rectangle.Bounds;
 			}
 		}

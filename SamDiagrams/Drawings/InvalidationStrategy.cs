@@ -97,64 +97,81 @@ namespace SamDiagrams.Drawers
 			if (drawings.Count < 1)
 				return;
 			
-			InflatableRectangle newRectangleToInvalidate = new InflatableRectangle(drawings[0].InvalidatedRegion);
+			MergableRectangle newRectangleToInvalidate = new MergableRectangle(drawings[0].InvalidatedRegion);
 			foreach (IDrawing drawing in drawings) {
 				drawing.Invalidated = true;
-				newRectangleToInvalidate.Inflate(drawing.InvalidatedRegion);
+				newRectangleToInvalidate.Merge(drawing.InvalidatedRegion);
 			}
 			
 			Rectangle auxRectangle = newRectangleToInvalidate.Bounds;
 
-			newRectangleToInvalidate.Inflate(previouslyInvalidatedRectangle);
+			newRectangleToInvalidate.Merge(previouslyInvalidatedRectangle);
 			invalidateOverlappingDrawings(newRectangleToInvalidate.Bounds);
 			previouslyInvalidatedRectangle = auxRectangle;
+			float scaleFactor = (float)containerDrawer.DiagramContainer.ZoomFactor / 100;
+			Rectangle r = new Rectangle((int)(Math.Ceiling(newRectangleToInvalidate.Bounds.X * scaleFactor)),
+				              (int)(Math.Ceiling(newRectangleToInvalidate.Bounds.Y * scaleFactor)),
+				              (int)(Math.Ceiling(newRectangleToInvalidate.Bounds.Width * scaleFactor)),
+				              (int)(Math.Ceiling(newRectangleToInvalidate.Bounds.Height * scaleFactor)));
 			
-			containerDrawer.DiagramContainer.Invalidate(newRectangleToInvalidate.Bounds);
+			containerDrawer.DiagramContainer.Invalidate(r);
 
 		}
 		
 		void InvalidateDrawing(IDrawing drawing)
 		{
 			drawing.Invalidated = true;
-			InflatableRectangle newRectangleToInvalidate = new InflatableRectangle(drawing.InvalidatedRegion);
+			MergableRectangle newRectangleToInvalidate = new MergableRectangle(drawing.InvalidatedRegion);
 			Rectangle auxRectangle = newRectangleToInvalidate.Bounds;
 			invalidateOverlappingDrawings(previouslyInvalidatedRectangle);
-			newRectangleToInvalidate.Inflate(previouslyInvalidatedRectangle);
+			newRectangleToInvalidate.Merge(previouslyInvalidatedRectangle);
 			previouslyInvalidatedRectangle = auxRectangle;
 			invalidateOverlappingDrawings(newRectangleToInvalidate.Bounds);
 			
-			containerDrawer.DiagramContainer.Invalidate(newRectangleToInvalidate.Bounds);
+			
+			int scaleFactor = containerDrawer.DiagramContainer.ZoomFactor / 100;
+			Rectangle r = new Rectangle(newRectangleToInvalidate.Bounds.X * scaleFactor,
+				              newRectangleToInvalidate.Bounds.Y * scaleFactor,
+				              newRectangleToInvalidate.Bounds.Width * scaleFactor,
+				              newRectangleToInvalidate.Bounds.Height * scaleFactor);
+			
+			containerDrawer.DiagramContainer.Invalidate(r);
 		}
 		
 		void InvalidateLinkDrawing(LinkDrawing linkDrawing)
 		{
-			InflatableRectangle newRectangleToInvalidate = new InflatableRectangle(linkDrawing.Bounds);
-			newRectangleToInvalidate.Inflate(getLinkInvalidatedRegion(linkDrawing));
-			newRectangleToInvalidate.Inflate(
+			MergableRectangle newRectangleToInvalidate = new MergableRectangle(linkDrawing.Bounds);
+			newRectangleToInvalidate.Merge(getLinkInvalidatedRegion(linkDrawing));
+			newRectangleToInvalidate.Merge(
 				getStructureInvalidatedRegion(linkDrawing.SourceDrawing));
-			newRectangleToInvalidate.Inflate(
+			newRectangleToInvalidate.Merge(
 				getStructureInvalidatedRegion(linkDrawing.DestinationDrawing));
 			Rectangle auxRectangle = newRectangleToInvalidate.Bounds;
 			invalidateOverlappingDrawings(previouslyInvalidatedRectangle);
-			newRectangleToInvalidate.Inflate(previouslyInvalidatedRectangle);
+			newRectangleToInvalidate.Merge(previouslyInvalidatedRectangle);
 			invalidateOverlappingDrawings(newRectangleToInvalidate.Bounds);
 			previouslyInvalidatedRectangle = auxRectangle;
 			
-			containerDrawer.DiagramContainer.Invalidate(newRectangleToInvalidate.Bounds);
+			
+			int scaleFactor = containerDrawer.DiagramContainer.ZoomFactor / 100;
+			Rectangle r = new Rectangle(newRectangleToInvalidate.Bounds.X * scaleFactor,
+				              newRectangleToInvalidate.Bounds.Y * scaleFactor,
+				              newRectangleToInvalidate.Bounds.Width * scaleFactor,
+				              newRectangleToInvalidate.Bounds.Height * scaleFactor);
+			containerDrawer.DiagramContainer.Invalidate(r);
 			previouslyInvalidatedRectangle = newRectangleToInvalidate.Bounds;
-			//containerDrawer.DiagramContainer.Invalidate();
 		}
 		
 		Rectangle getStructureInvalidatedRegion(IDrawing targetDrawing)
 		{
 			targetDrawing.Invalidated = true;
-			InflatableRectangle rectangle = new InflatableRectangle(targetDrawing.InvalidatedRegion);
+			MergableRectangle rectangle = new MergableRectangle(targetDrawing.InvalidatedRegion);
 
 			for (int i = 0; i < containerDrawer.Drawings.Count; i++) {
 				IDrawing drawing = containerDrawer.Drawings[i];
 				if (drawing.Bounds.IntersectsWith(rectangle.Bounds) && drawing.Invalidated == false) {
 					drawing.Invalidated = true;
-					rectangle.Inflate(drawing.Bounds);
+					rectangle.Merge(drawing.Bounds);
 				}
 			}
 			return rectangle.Bounds;
@@ -163,21 +180,21 @@ namespace SamDiagrams.Drawers
 		
 		Rectangle getLinkInvalidatedRegion(LinkDrawing linkDrawing)
 		{
-			InflatableRectangle rectangle = new InflatableRectangle(linkDrawing.Bounds);
+			MergableRectangle rectangle = new MergableRectangle(linkDrawing.Bounds);
 			linkDrawing.Invalidated = true;
 			ILinkableDrawing sourceDrawing = linkDrawing.SourceDrawing;
 			ILinkableDrawing destinationDrawing = linkDrawing.DestinationDrawing;
 			sourceDrawing.Invalidated = true;
 			destinationDrawing.Invalidated = true;
-			rectangle.Inflate(sourceDrawing.InvalidatedRegion);
-			rectangle.Inflate(sourceDrawing.InvalidatedRegion);
+			rectangle.Merge(sourceDrawing.InvalidatedRegion);
+			rectangle.Merge(sourceDrawing.InvalidatedRegion);
 			
  
 			
 			foreach (IDrawing drawing in containerDrawer.Drawings) {
 				if (drawing.Bounds.IntersectsWith(rectangle.Bounds)) {
 					drawing.Invalidated = true;
-					rectangle.Inflate(drawing.Bounds);
+					rectangle.Merge(drawing.Bounds);
 				}
 			}
 			return rectangle.Bounds;
