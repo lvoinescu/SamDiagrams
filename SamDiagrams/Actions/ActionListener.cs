@@ -18,6 +18,8 @@
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
+using System.Drawing;
+using System.Windows.Forms;
 using SamDiagrams.Drawings;
 using SamDiagrams.Drawings.Selection;
 
@@ -76,9 +78,12 @@ namespace SamDiagrams.Actions
 
 		void OnMouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
+			double scaleFactor = (double)container.ZoomFactor / 100;
+			Point clickPoint = new Point((int)((double)e.X / scaleFactor), (int)((double)e.Y / scaleFactor));
 			foreach (IDrawing selectedDrawing in container.ContainerDrawer.Drawings) {
-				if (selectedDrawing is IClickable && selectedDrawing.Bounds.Contains(e.Location)) {
-					(selectedDrawing as IClickable).OnClick(e);
+				if (selectedDrawing is IClickable && selectedDrawing.Bounds.Contains(clickPoint)) {
+					(selectedDrawing as IClickable).OnClick(
+						new MouseEventArgs(e.Button, e.Clicks, clickPoint.X, clickPoint.Y, e.Delta));
 				}
 			}
 		}
