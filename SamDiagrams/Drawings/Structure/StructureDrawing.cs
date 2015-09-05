@@ -31,7 +31,7 @@ namespace SamDiagrams.Drawings
 	/// Default Drawing implementation associated with a Structure.
 	/// The drawing represents a tree of nodes.
 	/// </summary>
-	public class StructureDrawing : DiagramComponent
+	public class StructureDrawing : DiagramComponent, IClickable
 	{
 		
 		public event BeforeNodeExpandOrCollapseHandler BeforeNodeExpandOrCollapse;
@@ -277,12 +277,12 @@ namespace SamDiagrams.Drawings
 		}
 		
 		
-		public void OnClick(MouseEventArgs e)
+		public void OnInsideClick(MouseEventArgs e)
 		{
 			int crtExpanderRow = 0;
 			foreach (Node node in  structure.Nodes) {
 				
-				Point insideClickPoint = new Point(e.X - location.X, e.Y - location.Y);
+				Point insideClickPoint = e.Location;
 				Node nodeToToggle = RecursiveExpanderCheck(node, 0, ref crtExpanderRow, insideClickPoint, node.IsExpanded);
 				
 				if (nodeToToggle != null) {

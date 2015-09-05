@@ -19,6 +19,7 @@
  */
 using System;
 using System.Drawing;
+using System.Windows.Forms;
 using SamDiagrams.Drawings.Geometry;
 using SamDiagrams.Model;
 
@@ -129,11 +130,13 @@ namespace SamDiagrams.Drawings.Selection
 			}
 		}
 
-		public void OnClick(System.Windows.Forms.MouseEventArgs e)
+		public void OnInsideClick(MouseEventArgs e)
 		{
-			if(drawing is IClickable)
-			{
-				(drawing as IClickable).OnClick(e);
+			if (drawing is IClickable) {
+				Point drawingPointClick = new Point(e.X + Location.X - drawing.Location.X,
+					                                e.Y + Location.Y - drawing.Location.Y);
+				(drawing as IClickable).OnInsideClick(new MouseEventArgs(e.Button, e.Clicks, 
+					drawingPointClick.X, drawingPointClick.Y, e.Delta));
 			}
 		}
 		

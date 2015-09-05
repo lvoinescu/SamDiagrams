@@ -27,6 +27,6 @@ namespace SamDiagrams.Drawings
 	/// </summary>
 	public interface IClickable
 	{
-		void OnClick(MouseEventArgs e);
+		void OnInsideClick(MouseEventArgs e);
 	}
 }

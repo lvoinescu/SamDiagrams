@@ -82,8 +82,9 @@ namespace SamDiagrams.Actions
 			Point clickPoint = new Point((int)((double)e.X / scaleFactor), (int)((double)e.Y / scaleFactor));
 			foreach (IDrawing selectedDrawing in container.ContainerDrawer.Drawings) {
 				if (selectedDrawing is IClickable && selectedDrawing.Bounds.Contains(clickPoint)) {
-					(selectedDrawing as IClickable).OnClick(
-						new MouseEventArgs(e.Button, e.Clicks, clickPoint.X, clickPoint.Y, e.Delta));
+					(selectedDrawing as IClickable).OnInsideClick(
+						new MouseEventArgs(e.Button, e.Clicks, clickPoint.X - selectedDrawing.Location.X,
+						                   clickPoint.Y - selectedDrawing.Location.Y, e.Delta));
 				}
 			}
 		}
