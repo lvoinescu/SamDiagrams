@@ -38,8 +38,9 @@ namespace TestProject
 		{
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.diagramContainer1 = new SamDiagrams.DiagramContainer();
-			this.trackBar1 = new System.Windows.Forms.TrackBar();
+			this.zoomValueLabel = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
+			this.trackBar1 = new System.Windows.Forms.TrackBar();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -60,6 +61,7 @@ namespace TestProject
 			// 
 			// splitContainer1.Panel2
 			// 
+			this.splitContainer1.Panel2.Controls.Add(this.zoomValueLabel);
 			this.splitContainer1.Panel2.Controls.Add(this.label1);
 			this.splitContainer1.Panel2.Controls.Add(this.trackBar1);
 			this.splitContainer1.Size = new System.Drawing.Size(1245, 705);
@@ -83,6 +85,24 @@ namespace TestProject
 			this.diagramContainer1.TabIndex = 0;
 			this.diagramContainer1.ZoomFactor = 100;
 			// 
+			// zoomValueLabel
+			// 
+			this.zoomValueLabel.Location = new System.Drawing.Point(13, 23);
+			this.zoomValueLabel.Name = "zoomValueLabel";
+			this.zoomValueLabel.Size = new System.Drawing.Size(56, 23);
+			this.zoomValueLabel.TabIndex = 1;
+			this.zoomValueLabel.Text = "100%";
+			this.zoomValueLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// label1
+			// 
+			this.label1.Location = new System.Drawing.Point(13, 0);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(56, 23);
+			this.label1.TabIndex = 1;
+			this.label1.Text = "Zoom";
+			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
 			// trackBar1
 			// 
 			this.trackBar1.Location = new System.Drawing.Point(75, 12);
@@ -92,15 +112,6 @@ namespace TestProject
 			this.trackBar1.TabIndex = 0;
 			this.trackBar1.Value = 100;
 			this.trackBar1.Scroll += new System.EventHandler(this.TrackBar1Scroll);
-			// 
-			// label1
-			// 
-			this.label1.Location = new System.Drawing.Point(13, 12);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(56, 23);
-			this.label1.TabIndex = 1;
-			this.label1.Text = "Zoom";
-			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// MainForm
 			// 
@@ -127,5 +138,6 @@ namespace TestProject
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TrackBar trackBar1;
+        private System.Windows.Forms.Label zoomValueLabel;
 	}
 }

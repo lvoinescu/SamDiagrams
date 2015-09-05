@@ -108,7 +108,7 @@ namespace SamDiagrams.Drawers
 			newRectangleToInvalidate.Merge(previouslyInvalidatedRectangle);
 			invalidateOverlappingDrawings(newRectangleToInvalidate.Bounds);
 			previouslyInvalidatedRectangle = auxRectangle;
-			float scaleFactor = (float)containerDrawer.DiagramContainer.ZoomFactor / 100;
+			double scaleFactor = (float)containerDrawer.DiagramContainer.ZoomFactor / 100;
 			Rectangle r = new Rectangle((int)(Math.Ceiling(newRectangleToInvalidate.Bounds.X * scaleFactor)),
 				              (int)(Math.Ceiling(newRectangleToInvalidate.Bounds.Y * scaleFactor)),
 				              (int)(Math.Ceiling(newRectangleToInvalidate.Bounds.Width * scaleFactor)),
@@ -129,11 +129,11 @@ namespace SamDiagrams.Drawers
 			invalidateOverlappingDrawings(newRectangleToInvalidate.Bounds);
 			
 			
-			int scaleFactor = containerDrawer.DiagramContainer.ZoomFactor / 100;
-			Rectangle r = new Rectangle(newRectangleToInvalidate.Bounds.X * scaleFactor,
-				              newRectangleToInvalidate.Bounds.Y * scaleFactor,
-				              newRectangleToInvalidate.Bounds.Width * scaleFactor,
-				              newRectangleToInvalidate.Bounds.Height * scaleFactor);
+			double scaleFactor = containerDrawer.DiagramContainer.ZoomFactor / 100;
+			Rectangle r = new Rectangle((int)(Math.Ceiling(newRectangleToInvalidate.Bounds.X * scaleFactor)),
+				              (int)(Math.Ceiling(newRectangleToInvalidate.Bounds.Y * scaleFactor)),
+				              (int)(Math.Ceiling(newRectangleToInvalidate.Bounds.Width * scaleFactor)),
+				              (int)(Math.Ceiling(newRectangleToInvalidate.Bounds.Height * scaleFactor)));
 			
 			containerDrawer.DiagramContainer.Invalidate(r);
 		}

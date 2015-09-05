@@ -21,11 +21,8 @@ namespace SamDiagrams.Drawings.Selection
 
 	public partial class SelectionBorder : IBoundedShape
 	{
-		internal static int squareSize = 8;
-		internal static int inflate = 2;
+		internal static int CORENR_SQUARE_SIZE = 8;
 		IDrawing drawing;
-		internal Point initialLocation;
-		internal Size initialSize;
 
 		bool invalidated = true;
 
@@ -51,34 +48,33 @@ namespace SamDiagrams.Drawings.Selection
 				float[] dashValues = { 6, 3 };
 				p.DashPattern = dashValues;
 				Rectangle r = new Rectangle(drawing.Location, drawing.Size);
-				r.Inflate(new Size(inflate, inflate));
 				graphics.DrawRectangle(p, r);
-				graphics.FillRectangle(Brushes.White, new Rectangle(r.Location.X - squareSize, r.Location.Y - squareSize,	squareSize, squareSize));
-				graphics.DrawRectangle(Pens.Blue, new Rectangle(r.Location.X - squareSize, r.Location.Y - squareSize, squareSize, squareSize));
+				graphics.FillRectangle(Brushes.White, new Rectangle(r.Location.X - CORENR_SQUARE_SIZE, r.Location.Y - CORENR_SQUARE_SIZE,	CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE));
+				graphics.DrawRectangle(Pens.Blue, new Rectangle(r.Location.X - CORENR_SQUARE_SIZE, r.Location.Y - CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE));
 
-				graphics.FillRectangle(Brushes.White, new Rectangle(r.Location.X + r.Width, r.Location.Y - squareSize, squareSize, squareSize));
-				graphics.DrawRectangle(Pens.Blue, new Rectangle(r.Location.X + r.Width, r.Location.Y - squareSize, squareSize, squareSize));
+				graphics.FillRectangle(Brushes.White, new Rectangle(r.Location.X + r.Width, r.Location.Y - CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE));
+				graphics.DrawRectangle(Pens.Blue, new Rectangle(r.Location.X + r.Width, r.Location.Y - CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE));
 
-				graphics.FillRectangle(Brushes.White, new Rectangle(r.Location.X + (r.Width - squareSize) / 2, r.Location.Y - squareSize, squareSize, squareSize));
-				graphics.DrawRectangle(Pens.Blue, new Rectangle(r.Location.X + (r.Width - squareSize) / 2, r.Location.Y - squareSize, squareSize, squareSize));
-
-
-
-				graphics.FillRectangle(Brushes.White, new Rectangle(r.Location.X - squareSize, r.Location.Y + r.Size.Height, squareSize, squareSize));
-				graphics.DrawRectangle(Pens.Blue, new Rectangle(r.Location.X - squareSize, r.Location.Y + r.Size.Height, squareSize, squareSize));
+				graphics.FillRectangle(Brushes.White, new Rectangle(r.Location.X + (r.Width - CORENR_SQUARE_SIZE) / 2, r.Location.Y - CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE));
+				graphics.DrawRectangle(Pens.Blue, new Rectangle(r.Location.X + (r.Width - CORENR_SQUARE_SIZE) / 2, r.Location.Y - CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE));
 
 
-				graphics.FillRectangle(Brushes.White, new Rectangle(r.Location.X - squareSize, r.Location.Y + (r.Size.Height - squareSize) / 2, squareSize, squareSize));
-				graphics.DrawRectangle(Pens.Blue, new Rectangle(r.Location.X - squareSize, r.Location.Y + (r.Size.Height - squareSize) / 2, squareSize, squareSize));
 
-				graphics.FillRectangle(Brushes.White, new Rectangle(r.Location.X + r.Width, r.Location.Y + r.Size.Height, squareSize, squareSize));
-				graphics.DrawRectangle(Pens.Blue, new Rectangle(r.Location.X + r.Width, r.Location.Y + r.Size.Height, squareSize, squareSize));
+				graphics.FillRectangle(Brushes.White, new Rectangle(r.Location.X - CORENR_SQUARE_SIZE, r.Location.Y + r.Size.Height, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE));
+				graphics.DrawRectangle(Pens.Blue, new Rectangle(r.Location.X - CORENR_SQUARE_SIZE, r.Location.Y + r.Size.Height, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE));
 
-				graphics.FillRectangle(Brushes.White, new Rectangle(r.Location.X + (r.Width - squareSize) / 2, r.Location.Y + r.Size.Height, squareSize, squareSize));
-				graphics.DrawRectangle(Pens.Blue, new Rectangle(r.Location.X + (r.Width - squareSize) / 2, r.Location.Y + r.Size.Height, squareSize, squareSize));
 
-				graphics.FillRectangle(Brushes.White, new Rectangle(r.Location.X + r.Size.Width, r.Location.Y + (r.Size.Height - squareSize) / 2, squareSize, squareSize));
-				graphics.DrawRectangle(Pens.Blue, new Rectangle(r.Location.X + r.Size.Width, r.Location.Y + (r.Size.Height - squareSize) / 2, squareSize, squareSize));
+				graphics.FillRectangle(Brushes.White, new Rectangle(r.Location.X - CORENR_SQUARE_SIZE, r.Location.Y + (r.Size.Height - CORENR_SQUARE_SIZE) / 2, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE));
+				graphics.DrawRectangle(Pens.Blue, new Rectangle(r.Location.X - CORENR_SQUARE_SIZE, r.Location.Y + (r.Size.Height - CORENR_SQUARE_SIZE) / 2, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE));
+
+				graphics.FillRectangle(Brushes.White, new Rectangle(r.Location.X + r.Width, r.Location.Y + r.Size.Height, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE));
+				graphics.DrawRectangle(Pens.Blue, new Rectangle(r.Location.X + r.Width, r.Location.Y + r.Size.Height, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE));
+
+				graphics.FillRectangle(Brushes.White, new Rectangle(r.Location.X + (r.Width - CORENR_SQUARE_SIZE) / 2, r.Location.Y + r.Size.Height, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE));
+				graphics.DrawRectangle(Pens.Blue, new Rectangle(r.Location.X + (r.Width - CORENR_SQUARE_SIZE) / 2, r.Location.Y + r.Size.Height, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE));
+
+				graphics.FillRectangle(Brushes.White, new Rectangle(r.Location.X + r.Size.Width, r.Location.Y + (r.Size.Height - CORENR_SQUARE_SIZE) / 2, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE));
+				graphics.DrawRectangle(Pens.Blue, new Rectangle(r.Location.X + r.Size.Width, r.Location.Y + (r.Size.Height - CORENR_SQUARE_SIZE) / 2, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE));
 			}
 		}
 
@@ -95,20 +91,11 @@ namespace SamDiagrams.Drawings.Selection
 				return Bounds.Size;
 			}
 		}
-		public bool Selected {
-			get {
-				throw new NotImplementedException();
-			}
-			set {
-				throw new NotImplementedException();
-			}
-		}
-
 
 		public Rectangle Bounds {
 			get {
 				Rectangle r = new Rectangle(this.drawing.Location, this.drawing.Size);
-				r.Inflate(new Size(inflate + squareSize, inflate + squareSize));
+				r.Inflate(new Size(CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE));
 				return r;
 			}
 		}
@@ -118,47 +105,44 @@ namespace SamDiagrams.Drawings.Selection
 
 		internal void setReziseDirection(Point p)
 		{
-//			initialLocation = this.item.Location;
-//			initialSize = item.Size;
-//			Rectangle r = new Rectangle(item.Location, item.Size);
+
 			Rectangle r = new Rectangle(0, 0, 0, 0);
-			r.Inflate(new Size(2, 2));
-			Rectangle r1 = new Rectangle(r.Location.X - squareSize, r.Location.Y - squareSize, squareSize, squareSize);
+			Rectangle r1 = new Rectangle(r.Location.X - CORENR_SQUARE_SIZE, r.Location.Y - CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE);
 			if (r1.Contains(p)) {
 				resizeDirection = ResizeDirection.NW;
 				return;
 			}
-			Rectangle r2 = new Rectangle(r.Location.X + r.Width, r.Location.Y - squareSize, squareSize, squareSize);
+			Rectangle r2 = new Rectangle(r.Location.X + r.Width, r.Location.Y - CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE);
 			if (r2.Contains(p)) {
 				resizeDirection = ResizeDirection.NE;
 				return;
 			}          
-			Rectangle r3 = new Rectangle(r.Location.X + (r.Width - squareSize) / 2, r.Location.Y - squareSize, squareSize, squareSize);
+			Rectangle r3 = new Rectangle(r.Location.X + (r.Width - CORENR_SQUARE_SIZE) / 2, r.Location.Y - CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE);
 			if (r3.Contains(p)) {
 				resizeDirection = ResizeDirection.N;
 				return;
 			} 
-			Rectangle r4 = new Rectangle(r.Location.X - squareSize, r.Location.Y + r.Size.Height, squareSize, squareSize);
+			Rectangle r4 = new Rectangle(r.Location.X - CORENR_SQUARE_SIZE, r.Location.Y + r.Size.Height, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE);
 			if (r4.Contains(p)) {
 				resizeDirection = ResizeDirection.SW;
 				return;
 			} 
-			Rectangle r5 = new Rectangle(r.Location.X - squareSize, r.Location.Y + (r.Size.Height - squareSize) / 2, squareSize, squareSize);
+			Rectangle r5 = new Rectangle(r.Location.X - CORENR_SQUARE_SIZE, r.Location.Y + (r.Size.Height - CORENR_SQUARE_SIZE) / 2, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE);
 			if (r5.Contains(p)) {
 				resizeDirection = ResizeDirection.W;
 				return;
 			} 
-			Rectangle r6 = new Rectangle(r.Location.X + r.Width, r.Location.Y + r.Size.Height, squareSize, squareSize);
+			Rectangle r6 = new Rectangle(r.Location.X + r.Width, r.Location.Y + r.Size.Height, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE);
 			if (r6.Contains(p)) {
 				resizeDirection = ResizeDirection.SE;
 				return;
 			}
-			Rectangle r7 = new Rectangle(r.Location.X + (r.Width - squareSize) / 2, r.Location.Y + r.Size.Height, squareSize, squareSize);
+			Rectangle r7 = new Rectangle(r.Location.X + (r.Width - CORENR_SQUARE_SIZE) / 2, r.Location.Y + r.Size.Height, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE);
 			if (r7.Contains(p)) {
 				resizeDirection = ResizeDirection.S;
 				return;
 			}
-			Rectangle r8 = new Rectangle(r.Location.X + r.Size.Width, r.Location.Y + (r.Size.Height - squareSize) / 2, squareSize, squareSize);
+			Rectangle r8 = new Rectangle(r.Location.X + r.Size.Width, r.Location.Y + (r.Size.Height - CORENR_SQUARE_SIZE) / 2, CORENR_SQUARE_SIZE, CORENR_SQUARE_SIZE);
 			if (r8.Contains(p)) {
 				resizeDirection = ResizeDirection.E;
 				return;

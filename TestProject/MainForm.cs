@@ -136,6 +136,7 @@ namespace TestProject
 		void TrackBar1Scroll(object sender, EventArgs e)
 		{
 			diagramContainer1.ZoomFactor = trackBar1.Value;
+			zoomValueLabel.Text = trackBar1.Value.ToString()+"%";
 		}
 
  

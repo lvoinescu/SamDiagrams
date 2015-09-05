@@ -92,6 +92,7 @@ namespace SamDiagrams.Drawings.Selection
 			get {
 				MergableRectangle rectangle = new MergableRectangle(selectionBorder.Bounds);
 				rectangle.Merge(this.drawing.InvalidatedRegion);
+				rectangle.Inflate(2);
 				return rectangle.Bounds;
 			}
 		}

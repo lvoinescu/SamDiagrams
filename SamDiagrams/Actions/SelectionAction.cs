@@ -38,14 +38,14 @@ namespace SamDiagrams.Actions
 			bool drawingFound = false;
 			float scaleFactor = (float)container.ZoomFactor / 100;
 			
-			Point p = new Point((int)(e.Location.X / scaleFactor), (int)(e.Location.Y / scaleFactor));
-			p.Offset(container.HScrollBar.Value, container.VScrollBar.Value);
+			Point scaledMouseLocation = new Point((int)((double)e.Location.X / scaleFactor), (int)((double)e.Location.Y / scaleFactor));
+			scaledMouseLocation.Offset(container.HScrollBar.Value, container.VScrollBar.Value);
 			
 			for (int i = 0; i < container.ContainerDrawer.Drawings.Count && !drawingFound; i++) {
 				SelectableDrawing selectableDrawing = container.ContainerDrawer.Drawings[i] as SelectableDrawing;
 
 				if (selectableDrawing != null) {
-					if (selectableDrawing.Bounds.Contains(e.Location)) {
+					if (selectableDrawing.Bounds.Contains(scaledMouseLocation)) {
 						drawingFound = true;
 						if (!selectedDrawings.Contains(selectableDrawing)) {
 							if (Control.ModifierKeys != Keys.Control) {

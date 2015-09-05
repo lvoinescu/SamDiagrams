@@ -60,10 +60,11 @@ namespace SamDiagrams.Actions
 		{
 			float scaleFactor = (float)container.ZoomFactor / 100;
 			foreach (MovableDrawing drawing in drawingsToMove) {
-				Point p = new Point((int)(e.Location.X / scaleFactor), (int)(e.Location.Y / scaleFactor));
-				p.Offset(container.HScrollBar.Value, container.VScrollBar.Value);
+				Point mouseDownScaledLocation = new Point((int)((double)e.Location.X / scaleFactor), 
+					                                (int)((double)e.Location.Y / scaleFactor));
+				mouseDownScaledLocation.Offset(container.HScrollBar.Value, container.VScrollBar.Value);
 				
-				if (drawing.Bounds.Contains(e.Location)) {
+				if (drawing.Bounds.Contains(mouseDownScaledLocation)) {
 					startMovePoint = new Point(e.X, e.Y);
 					actionStarted = true;
 				}
@@ -83,9 +84,9 @@ namespace SamDiagrams.Actions
 			if (!actionStarted) {
 				return;
 			}
-			float scaleFactor = (float)container.ZoomFactor / 100;
-			int dx = (int)((e.X - startMovePoint.X) / scaleFactor);
-			int dy = (int)((e.Y - startMovePoint.Y) / scaleFactor);
+			double scaleFactor = (float)container.ZoomFactor / 100;
+			int dx = (int)((double)(e.X - startMovePoint.X) / scaleFactor);
+			int dy = (int)((double)(e.Y - startMovePoint.Y) / scaleFactor);
 			List<IDrawing> movedDrawing = new List<IDrawing>();
 			foreach (MovableDrawing movableDrawing in drawingsToMove) {
 				int x = (int)(movableDrawing.InitialLocation.X + dx);
