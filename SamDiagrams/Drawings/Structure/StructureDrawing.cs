@@ -18,14 +18,12 @@
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings.Geometry;
-using SamDiagrams.Drawings.Link;
-using SamDiagrams.Model;
+using SamDiagrams.Events;
 
 namespace SamDiagrams.Drawings
 {
@@ -33,10 +31,11 @@ namespace SamDiagrams.Drawings
 	/// Default Drawing implementation associated with a Structure.
 	/// The drawing represents a tree of nodes.
 	/// </summary>
-	public class StructureDrawing : BaseDrawing, ILinkableDrawing, IClickable
+	public class StructureDrawing : DiagramComponent
 	{
 		
 		public event BeforeNodeExpandOrCollapseHandler BeforeNodeExpandOrCollapse;
+		public event DrawingResizedHandler DrawingResized;
 		
 		private static SolidBrush CONTOUR_BRUSH = new SolidBrush(Color.SteelBlue);
 		private const int CORNER_RADIUS = 10;
@@ -67,34 +66,21 @@ namespace SamDiagrams.Drawings
 		private int nrOfDisplayedRows = 0;
 		private int crtNodCheck = 0;
 
-		private List<LinkDrawing> links;
-		public Item Item {
-			get {
-				return this.structure;
-			}
-		}
-		
-		public StructureDrawing(Structure Structure)
+
+		public StructureDrawing(Structure structure):base(structure)
 		{
-			this.Structure = Structure;
+			this.structure = structure;
 			this.invalidated = true;
 			conturPen = new Pen(CONTOUR_BRUSH, 1F);
 			this.selected = false;
-			this.rowFont = new Font(this.Structure.DiagramContainer.Font.FontFamily, 9.0F);
-			this.titleFont = new Font(this.Structure.DiagramContainer.Font.FontFamily, 9.0F, FontStyle.Bold);
+			this.rowFont = new Font(this.structure.DiagramContainer.Font.FontFamily, 9.0F);
+			this.titleFont = new Font(this.structure.DiagramContainer.Font.FontFamily, 9.0F, FontStyle.Bold);
 			this.structure.DiagramContainer.ZoomFactorChanged += new ZoomFactorChangedHandler(OnZoomFactorChanged);
 			rowHeight = CalculateRowHeight();
 			this.size.Width = DEFAULT_WIDTH;
-			this.links = new List<LinkDrawing>();
 			AutoSizeContent();
 		}
-
-		public List<LinkDrawing> DrawingLinks {
-			get {
-				return this.links;
-			}
-		}
-		
+	
 		public Structure Structure {
 			get {
 				return structure;
@@ -104,26 +90,17 @@ namespace SamDiagrams.Drawings
 			}
 		}
 
-		public Rectangle InvalidatedRegion {
+		public override Rectangle InvalidatedRegion {
 			get {
 				MergableRectangle rectangle = new MergableRectangle(this.Bounds);
-				foreach (LinkDrawing link in links) {
+				foreach (LinkDrawing link in this.DrawingLinks) {
 					rectangle.Merge(link.Bounds);
 				}
 				return rectangle.Bounds;
 			}
 		}
 		
-		public bool Selected {
-			get {
-				return selected;
-			}
-			set {
-				selected = value;
-			}
-		}
-
-			
+	
 		public override void Draw(Graphics graphics)
 		{
 			GraphicsPath path = new GraphicsPath();
@@ -312,8 +289,16 @@ namespace SamDiagrams.Drawings
 					if (BeforeNodeExpandOrCollapse != null) {
 						BeforeNodeExpandOrCollapse(this, new BeforeNodeExpandOrCollapseArg(nodeToToggle));
 					}
+					int previousHeight = size.Height;
+					int previousWidth = size.Width;
+					
 					nodeToToggle.IsExpanded = !nodeToToggle.IsExpanded;
-					structure.DiagramContainer.Invalidate(new Rectangle(Location, size));
+					AutoSizeContent();
+					if (DrawingResized != null) {
+						DrawingResized(this,
+							new DrawingResizedEventArgs(this, 
+								size.Height - previousHeight, size.Width - previousWidth));
+					}
 					return;
 				}
 				crtExpanderRow++;
@@ -329,7 +314,8 @@ namespace SamDiagrams.Drawings
 		/// <param name="insideClickPoint">the location inside the structure where de mouse was clicked</param>
 		/// <param name="parentIsExpanded">true if parent node is expanded, false otherwhise</param>
 		/// <returns></returns>
-		private Node RecursiveExpanderCheck(Node node, int nodeLevel, ref int crtExpanderRow, Point insideClickPoint, bool parentIsExpanded)
+		private Node RecursiveExpanderCheck(Node node, int nodeLevel, ref int crtExpanderRow,
+			Point insideClickPoint, bool parentIsExpanded)
 		{
 			int cY = rowHeight * crtExpanderRow + nodesDrawingTopPosition - location.Y + TITLE_OFFSET;
 			RectangleF rowRectangleToCheck = new RectangleF(LEFT_PADDING, cY, EXPANDER_SIZE, EXPANDER_SIZE);
@@ -364,7 +350,8 @@ namespace SamDiagrams.Drawings
 			for (int i = 0; i < structure.Nodes.Count; i++) {
 				Node nod = GetNodAtXYRec(structure.Nodes[i], LEFT_PADDING, nodesDrawingTopPosition, x, y, structure.Nodes[i].IsExpanded);
 				if (nod != null) {
-					return new StructureNodeInfo(nod, this, new Rectangle(nodDblX, nodDblY, this.Location.X + this.size.Width - nodDblX, this.rowHeight));
+					return new StructureNodeInfo(nod, this, new Rectangle(nodDblX, nodDblY, 
+						this.Location.X + this.size.Width - nodDblX, this.rowHeight));
 				}
 				crtNodCheck++;
 			}
