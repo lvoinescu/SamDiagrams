@@ -25,13 +25,13 @@ using System.Windows.Forms;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings.Geometry;
 using SamDiagrams.Drawings.Link;
-using SamDiagrams.Drawings.Selection;
 using SamDiagrams.Model;
 
 namespace SamDiagrams.Drawings
 {
 	/// <summary>
-	/// Description of ComponentDrawer.
+	/// Default Drawing implementation associated with a Structure.
+	/// The drawing represents a tree of nodes.
 	/// </summary>
 	public class StructureDrawing : BaseDrawing, ILinkableDrawing, IClickable
 	{
@@ -39,15 +39,15 @@ namespace SamDiagrams.Drawings
 		public event BeforeNodeExpandOrCollapseHandler BeforeNodeExpandOrCollapse;
 		
 		private static SolidBrush CONTOUR_BRUSH = new SolidBrush(Color.SteelBlue);
-		private const int SCALED_CORNER_RADIUS = 10;
-		private const int DEFAULT_WIDTH = 100;
 		private const int CORNER_RADIUS = 10;
+		private const int DEFAULT_WIDTH = 100;
 		private const int LEFT_PADDING = 4;
 		private const int TITLE_OFFSET = 5;
 		private const int TAB_NOD_SIZE = 10;
 		private const int EXPANDER_SIZE = 10;
 		private const int IMAGE_SPACE = 14;
 		private const int IMAGE_PADDING = 4;
+		private const int IMAGE_SIZE = 16;
 		private static Color BORDER_COLOR = Color.SteelBlue;
 		private static SolidBrush TITLE_BRUSH = new SolidBrush(Color.Black);
 		
@@ -55,12 +55,11 @@ namespace SamDiagrams.Drawings
 		private Color color = Color.LightSteelBlue;
 		
 
-		private int rowScaledHeight = 10;
-		private Font rowFont;
+		internal int rowHeight = 10;
+		internal Font rowFont;
 		private Font titleFont;
 		private int titleHeight = 26;
-		private Pen contur;
-		private float scaleFactor = 1;
+		private Pen conturPen;
 		private int crtDrawingRow = 0;
 		private int nodesDrawingTopPosition;
 		private int titleWidth;
@@ -68,8 +67,6 @@ namespace SamDiagrams.Drawings
 		private int nrOfDisplayedRows = 0;
 		private int crtNodCheck = 0;
 
-		internal Font titleScaledFont;
-		internal Font rowScaledFont;
 		private List<LinkDrawing> links;
 		public Item Item {
 			get {
@@ -81,12 +78,12 @@ namespace SamDiagrams.Drawings
 		{
 			this.Structure = Structure;
 			this.invalidated = true;
-			contur = new Pen(CONTOUR_BRUSH, 1F);
+			conturPen = new Pen(CONTOUR_BRUSH, 1F);
 			this.selected = false;
 			this.rowFont = new Font(this.Structure.DiagramContainer.Font.FontFamily, 9.0F);
 			this.titleFont = new Font(this.Structure.DiagramContainer.Font.FontFamily, 9.0F, FontStyle.Bold);
 			this.structure.DiagramContainer.ZoomFactorChanged += new ZoomFactorChangedHandler(OnZoomFactorChanged);
-			rowScaledHeight = CalculateRowHeight();
+			rowHeight = CalculateRowHeight();
 			this.size.Width = DEFAULT_WIDTH;
 			this.links = new List<LinkDrawing>();
 			AutoSizeContent();
@@ -133,59 +130,57 @@ namespace SamDiagrams.Drawings
 
 			//header
 			path.AddArc(location.X, location.Y, 
-			            SCALED_CORNER_RADIUS, SCALED_CORNER_RADIUS, 180, 90);
-			path.AddArc(location.X + size.Width - SCALED_CORNER_RADIUS, location.Y, 
-			            SCALED_CORNER_RADIUS, SCALED_CORNER_RADIUS, 270, 90);
-			path.AddLine(location.X + size.Width, location.Y + (int)(SCALED_CORNER_RADIUS / 2), 
-			             location.X + size.Width, location.Y + (int)(SCALED_CORNER_RADIUS / 2) + titleHeight + TITLE_OFFSET);
-			path.AddLine(location.X, location.Y + (int)(SCALED_CORNER_RADIUS / 2) + titleHeight + TITLE_OFFSET, 
-			             location.X, location.Y + (int)(SCALED_CORNER_RADIUS / 2));
+				CORNER_RADIUS, CORNER_RADIUS, 180, 90);
+			path.AddArc(location.X + size.Width - CORNER_RADIUS, location.Y, 
+				CORNER_RADIUS, CORNER_RADIUS, 270, 90);
+			path.AddLine(location.X + size.Width, location.Y + (int)(CORNER_RADIUS / 2), 
+				location.X + size.Width, location.Y + (int)(CORNER_RADIUS / 2) + titleHeight + TITLE_OFFSET);
+			path.AddLine(location.X, location.Y + (int)(CORNER_RADIUS / 2) + titleHeight + TITLE_OFFSET, 
+				location.X, location.Y + (int)(CORNER_RADIUS / 2));
 			path.CloseAllFigures();
 
 			
 			//title background
 			graphics.FillPath(new SolidBrush(color), path);
-			graphics.DrawPath(contur, path);
+			graphics.DrawPath(conturPen, path);
 
 			//title
 			int titlePosX = location.X + (size.Width - titleWidth) / 2;
-			graphics.DrawString(this.Structure.Title, titleScaledFont, TITLE_BRUSH, new PointF(titlePosX, location.Y));
+			graphics.DrawString(this.Structure.Title, titleFont, TITLE_BRUSH, new PointF(titlePosX, location.Y));
 			if (Structure.TitleImage != null)
 				graphics.DrawImage(Structure.TitleImage, 
-				                   new Rectangle(((int)((this.location.X + 4))), ((int)((this.location.Y + 4))),
-				                                 ((int)(16)), ((int)(16))));
+					new Rectangle(this.location.X + IMAGE_PADDING, this.location.Y + IMAGE_PADDING, IMAGE_SIZE, IMAGE_SIZE));
 
 
-			int xscaledOffset = (int)((this.location.X + LEFT_PADDING));
-			nodesDrawingTopPosition = location.Y + titleHeight + (int)(SCALED_CORNER_RADIUS / 2);
-			int mainHeightScaled = rowScaledHeight * nrOfDisplayedRows + TITLE_OFFSET;
+			int xOffset = this.location.X + LEFT_PADDING;
+			nodesDrawingTopPosition = location.Y + titleHeight + (int)(Math.Ceiling((double)CORNER_RADIUS / 2));
+			int mainHeight = rowHeight * nrOfDisplayedRows + TITLE_OFFSET;
 			if (!Structure.DiagramContainer.AutoSizeItem) {
-				mainHeightScaled = this.size.Height - TITLE_OFFSET - rowScaledHeight - SCALED_CORNER_RADIUS;
+				mainHeight = this.size.Height - TITLE_OFFSET - rowHeight - CORNER_RADIUS;
 			}
-			Rectangle lineMainR = new Rectangle(location.X, nodesDrawingTopPosition, size.Width, mainHeightScaled);
+			Rectangle lineMainR = new Rectangle(location.X, nodesDrawingTopPosition, size.Width, mainHeight);
 			graphics.FillRectangle(Brushes.White, lineMainR);
-			graphics.DrawRectangle(contur, lineMainR);
+			graphics.DrawRectangle(conturPen, lineMainR);
 
 			crtDrawingRow = 0;
 			foreach (Node node in Structure.Nodes) {
-				RecursiveDraw(graphics, rowScaledFont, scaleFactor, node, xscaledOffset, nodesDrawingTopPosition + TITLE_OFFSET);
+				RecursiveDraw(graphics, rowFont, node, xOffset, nodesDrawingTopPosition + TITLE_OFFSET);
 				crtDrawingRow++;
 			}
 			
 			path = new GraphicsPath();
-			path.AddArc(location.X, lineMainR.Y + lineMainR.Height - (int)(SCALED_CORNER_RADIUS / 2), 
-			            SCALED_CORNER_RADIUS, SCALED_CORNER_RADIUS, 180, -90);
-			path.AddArc(location.X + size.Width - SCALED_CORNER_RADIUS, lineMainR.Y + lineMainR.Height - (int)(SCALED_CORNER_RADIUS / 2),
-			            SCALED_CORNER_RADIUS, SCALED_CORNER_RADIUS, 90, -90);
+			path.AddArc(location.X, lineMainR.Y + lineMainR.Height - (int)(CORNER_RADIUS / 2), 
+				CORNER_RADIUS, CORNER_RADIUS, 180, -90);
+			path.AddArc(location.X + size.Width - CORNER_RADIUS, lineMainR.Y + lineMainR.Height - (int)(CORNER_RADIUS / 2),
+				CORNER_RADIUS, CORNER_RADIUS, 90, -90);
 			path.CloseAllFigures();
 			graphics.FillPath(new SolidBrush(color), path);
-			graphics.DrawPath(contur, path);
+			graphics.DrawPath(conturPen, path);
 			
 		}
 		
 		private void OnZoomFactorChanged(object sender, ZoomFactorChangedArg e)
 		{
-			scaleFactor = (float)e.ZoomLevel / 100;
 			AutoSizeContent();
 		}
 		
@@ -203,8 +198,8 @@ namespace SamDiagrams.Drawings
 		
 		private int CalculateRowHeight()
 		{
-			rowScaledFont = new Font(this.rowFont.FontFamily, (float)((rowFont.Size - 0)));
-			Size sT = TextRenderer.MeasureText("TEST", rowScaledFont);
+			rowFont = new Font(this.rowFont.FontFamily, (float)((rowFont.Size - 0)));
+			Size sT = TextRenderer.MeasureText("TEST", rowFont);
 			return (int)(sT.Height);
 		}
 		
@@ -217,67 +212,66 @@ namespace SamDiagrams.Drawings
 			}
 			if (structure.DiagramContainer.AutoSizeItem)
 				nrOfDisplayedRows = nr;
-			rowScaledHeight = CalculateRowHeight();
-			titleScaledFont = new Font(this.titleFont.FontFamily, (float)(titleFont.Size), FontStyle.Bold);
-			rowScaledFont = new Font(this.rowFont.FontFamily, rowFont.Size);
+			rowHeight = CalculateRowHeight();
+			titleFont = new Font(this.titleFont.FontFamily, (float)(titleFont.Size), FontStyle.Bold);
+			rowFont = new Font(this.rowFont.FontFamily, rowFont.Size);
 			Size sT = TextRenderer.MeasureText(structure.Title, titleFont);
 			titleHeight = sT.Height;
 			titleWidth = sT.Width;
-			size.Height = rowScaledHeight * nr + TITLE_OFFSET + titleHeight + (int)(SCALED_CORNER_RADIUS);
+			size.Height = rowHeight * nr + TITLE_OFFSET + titleHeight + CORNER_RADIUS;
 
 		}
 		
 		Random r = new Random(255);
-		private void RecursiveDraw(Graphics g, Font  nodeFont, float scaleFactor, Node nod, int xOffset, int yOffset)
+		private void RecursiveDraw(Graphics g, Font  nodeFont, Node nod, int xOffset, int yOffset)
 		{
 
-			int cY = yOffset + rowScaledHeight * crtDrawingRow;
+			int cY = yOffset + rowHeight * crtDrawingRow;
 			int cX = xOffset;
-			int expanderScaledSize = (int)(EXPANDER_SIZE * scaleFactor);
 
 			if (!Structure.DiagramContainer.AutoSizeItem && cY >
-			    location.Y + size.Height - SCALED_CORNER_RADIUS - rowScaledHeight)
+			    location.Y + size.Height - CORNER_RADIUS - rowHeight)
 				return;
 
 			if (!nod.IsLeaf) {
-				g.DrawRectangle(Pens.Black, cX, cY, expanderScaledSize, expanderScaledSize);
-				g.DrawLine(Pens.Black, cX, cY + expanderScaledSize / 2, cX + expanderScaledSize, cY + expanderScaledSize / 2);
+				g.DrawRectangle(Pens.Black, cX, cY, EXPANDER_SIZE, EXPANDER_SIZE);
+				g.DrawLine(Pens.Black, cX, cY + EXPANDER_SIZE / 2, cX + EXPANDER_SIZE, cY + EXPANDER_SIZE / 2);
 				if (!nod.IsExpanded) {
-					g.DrawLine(Pens.Black, cX + expanderScaledSize / 2, cY, cX + expanderScaledSize / 2, cY + +expanderScaledSize);
+					g.DrawLine(Pens.Black, cX + EXPANDER_SIZE / 2, cY, cX + EXPANDER_SIZE / 2, cY + +EXPANDER_SIZE);
 				}
 			}
 
 			int space = 0;
 
 			for (int i = 0; i < nod.Images.Count; i++) {
-				g.DrawImage(nod.Images[i], cX + expanderScaledSize + space, cY + (int)(IMAGE_PADDING / 2),
-				            rowScaledHeight - IMAGE_PADDING, rowScaledHeight - IMAGE_PADDING);
-				space += (int)(IMAGE_SPACE) - IMAGE_PADDING / 2;
+				g.DrawImage(nod.Images[i], cX + EXPANDER_SIZE + space, cY + (int)(IMAGE_PADDING / 2),
+					rowHeight - IMAGE_PADDING, rowHeight - IMAGE_PADDING);
+				space += IMAGE_SPACE - IMAGE_PADDING / 2;
 			}
 			
-			g.DrawString(nod.Text, nodeFont, TITLE_BRUSH, new PointF(cX + space + expanderScaledSize, cY));
+			g.DrawString(nod.Text, nodeFont, TITLE_BRUSH, new PointF(cX + space + EXPANDER_SIZE, cY));
 			if ((!nod.IsLeaf) && nod.IsExpanded) {
 				xOffset += TAB_NOD_SIZE;
 				for (int i = 0; i < nod.Count; i++) {
 					crtDrawingRow++;
-					RecursiveDraw(g, nodeFont, scaleFactor, nod[i], xOffset, yOffset);
+					RecursiveDraw(g, nodeFont, nod[i], xOffset, yOffset);
 				}
 			}
 		}
 		
 		private Node GetNodAtXYRec(Node nod, int x, int y, int mouseX, int mouseY, bool parentIsExpanded)
 		{
-			int cY = (int)(y + rowScaledHeight * crtNodCheck);
-			int cX = (int)(x);
+			int cY = y + rowHeight * crtNodCheck;
+			int cX = x;
 			float yT = cY;
-			RectangleF r = new RectangleF(cX, yT, size.Width, rowScaledHeight);
+			RectangleF r = new RectangleF(cX, yT, size.Width, rowHeight);
 			if (r.Contains(mouseX, mouseY)) {
-				nodDblX = location.X + (int)(x) + (int)(EXPANDER_SIZE);
-				nodDblY = location.Y + (int)(nodesDrawingTopPosition) + (int)(crtNodCheck * rowScaledHeight);
+				nodDblX = location.X + x + EXPANDER_SIZE;
+				nodDblY = location.Y + nodesDrawingTopPosition + crtNodCheck * rowHeight;
 				return nod;
 			}
 			if (nod.IsExpanded) {
-				x += (int)(TAB_NOD_SIZE);
+				x += TAB_NOD_SIZE;
 			}
 			for (int i = 0; i < nod.Count; i++) {
 				Node ndr = null;
@@ -285,20 +279,20 @@ namespace SamDiagrams.Drawings
 					crtNodCheck++;
 				ndr = GetNodAtXYRec(nod[i], x, y, mouseX, mouseY, parentIsExpanded && nod[i].IsExpanded);
 				if (ndr != null) {
-					nodDblX = location.X + (int)(x) + (int)(LEFT_PADDING);
-					nodDblY = location.Y + (int)(nodesDrawingTopPosition) + (int)(crtNodCheck * rowScaledHeight);
+					nodDblX = location.X + x + LEFT_PADDING;
+					nodDblY = location.Y + nodesDrawingTopPosition + crtNodCheck * rowHeight;
 					return ndr;
 				}
 			}
 			return null;
 		}
 		
-		internal void OnDblClick(MouseEventArgs e, float scaleFactor)
+		internal void OnDblClick(MouseEventArgs e)
 		{
-			Point pInside = new Point((int)(e.Location.X / scaleFactor), (int)(e.Location.Y / scaleFactor));
+			Point pInside = e.Location;
 			pInside.Offset(structure.DiagramContainer.HScrollBar.Value, structure.DiagramContainer.VScrollBar.Value);
-			int x = (int)(pInside.X - this.Location.X);
-			int y = (int)(pInside.Y - this.Location.Y);
+			int x = pInside.X - this.Location.X;
+			int y = pInside.Y - this.Location.Y;
 			StructureNodeInfo diin = this.GetNodAtXY(x, y);
 			if (diin != null && diin.Nod.Editable) {
 				structure.DiagramContainer.NodeEditor.ShowOnNode(diin);
@@ -337,9 +331,8 @@ namespace SamDiagrams.Drawings
 		/// <returns></returns>
 		private Node RecursiveExpanderCheck(Node node, int nodeLevel, ref int crtExpanderRow, Point insideClickPoint, bool parentIsExpanded)
 		{
-			int cY = (int)(rowScaledHeight * crtExpanderRow) + (nodesDrawingTopPosition - location.Y) + TITLE_OFFSET;
-			const int expanderScaledSize = (int)(EXPANDER_SIZE);
-			RectangleF rowRectangleToCheck = new RectangleF(LEFT_PADDING, cY, expanderScaledSize, expanderScaledSize);
+			int cY = rowHeight * crtExpanderRow + nodesDrawingTopPosition - location.Y + TITLE_OFFSET;
+			RectangleF rowRectangleToCheck = new RectangleF(LEFT_PADDING, cY, EXPANDER_SIZE, EXPANDER_SIZE);
 			
 			if (!node.IsLeaf) {
 				
@@ -356,7 +349,7 @@ namespace SamDiagrams.Drawings
 						crtExpanderRow++;
 					}
 					ndr = RecursiveExpanderCheck(childNode, nodeLevel + 1, ref crtExpanderRow, 
-					                             insideClickPoint, parentIsExpanded && childNode.IsExpanded);
+						insideClickPoint, parentIsExpanded && childNode.IsExpanded);
 					if (ndr != null)
 						return ndr;
 				}
@@ -369,9 +362,9 @@ namespace SamDiagrams.Drawings
 		{
 			crtNodCheck = 0;
 			for (int i = 0; i < structure.Nodes.Count; i++) {
-				Node nod = GetNodAtXYRec(structure.Nodes[i], (int)(LEFT_PADDING), nodesDrawingTopPosition, x, y, structure.Nodes[i].IsExpanded);
+				Node nod = GetNodAtXYRec(structure.Nodes[i], LEFT_PADDING, nodesDrawingTopPosition, x, y, structure.Nodes[i].IsExpanded);
 				if (nod != null) {
-					return new StructureNodeInfo(nod, this, new Rectangle(nodDblX, nodDblY, this.Location.X + this.size.Width - nodDblX, this.rowScaledHeight));
+					return new StructureNodeInfo(nod, this, new Rectangle(nodDblX, nodDblY, this.Location.X + this.size.Width - nodDblX, this.rowHeight));
 				}
 				crtNodCheck++;
 			}

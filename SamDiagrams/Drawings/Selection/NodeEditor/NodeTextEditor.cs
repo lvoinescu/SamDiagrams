@@ -123,7 +123,7 @@ namespace SamDiagrams.DiagramItem.NodeEditor
 				if (cursorVisible) {
 
 					string currentCaretString = currentNode.Nod.Text.Substring(0, cursorPosition);
-					SizeF stringSize = g.MeasureString(currentCaretString, currentNode.StructureDrawing.rowScaledFont);
+					SizeF stringSize = g.MeasureString(currentCaretString, currentNode.StructureDrawing.rowFont);
 					if (stringSize.Width == 0)
 						stringSize.Width = 2;
 					cursorXposition = currentNode.BoundingRectangle.X + (int)stringSize.Width - 1;
@@ -132,7 +132,7 @@ namespace SamDiagrams.DiagramItem.NodeEditor
 
 				}
 				
-				g.DrawString(currentNode.Nod.Text, currentNode.StructureDrawing.rowScaledFont, Brushes.Black, new PointF(currentNode.BoundingRectangle.X, currentNode.BoundingRectangle.Y));
+				g.DrawString(currentNode.Nod.Text, currentNode.StructureDrawing.rowFont, Brushes.Black, new PointF(currentNode.BoundingRectangle.X, currentNode.BoundingRectangle.Y));
 
 				p.Dispose();
 
@@ -188,7 +188,7 @@ namespace SamDiagrams.DiagramItem.NodeEditor
 		public void onMouseDown(object sender, MouseEventArgs e, double scaleFactor)
 		{
 
-			Font rowScaledFont = new Font(currentNode.StructureDrawing.rowScaledFont.FontFamily, (float)((currentNode.StructureDrawing.rowScaledFont.Size - 0)));
+			Font rowScaledFont = new Font(currentNode.StructureDrawing.rowFont.FontFamily, (float)((currentNode.StructureDrawing.rowFont.Size - 0)));
 			
 			cursorPosition = 0;		
 			Size sT = new Size(0, 0);
