@@ -46,8 +46,14 @@ namespace SamDiagrams.Drawers
 			this.containerDrawer.LinkOrchestrator.linkStrategy.LinkDirectionChangedEvent +=
 				new LinkDirectionChangedHandler(OnLinkDirectionChanged);
 			this.containerDrawer.DiagramContainer.Paint += new PaintEventHandler(OnPaint);
+			this.containerDrawer.DiagramContainer.ZoomFactorChanged += new ZoomFactorChangedHandler(OnZoomChanged);
 		}
 
+		void OnZoomChanged(object sender, ZoomFactorChangedArg e)
+		{
+			invalidateClipRectangle(containerDrawer.DiagramContainer.ClientRectangle);
+			containerDrawer.DiagramContainer.Invalidate();
+		}
 		/// <summary>
 		/// This method handles drawing invalidation that is not triggered by
 		/// selections or movement; for instance: control resize, form overlapping, etc.
@@ -56,10 +62,7 @@ namespace SamDiagrams.Drawers
 		/// <param name="e"></param>
 		void OnPaint(object sender, PaintEventArgs e)
 		{
-			foreach (IDrawing drawing in containerDrawer.Drawings) {
-				if (!drawing.Invalidated && e.ClipRectangle.IntersectsWith(drawing.Bounds))
-					drawing.Invalidated = true;
-			}
+			invalidateClipRectangle(e.ClipRectangle);
 		}
 
 		void OnMouseDown(object sender, MouseEventArgs e)
@@ -177,7 +180,6 @@ namespace SamDiagrams.Drawers
 			return rectangle.Bounds;
 		}
 		
-		
 		Rectangle getLinkInvalidatedRegion(LinkDrawing linkDrawing)
 		{
 			MergableRectangle rectangle = new MergableRectangle(linkDrawing.Bounds);
@@ -209,5 +211,12 @@ namespace SamDiagrams.Drawers
 			}
 		}
 		
+		void invalidateClipRectangle(Rectangle clipRectangle)
+		{
+			foreach (IDrawing drawing in containerDrawer.Drawings) {
+				if (!drawing.Invalidated && clipRectangle.IntersectsWith(drawing.Bounds))
+					drawing.Invalidated = true;
+			}
+		}
 	}
 }
