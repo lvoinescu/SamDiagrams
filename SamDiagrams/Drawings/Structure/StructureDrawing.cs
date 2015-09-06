@@ -23,7 +23,6 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings.Geometry;
-using SamDiagrams.Events;
 
 namespace SamDiagrams.Drawings
 {
@@ -35,7 +34,6 @@ namespace SamDiagrams.Drawings
 	{
 		
 		public event BeforeNodeExpandOrCollapseHandler BeforeNodeExpandOrCollapse;
-		public event DrawingResizedHandler DrawingResized;
 		
 		private static SolidBrush CONTOUR_BRUSH = new SolidBrush(Color.SteelBlue);
 		private const int CORNER_RADIUS = 10;
@@ -288,11 +286,7 @@ namespace SamDiagrams.Drawings
 					
 					nodeToToggle.IsExpanded = !nodeToToggle.IsExpanded;
 					AutoSizeContent();
-					if (DrawingResized != null) {
-						DrawingResized(this,
-							new DrawingResizedEventArgs(this, 
-								size.Height - previousHeight, size.Width - previousWidth));
-					}
+					
 					return;
 				}
 				crtExpanderRow++;
