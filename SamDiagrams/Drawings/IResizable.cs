@@ -1,4 +1,4 @@
-/*
+﻿/*
  *   SamDiagrams - diagram component for .NET
  *   Copyright (C) 2011  Lucian Voinescu
  *
@@ -17,22 +17,15 @@
  *   You should have received a copy of the GNU Lesser General Public License
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
-
 using System;
-using SamDiagrams.Events;
 
-namespace SamDiagrams
+namespace SamDiagrams.Drawings
 {
 	/// <summary>
-	/// Description of Delegates.
+	/// Description of IResizable.
 	/// </summary>
-	public delegate void SelectedItemsChangedHandler(object sender, SelectedItemsChangedArgs e);
-	public delegate void BeforeNodeExpandOrCollapseHandler(object sender, BeforeNodeExpandOrCollapseArg e);
-	public delegate void ZoomFactorChangedHandler(object sender, ZoomFactorChangedArg e);
-	public delegate void LinkDirectionChangedHandler(object sender, LinkDirectionChangedArg e);
-	public delegate void ItemsMovedHandler(object sender, ItemsMovedEventArg e);
-	public delegate void ItemMovedHandler(object sender, ItemMovedEventArg e);
-	public delegate void ItemResizedHandler(object sender, ItemResizedEventArg e);
-	public delegate void DiagramItemClickHandler(object sender, EventArgs e);
-	public delegate void DrawingResizedHandler(object sender, DrawingResizedEventArgs e);
+	public interface IResizable
+	{
+		event DrawingResizedHandler DrawingResized;
+	}
 }

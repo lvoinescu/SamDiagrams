@@ -20,9 +20,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using SamDiagrams.Drawers.Links;
-using SamDiagrams.Drawings;
 using SamDiagrams.Model;
 
 namespace SamDiagrams.Linking.Orchestrator

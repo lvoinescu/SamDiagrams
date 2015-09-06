@@ -65,9 +65,11 @@
     <Compile Include="Drawings\Geometry\MergableRectangle.cs" />
     <Compile Include="Drawings\Grid\GridDrawer.cs" />
     <Compile Include="Drawings\InvalidationStrategy.cs" />
+    <Compile Include="Drawings\IResizable.cs" />
     <Compile Include="Drawings\Link\ILinkableDrawing.cs" />
     <Compile Include="Drawings\Selection\SelectionBorder.cs" />
     <Compile Include="Drawings\Structure\StructureNodeInfo.cs" />
+    <Compile Include="Events\DrawingResizedEventArgs.cs" />
     <Compile Include="Linking\LinkStyle.cs" />
     <Compile Include="Linking\Strategy\NSWELinkStrategy\LinkDirection.cs" />
     <Compile Include="Model\ILink.cs" />

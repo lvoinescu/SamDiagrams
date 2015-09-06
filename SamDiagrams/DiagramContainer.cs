@@ -29,6 +29,7 @@ using SamDiagrams.DiagramItem.NodeEditor;
 using SamDiagrams.Drawers;
 using SamDiagrams.Drawings;
 using SamDiagrams.Drawings.Selection;
+using SamDiagrams.Events;
 using SamDiagrams.Model;
 using SamDiagrams.Model.Link;
 
@@ -42,7 +43,7 @@ namespace SamDiagrams
 
 		public event DiagramItemClickHandler DiagramItemClick;
 		public event ZoomFactorChangedHandler ZoomFactorChanged;
-
+		public event DrawingResizedHandler DrawingResized;
 		
 		
 		private List<StructureDrawing> selectedItems;
@@ -187,7 +188,7 @@ namespace SamDiagrams
 			structureDrawing.Invalidated = true;
 			
 			SelectableDrawing selectableDrawing = new SelectableDrawing(structureDrawing);
-
+			selectableDrawing.DrawingResized += new DrawingResizedHandler(OnDrawingResized);
 			containerDrawer.Drawings.Insert(0, selectableDrawing);
 			structures.Add(structure);
 			structureDrawing.AutoSizeContent();
@@ -228,6 +229,12 @@ namespace SamDiagrams
 			}
 		}
 
+		void OnDrawingResized(object sender, DrawingResizedEventArgs e)
+		{
+			if (DrawingResized != null) {
+				DrawingResized(this, e);
+			}
+		}
 		protected void OnZoomChanged()
 		{
 			SetScrollBarValues();

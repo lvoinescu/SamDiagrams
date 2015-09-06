@@ -26,6 +26,7 @@ using SamDiagrams.Drawings;
 using SamDiagrams.Drawings.Geometry;
 using SamDiagrams.Drawings.Link;
 using SamDiagrams.Drawings.Selection;
+using SamDiagrams.Linking.Orchestrator;
 
 namespace SamDiagrams.Drawers
 {
@@ -47,6 +48,7 @@ namespace SamDiagrams.Drawers
 				new LinkDirectionChangedHandler(OnLinkDirectionChanged);
 			this.containerDrawer.DiagramContainer.Paint += new PaintEventHandler(OnPaint);
 			this.containerDrawer.DiagramContainer.ZoomFactorChanged += new ZoomFactorChangedHandler(OnZoomChanged);
+			this.containerDrawer.DiagramContainer.DrawingResized += new DrawingResizedHandler(OnDrawingResized);
 		}
 
 		void OnZoomChanged(object sender, ZoomFactorChangedArg e)
@@ -90,6 +92,16 @@ namespace SamDiagrams.Drawers
 			InvalidateDrawingGroup(e.Items);
 		}
 
+		void OnDrawingResized(object sender, SamDiagrams.Events.DrawingResizedEventArgs e)
+		{
+			containerDrawer.LinkOrchestrator.linkStrategy.DirectLinks(e.Drawing);
+			InvalidateDrawing(e.Drawing);
+			MergableRectangle rectangleToInvalidate = new MergableRectangle(e.Drawing.InvalidatedRegion);
+			rectangleToInvalidate.Merge(e.PreviousBounds);
+			invalidateOverlappingDrawings(rectangleToInvalidate.Bounds);
+			containerDrawer.DiagramContainer.Invalidate(e.PreviousBounds);
+		}
+		
 		void OnLinkDirectionChanged(object sender, LinkDirectionChangedArg e)
 		{
 			InvalidateLinkDrawing((LinkDrawing)e.Link);

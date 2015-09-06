@@ -21,6 +21,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using SamDiagrams.Drawings.Geometry;
+using SamDiagrams.Events;
 using SamDiagrams.Model;
 
 namespace SamDiagrams.Drawings.Selection
@@ -28,9 +29,11 @@ namespace SamDiagrams.Drawings.Selection
 	/// <summary>
 	/// A Decorator that handles drawing the selection border
 	/// </summary>
-	public class SelectableDrawing : IDrawing, IClickable
+	public class SelectableDrawing : IDrawing, IClickable, IResizable
 	{
-		
+		public event DrawingResizedHandler DrawingResized;
+
+
 		readonly IDrawing drawing;
 		SelectionBorder selectionBorder;
 		Point initialSelectedLocation;
@@ -120,6 +123,9 @@ namespace SamDiagrams.Drawings.Selection
 		{
 			this.drawing = drawing;
 			this.selectionBorder = new SelectionBorder(drawing);
+			if (drawing is IResizable) {
+				(drawing as IResizable).DrawingResized += new DrawingResizedHandler(OnDrawingResized);
+			}
 		}
 		
 		public void Draw(Graphics graphics)
@@ -134,9 +140,23 @@ namespace SamDiagrams.Drawings.Selection
 		{
 			if (drawing is IClickable) {
 				Point drawingPointClick = new Point(e.X + Location.X - drawing.Location.X,
-					                                e.Y + Location.Y - drawing.Location.Y);
+					                          e.Y + Location.Y - drawing.Location.Y);
 				(drawing as IClickable).OnInsideClick(new MouseEventArgs(e.Button, e.Clicks, 
 					drawingPointClick.X, drawingPointClick.Y, e.Delta));
+			}
+		}
+		
+		void OnDrawingResized(object sender, SamDiagrams.Events.DrawingResizedEventArgs e)
+		{
+			if (DrawingResized != null) {
+				
+				Rectangle previousSizeRectangle = new Rectangle(e.PreviousBounds.Location, e.PreviousBounds.Size);
+				previousSizeRectangle.Inflate(SelectionBorder.CORNER_SQUARE_SIZE, SelectionBorder.CORNER_SQUARE_SIZE);
+				
+				Rectangle newSizeRectangle = new Rectangle(drawing.Location, e.Drawing.Size);
+				newSizeRectangle.Inflate(SelectionBorder.CORNER_SQUARE_SIZE, SelectionBorder.CORNER_SQUARE_SIZE);
+				
+				DrawingResized(this, new DrawingResizedEventArgs(this, previousSizeRectangle, newSizeRectangle));
 			}
 		}
 		

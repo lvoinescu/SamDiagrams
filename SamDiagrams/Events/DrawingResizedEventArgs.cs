@@ -1,4 +1,4 @@
-/*
+﻿/*
  *   SamDiagrams - diagram component for .NET
  *   Copyright (C) 2011  Lucian Voinescu
  *
@@ -17,22 +17,44 @@
  *   You should have received a copy of the GNU Lesser General Public License
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
-
 using System;
-using SamDiagrams.Events;
+using System.Drawing;
+using SamDiagrams.Drawings;
 
-namespace SamDiagrams
+namespace SamDiagrams.Events
 {
 	/// <summary>
-	/// Description of Delegates.
+	/// Description of DrawingResizedEventArgs.
 	/// </summary>
-	public delegate void SelectedItemsChangedHandler(object sender, SelectedItemsChangedArgs e);
-	public delegate void BeforeNodeExpandOrCollapseHandler(object sender, BeforeNodeExpandOrCollapseArg e);
-	public delegate void ZoomFactorChangedHandler(object sender, ZoomFactorChangedArg e);
-	public delegate void LinkDirectionChangedHandler(object sender, LinkDirectionChangedArg e);
-	public delegate void ItemsMovedHandler(object sender, ItemsMovedEventArg e);
-	public delegate void ItemMovedHandler(object sender, ItemMovedEventArg e);
-	public delegate void ItemResizedHandler(object sender, ItemResizedEventArg e);
-	public delegate void DiagramItemClickHandler(object sender, EventArgs e);
-	public delegate void DrawingResizedHandler(object sender, DrawingResizedEventArgs e);
+	public class DrawingResizedEventArgs
+	{
+		private readonly IDrawing drawing;
+		private readonly Rectangle previousBounds;
+		private readonly Rectangle newBounds;
+
+		public IDrawing Drawing {
+			get {
+				return drawing;
+			}
+		}
+
+		public Rectangle PreviousBounds {
+			get {
+				return previousBounds;
+			}
+		}
+
+		public Rectangle NewBounds {
+			get {
+				return newBounds;
+			}
+		}
+		
+		public DrawingResizedEventArgs(IDrawing drawing, Rectangle previousBounds, Rectangle newBounds)
+		{
+			this.drawing = drawing;
+			this.previousBounds = previousBounds;
+			this.newBounds = newBounds;
+		}
+	}
 }

@@ -21,8 +21,6 @@ using System;
 using System.Collections.Generic;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
-using SamDiagrams.Drawings.Geometry;
-using SamDiagrams.Drawings.Link;
 using SamDiagrams.Drawings.Selection;
 using SamDiagrams.Linking.Strategy;
 
@@ -49,10 +47,10 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 		{
  
 			IDrawing structureDrawing = drawing;
-			if(drawing is SelectableDrawing)
+			if (drawing is SelectableDrawing)
 				structureDrawing = (drawing as SelectableDrawing).Drawing;
 			
-			if(!virtualMapping.ContainsKey(structureDrawing))
+			if (!virtualMapping.ContainsKey(structureDrawing))
 				return;
 			
 			NSWEDrawing nsweItem = virtualMapping[structureDrawing];
@@ -97,29 +95,26 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 		
 		public void RegisterLink(LinkDrawing link)
 		{
-			NSWEDrawing nsweDestination;
-			NSWEDrawing nsweSource;
 			
-			IDrawing sourceDrawing = link.SourceDrawing;
-			IDrawing destinationDrawing = link.DestinationDrawing;
-			if (!virtualMapping.ContainsKey(destinationDrawing))
-				nsweDestination = new NSWEDrawing(destinationDrawing);
-			else
-				nsweDestination = virtualMapping[destinationDrawing];
-			
-			if (!virtualMapping.ContainsKey(sourceDrawing))
-				nsweSource = new NSWEDrawing(sourceDrawing);
-			else
-				nsweSource = virtualMapping[sourceDrawing];
-			
+			NSWEDrawing nsweDestination = registerDrawing(link.DestinationDrawing);
+			NSWEDrawing nsweSource = registerDrawing(link.SourceDrawing);
+		
 			nsweSource.OutputLinkList.Add(link);
 			nsweDestination.InputLinkList.Add(link);
 
 			nsweSource.Links.Add(link);
 			nsweDestination.Links.Add(link);
-			
-			virtualMapping[sourceDrawing] = nsweSource;
-			virtualMapping[destinationDrawing] = nsweDestination;
+		}
+		
+		private NSWEDrawing registerDrawing(IDrawing drawing)
+		{
+			NSWEDrawing nsweDrawing;
+			if (!virtualMapping.ContainsKey(drawing)) {
+				nsweDrawing = new NSWEDrawing(drawing);
+				virtualMapping[drawing] = nsweDrawing;
+			} else
+				nsweDrawing = virtualMapping[drawing];
+			return nsweDrawing;
 		}
 		
 		private void arrangeLinks(IDrawing item)

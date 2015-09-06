@@ -23,6 +23,7 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings.Geometry;
+using SamDiagrams.Events;
 
 namespace SamDiagrams.Drawings
 {
@@ -30,10 +31,11 @@ namespace SamDiagrams.Drawings
 	/// Default Drawing implementation associated with a Structure.
 	/// The drawing represents a tree of nodes.
 	/// </summary>
-	public class StructureDrawing : DiagramComponent, IClickable
+	public class StructureDrawing : DiagramComponent, IClickable, IResizable
 	{
 		
 		public event BeforeNodeExpandOrCollapseHandler BeforeNodeExpandOrCollapse;
+		public event DrawingResizedHandler DrawingResized;
 		
 		private static SolidBrush CONTOUR_BRUSH = new SolidBrush(Color.SteelBlue);
 		private const int CORNER_RADIUS = 10;
@@ -65,7 +67,8 @@ namespace SamDiagrams.Drawings
 		private int crtNodCheck = 0;
 
 
-		public StructureDrawing(Structure structure):base(structure)
+		public StructureDrawing(Structure structure)
+			: base(structure)
 		{
 			this.structure = structure;
 			this.invalidated = true;
@@ -285,8 +288,11 @@ namespace SamDiagrams.Drawings
 					int previousWidth = size.Width;
 					
 					nodeToToggle.IsExpanded = !nodeToToggle.IsExpanded;
+					Rectangle previousBounds = new Rectangle(location, size);
 					AutoSizeContent();
-					
+					if (DrawingResized != null) {
+						DrawingResized(this, new DrawingResizedEventArgs(this, previousBounds, Bounds));
+					}
 					return;
 				}
 				crtExpanderRow++;
