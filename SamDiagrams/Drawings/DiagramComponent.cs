@@ -42,6 +42,14 @@ namespace SamDiagrams.Drawings
 			this.drawingLinks = new List<LinkDrawing>();
 		}
 		
+		protected DiagramComponent(Size size, bool movable)
+			: base()
+		{
+			this.drawingLinks = new List<LinkDrawing>();
+			this.size = size;
+			this.movable = movable;
+		}
+		
 		
 		public List<LinkDrawing> DrawingLinks {
 			get {

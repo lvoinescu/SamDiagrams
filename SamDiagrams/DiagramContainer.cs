@@ -207,17 +207,23 @@ namespace SamDiagrams
 			containerDrawer.Drawings.Add(drawingToAdd);
 		}
 		
+		public void AddDrawing(IDrawing drawing, bool selectable)
+		{
+			IDrawing drawingToAdd;
+			if (selectable) {
+				drawingToAdd = new SelectableDrawing(drawing);
+
+			} else {
+				drawingToAdd = drawing;
+			}
+			containerDrawer.Drawings.Add(drawingToAdd);
+		}
+		
 		public void AddLink(ILinkable source, ILinkable destination)
 		{
 			Link link = new Link(source, destination, Color.Black);
 			ContainerDrawer.LinkOrchestrator.AddLink(link);
 		}
-
-		void linkManager_LinkDirectionChangedEvent(object sender, LinkDirectionChangedArg e)
-		{
-			
-		}
-
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
@@ -240,71 +246,10 @@ namespace SamDiagrams
 			SetScrollBarValues();
 			if (ZoomFactorChanged != null)
 				this.ZoomFactorChanged(this, new ZoomFactorChangedArg(zoomFactor));
-			//this.textEditor.Hide();
 			invalidatedRegion = new Rectangle(this.Location, this.Size);
 		}
 
-		protected void DrawGrid(Graphics g)
-		{
-			Pen p = new Pen(Color.FromArgb(100, 200, 200, 200));
-			float step = gridSize;
-			if (step < 1)
-				step = 1;
-			for (float i = 0; i < this.drawableWidth; i += step) {
-				g.DrawLine(p, i, 0, i, this.drawableHeight);
-			}
-			for (float j = 0; j < this.drawableHeight; j += step) {
-				g.DrawLine(p, 0, j, this.drawableWidth, j);
-			}
-		}
-
-		//		protected override void OnMouseClick(MouseEventArgs e)
-		//		{
-		//			for (int i = containerDrawer.Drawings.Count - 1; i >= 0; i--) {
-		//				IBoundedShape drawer = containerDrawer.Drawings[i];
-		//				if (drawer is Structure) {
-		//					StructureDrawing structureDrawing = (StructureDrawing)drawer;
-		//					Rectangle r = new Rectangle((int)(structureDrawing.Location.X * scaleFactor),
-		//						              (int)(structureDrawing.Location.Y * scaleFactor),
-		//						              (int)(structureDrawing.Size.Width * scaleFactor),
-		//						              (int)(structureDrawing.Size.Height * scaleFactor));
-		//					Point p = e.Location;
-		//					p.Offset(hScrollBar.Value, vScrollBar.Value);
-		//					if (r.Contains(p)) {
-		//						Point pInside = new Point(e.Location.X, e.Location.Y);
-		//						pInside.Offset(hScrollBar.Value, vScrollBar.Value);
-		//						int x = (int)(pInside.X - structureDrawing.Location.X * scaleFactor);
-		//						int y = (int)(pInside.Y - structureDrawing.Location.Y * scaleFactor);
-		//						structureDrawing.OnClick(new MouseEventArgs(e.Button, e.Clicks, x, y, e.Delta));
-		//						if (this.DiagramItemClick != null)
-		//							DiagramItemClick(structureDrawing, e);
-		//						return;
-		//					}
-		//				}
-		//
-		//			}
-		//		}
-
-		//		protected override void OnMouseDoubleClick(MouseEventArgs e)
-		//		{
-		//			for (int i = DrawableItems.Count - 1; i >= 0; i--) {
-		//				Drawing drawer = containerDrawer.Drawings[i];
-		//				if (drawer is Drawing) {
-		//					StructureDrawing structureDrawing = (StructureDrawing)drawer;
-		//					Rectangle r = new Rectangle(structureDrawing.Location.X, structureDrawing.Location.Y, structureDrawing.Size.Width, structureDrawing.Size.Height);
-		//					Point p = new Point((int)(e.Location.X / scaleFactor), (int)(e.Location.Y / scaleFactor));
-		//					p.Offset(hScrollBar.Value, vScrollBar.Value);
-		//					if (r.Contains(p)) {
-		//						structureDrawing.OnDblClick(e, scaleFactor);
-		//						return;
-		//
-		//
-		//						//nodeEditor.ShowOnNode(diin.Nod);
-		//					}
-		//				}
-		//			}
-		//		}
-
+		
 
 		
 		private bool checkEditorInsideMouseDown(MouseEventArgs e, double scaleFactor)
@@ -328,8 +273,7 @@ namespace SamDiagrams
 		private void textEditor_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Enter) {
-				ValidateNodeEditor();
-				//textEditor.Hide();
+ 
 			}
 		}
 
@@ -348,15 +292,6 @@ namespace SamDiagrams
 			Invalidate(region);
 		}
 
-
-		private void ValidateNodeEditor()
-		{
-			
-			/*
-            if (textEditor.Node != null)
-                textEditor.Node.Text = textEditor.Text;
-			 */
-		}
 
 		private void InitializeComponent()
 		{
@@ -409,9 +344,6 @@ namespace SamDiagrams
 				vScrollBar.Visible = false;
 				vScrollBar.Maximum = 0;
 			}
-
-
-
 		}
 		
 		

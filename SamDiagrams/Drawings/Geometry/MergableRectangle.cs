@@ -63,7 +63,7 @@ namespace SamDiagrams.Drawings.Geometry
 		
 		public override string ToString()
 		{
-			return string.Format("[InflatableRectangle R1={0}]", rectangle);
+			return string.Format("[MergableRectangle R1={0}]", rectangle);
 		}
 
 		
