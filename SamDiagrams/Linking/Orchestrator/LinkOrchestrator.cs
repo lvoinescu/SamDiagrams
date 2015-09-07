@@ -19,17 +19,14 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 
 using SamDiagrams.Drawers;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
 using SamDiagrams.Drawings.Link;
-using SamDiagrams.Drawings.Selection;
 using SamDiagrams.Linking.Strategy;
 using SamDiagrams.Linking.Strategy.NSWELinkStrategy;
 using SamDiagrams.Model;
-using SamDiagrams.Model.Link;
 
 namespace SamDiagrams.Linking.Orchestrator
 {
@@ -75,6 +72,12 @@ namespace SamDiagrams.Linking.Orchestrator
 			RegisterLink(linkDrawing);
 		}
 		
+		public void AddLinkDrawing(LinkDrawing linkDrawing)
+		{
+			RegisterLink(linkDrawing);
+		}		
+		
+		
 		private void RegisterLink(LinkDrawing linkDrawing)
 		{
 			ILinkableDrawing sourceDrawing = linkDrawing.SourceDrawing;
@@ -97,7 +100,7 @@ namespace SamDiagrams.Linking.Orchestrator
 			linkStrategy.DirectLinks((StructureDrawing)sender);
 		}
 
-		public void OnItemsMoved(object sender, ItemsMovedEventArg e)
+		private void OnItemsMoved(object sender, ItemsMovedEventArg e)
 		{
 			foreach (IDrawing drawing in e.Items) {
 				linkStrategy.DirectLinks(drawing);

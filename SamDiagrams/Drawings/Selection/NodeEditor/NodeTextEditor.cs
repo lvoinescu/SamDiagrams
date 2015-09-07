@@ -50,6 +50,14 @@ namespace SamDiagrams.DiagramItem.NodeEditor
 			}
 		}
 
+		public Color Color {
+			get {
+				throw new NotImplementedException();
+			}
+			set {
+				throw new NotImplementedException();
+			}
+		}
 		public SamDiagrams.Model.Item Item {
 			get {
 				throw new NotImplementedException();

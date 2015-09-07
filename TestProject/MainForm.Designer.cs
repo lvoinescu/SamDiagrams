@@ -106,7 +106,7 @@ namespace TestProject
 			// trackBar1
 			// 
 			this.trackBar1.Location = new System.Drawing.Point(75, 12);
-			this.trackBar1.Maximum = 200;
+			this.trackBar1.Maximum = 500;
 			this.trackBar1.Name = "trackBar1";
 			this.trackBar1.Size = new System.Drawing.Size(397, 42);
 			this.trackBar1.TabIndex = 0;

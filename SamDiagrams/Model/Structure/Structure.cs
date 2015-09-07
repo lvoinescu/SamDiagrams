@@ -22,9 +22,7 @@ using System.Drawing;
 using System.Collections.Generic;
 using SamDiagrams.Drawings;
 using SamDiagrams.Drawings.Selection;
-using SamDiagrams.Linking;
 using SamDiagrams.Model;
-using SamDiagrams.Model.Link;
 namespace SamDiagrams
 {
 
@@ -116,11 +114,11 @@ namespace SamDiagrams
 		}
 		
 
-		public void AddOnDiagram(DiagramContainer container, Color c)
+		public void AddOnDiagram(DiagramContainer container, Color color)
 		{
 			this.diagramContainer = container;
-			this.color = c;
-			container.AddStructure(this);
+			this.color = color;
+			container.AddStructure(this, color);
 		}
 		
 		public override string ToString()

@@ -36,11 +36,22 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 		private List<LinkPoint> linkPointsSouth, linkPointsNorth, linkPointsWest, linkPointsEast, linkPointsNone;
 		private List<LinkDrawing> inputLinkList, outputLinkList, links;
 		private readonly IDrawing drawing;
-
+		private Color color;
+		
+		public Color Color {
+			get {
+				return color;
+			}
+			set {
+				color = value;
+			}
+		}
+		
 		public void Draw(Graphics graphics)
 		{
 			drawing.Draw(graphics);
 		}
+		
 		public Item Item {
 			get {
 				return this.drawing.Item;
@@ -63,6 +74,7 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 				drawing.Selected = value;
 			}
 		}
+		
 		public bool Movable {
 			get {
 				return drawing.Movable;

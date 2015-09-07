@@ -38,7 +38,15 @@ namespace SamDiagrams.Drawings
 				initialLocation = value;
 			}
 		}
-		
+
+		public Color Color {
+			get {
+				return drawing.Color;
+			}
+			set {
+				drawing.Color = value;
+			}
+		}
 		public IDrawing Drawing {
 			get {
 				return drawing;

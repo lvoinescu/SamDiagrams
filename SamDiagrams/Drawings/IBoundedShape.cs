@@ -27,6 +27,7 @@ namespace SamDiagrams.Drawings
 	/// </summary>
 	public interface IBoundedShape
 	{
+		Color Color{ get; set; }
 		Point Location { get; set; }
 		Size Size { get; }
 		Rectangle Bounds { get; }

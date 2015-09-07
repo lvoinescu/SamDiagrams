@@ -53,6 +53,34 @@ namespace TestProject
 			
 		}
 		
+		private class CircleDrawing : DiagramComponent
+		{
+			
+			public CircleDrawing(int width, int height)
+				: base(new Size(width, height), true)
+			{
+				
+			}
+			
+			public override void Draw(Graphics graphics)
+			{
+				using (Pen pen = new Pen(Color.Aquamarine, 3)) {
+					graphics.DrawRectangle(pen, new Rectangle(location, size));
+					graphics.DrawEllipse(Pens.Blue, this.Bounds);
+				}
+			}
+			
+			public override Rectangle InvalidatedRegion {
+				get {
+					MergableRectangle rectangle = new MergableRectangle(new Rectangle(this.location, this.size));
+					foreach (LinkDrawing link in this.DrawingLinks) {
+						rectangle.Merge(link.Bounds);
+					}					
+					return rectangle.Bounds;
+				}
+			}
+			
+		}
 		private class CustomDrawing : DiagramComponent
 		{
 
@@ -127,7 +155,14 @@ namespace TestProject
 			
 			diagramContainer1.AddItem(customItem, customDrawing, true, true);
 			diagramContainer1.AddLink(customItem, diagramContainer1.DiagramItems[0]);
+						
+			CircleDrawing customDrawing2 = new CircleDrawing(130, 130);
+			customDrawing2.Movable = true;
+			customDrawing2.Size = new Size(100, 100);
+			diagramContainer1.AddDrawing(customDrawing2, true);
 			
+			
+			diagramContainer1.AddLinkDrawing(customDrawing2, customDrawing);
 			diagramContainer1.Invalidate();
 
 			diagramContainer1.DrawableHeight = 705;
@@ -136,7 +171,7 @@ namespace TestProject
 		void TrackBar1Scroll(object sender, EventArgs e)
 		{
 			diagramContainer1.ZoomFactor = trackBar1.Value;
-			zoomValueLabel.Text = trackBar1.Value.ToString()+"%";
+			zoomValueLabel.Text = trackBar1.Value.ToString() + "%";
 		}
 
  

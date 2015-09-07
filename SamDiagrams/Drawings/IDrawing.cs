@@ -28,6 +28,7 @@ namespace SamDiagrams.Drawings
 	/// </summary>
 	public interface IDrawing : IBoundedShape
 	{
+
 		Item Item{get;}
 		bool Invalidated { get; set; }
 		bool Selected {get; set;}

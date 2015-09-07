@@ -25,6 +25,14 @@ namespace SamDiagrams.Drawings.Selection
 
 		bool invalidated = true;
 
+		public Color Color {
+			get {
+				return drawing.Color;
+			}
+			set {
+				drawing.Color = value;
+			}
+		}
 		
 		public bool Invalidated {
 			get { return invalidated; }

@@ -49,6 +49,16 @@ namespace SamDiagrams.Drawings.Selection
 				return this.drawing.Item;
 			}
 		}
+
+		public Color Color {
+			get {
+				return drawing.Color;
+			}
+			set {
+				drawing.Color = value;
+			}
+		}
+
 		public Point Location {
 			get {
 				return selectionBorder.Bounds.Location;

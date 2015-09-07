@@ -29,7 +29,6 @@ namespace SamDiagrams.Model
 	public interface Item
 	{
 		String Name { get; set; }
-		Color Color { get; set; }
 		IDrawing Drawing{get ;set;}
 	}
 }

@@ -27,9 +27,12 @@ using System.Windows.Forms;
 
 using SamDiagrams.DiagramItem.NodeEditor;
 using SamDiagrams.Drawers;
+using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
+using SamDiagrams.Drawings.Link;
 using SamDiagrams.Drawings.Selection;
 using SamDiagrams.Events;
+using SamDiagrams.Linking;
 using SamDiagrams.Model;
 using SamDiagrams.Model.Link;
 
@@ -181,9 +184,9 @@ namespace SamDiagrams
 			this.Invalidate();
 		}
 
-		public void AddStructure(Structure structure)
+		public void AddStructure(Structure structure, Color color)
 		{
-			StructureDrawing structureDrawing = new StructureDrawing(structure);
+			StructureDrawing structureDrawing = new StructureDrawing(structure, color);
 			structure.Drawing = structureDrawing;
 			structureDrawing.Invalidated = true;
 			
@@ -223,6 +226,12 @@ namespace SamDiagrams
 		{
 			Link link = new Link(source, destination, Color.Black);
 			ContainerDrawer.LinkOrchestrator.AddLink(link);
+		}
+		
+		public void AddLinkDrawing(ILinkableDrawing source, ILinkableDrawing destination)
+		{
+			LinkDrawing linkDrawing = new LinkDrawing(source, destination, 1.0f, 3.0f, LinkStyle.StreightLines);
+			ContainerDrawer.LinkOrchestrator.AddLinkDrawing(linkDrawing);
 		}
 
 		protected override void OnPaint(PaintEventArgs e)

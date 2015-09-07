@@ -29,18 +29,33 @@ namespace SamDiagrams.Drawings
 	public abstract class BaseDrawing : IBoundedShape
 	{
 		
+		protected Color color;
 		protected Size size;
 		protected Point location;
 		protected bool invalidated;
 		protected bool movable;
 		protected bool selected;
 		
+		
 		public BaseDrawing()
 		{
+		}
+		
+		public BaseDrawing(Color color) : this()
+		{
+			this.color = color;
 		}
 
 		public abstract void Draw(Graphics graphics);
 
+		public Color Color {
+			get {
+				return this.color;
+			}
+			set {
+				color = value;
+			}
+		}
 		public bool Movable {
 			get {
 				return movable;

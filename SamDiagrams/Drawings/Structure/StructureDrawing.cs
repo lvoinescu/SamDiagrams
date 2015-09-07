@@ -51,8 +51,6 @@ namespace SamDiagrams.Drawings
 		private static SolidBrush TITLE_BRUSH = new SolidBrush(Color.Black);
 		
 		private Structure structure;
-		private Color color = Color.LightSteelBlue;
-		
 
 		internal int rowHeight = 10;
 		internal Font rowFont;
@@ -67,6 +65,12 @@ namespace SamDiagrams.Drawings
 		private int crtNodCheck = 0;
 
 
+		public StructureDrawing(Structure structure, Color color)
+			: this(structure)
+		{
+			this.color = color;
+		}
+		
 		public StructureDrawing(Structure structure)
 			: base(structure)
 		{

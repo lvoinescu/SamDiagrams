@@ -41,22 +41,31 @@ namespace SamDiagrams.Drawers.Links
 		private LinkPoint sourcePoint, destinationPoint;
 		private LinkDirection direction = LinkDirection.None;
 		private bool selected;
-
+		private Color color;
+		
 		public Item Item {
 			get {
 				return this.link;
 			}
 		}
 
+		public Color Color {
+			get {
+				return color;
+			}
+			set {
+				this.color = value;
+			}
+		}
 		public  ILinkableDrawing SourceDrawing {
 			get {
-				return (ILinkableDrawing)this.link.Source.Drawing;
+				return sourceDrawing;
 			}
 		}
 
 		public  ILinkableDrawing DestinationDrawing {
 			get {
-				return (ILinkableDrawing)this.link.Destination.Drawing;
+				return destinationDrawing;
 			}
 		}
 
@@ -125,22 +134,32 @@ namespace SamDiagrams.Drawers.Links
 			}
 			return 0;
 		}
-		public LinkDrawing(ILink link, float lineWidth, float selectedLineWidth, LinkStyle linkStyle)
+		
+		public LinkDrawing(ILinkableDrawing source, ILinkableDrawing destination,
+			float lineWidth, float selectedLineWidth, LinkStyle linkStyle)
 		{
-			this.link = (ILink)link;
+			this.color = Color.Black;
 			this.lineWidth = lineWidth;
 			this.selectedLineWidth = selectedLineWidth;
 			this.linkStyle = linkStyle;
 			this.sourcePoint = new LinkPoint(this);
 			this.destinationPoint = new LinkPoint(this);
-			this.sourceDrawing = (ILinkableDrawing)(link.Source.Drawing);
-			this.destinationDrawing = (ILinkableDrawing)(link.Destination.Drawing);
+			this.sourceDrawing = source;
+			this.destinationDrawing = destination;
+		}
+		
+		public LinkDrawing(ILink link, float lineWidth, float selectedLineWidth, LinkStyle linkStyle)
+			: this((ILinkableDrawing)link.Source.Drawing,
+				(ILinkableDrawing)link.Destination.Drawing, 
+				lineWidth, selectedLineWidth, linkStyle)
+		{
+			
 		}
 		
 		public void Draw(Graphics graphics)
 		{
-			using (Pen linePen = new Pen(link.Color, lineWidth)) {
-				Pen selectionPen = new Pen(Color.FromArgb(70, sourceDrawing.Item.Color), selectedLineWidth);
+			using (Pen linePen = new Pen(this.color, lineWidth)) {
+				Pen selectionPen = new Pen(Color.FromArgb(70, sourceDrawing.Color), selectedLineWidth);
 				linePen.DashPattern = new float[] { 8, 3 };
 				if ((direction == LinkDirection.SourceWestDestinationEast) || (direction == LinkDirection.SourceEastDestinationWest)) {
 					if (linkStyle == LinkStyle.StreightLines) {
