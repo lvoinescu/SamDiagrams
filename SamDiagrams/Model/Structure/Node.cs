@@ -20,15 +20,22 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
+using SamDiagrams.Drawings;
 using SamDiagrams.Model;
 namespace SamDiagrams
 {
+	public delegate void NodeAddedHandler(object sender, EventArgs e);
+	
+	
 	/// <summary>
 	/// Description of DiagramItemNode.
 	/// </summary>
-	public class Node : CollectionBase
+	public class Node : Item, ILinkable
 	{
+		public event ListChangedEventHandler NodesChanged;
+		
 		private String nodeText;
 		private Hashtable asoc = new Hashtable();
 		private bool isExpanded = true;
@@ -37,6 +44,23 @@ namespace SamDiagrams
 		private List<Image> images;
 		private Structure item;
 		private Node parent;
+		private IDrawing nodeDrawing;
+		private readonly BindingList<Node> nodes;
+		private List<ILink> links = new List<ILink>();
+		public IDrawing Drawing {
+			get {
+				return nodeDrawing;
+			}
+			set {
+				this.nodeDrawing = value;
+			}
+		}
+
+		public BindingList<Node> Nodes {
+			get {
+				return nodes;
+			}
+		}
 		
 		public Node Parent {
 			get { return parent; }
@@ -51,8 +75,7 @@ namespace SamDiagrams
 				throw new NotImplementedException();
 			}
 		}
-		public List<Image> Images
-		{
+		public List<Image> Images {
 			get { return images; }
 			set { images = value; }
 		}
@@ -66,8 +89,7 @@ namespace SamDiagrams
 			}
 		}
 
-		public bool Editable
-		{
+		public bool Editable {
 			get { return editable; }
 			set { editable = value; }
 		}
@@ -80,49 +102,65 @@ namespace SamDiagrams
 			set { isExpanded = value; }
 		}
 		public bool IsLeaf {
-			get { return this.List.Count<1; }
+			get { return this.Nodes.Count < 1; }
 		}
 		public string Text {
 			get { return nodeText; }
 			set { nodeText = value; }
 		}
-		public Structure DiagramItem{
-			get {return item; }
+		public Structure DiagramItem {
+			get { return item; }
 		}
-		
+
+		public List<ILink> Links {
+			get {
+				return this.links;
+			}
+		}
 		public Node(string itemText, Structure item)
 		{
 			images = new List<Image>();
+			nodes = new BindingList<Node>();
+			nodes.ListChanged += new ListChangedEventHandler(OnListChanged);
 			this.item = item;
 			this.nodeText = itemText;
 		}
-		public Node(string itemText, bool editable, Structure item):  this(itemText, item)
+		public Node(string itemText, bool editable, Structure item)
+			: this(itemText, item)
 		{
 			this.editable = editable;
 		}
 
-		public Node(string itemText, bool editable,Image img, Structure item):this(itemText,editable,item)
+		public Node(string itemText, bool editable, Image img, Structure item)
+			: this(itemText, editable, item)
 		{
 			this.images.Add(img);
 		}
-		public Node this[int Index]
+
+		void OnListChanged(object sender, ListChangedEventArgs e)
 		{
-			get
-			{
-				return (Node)List[Index];
-			}
-			set
-			{
-				List.IndexOf(value);
-				List[Index] = value;
+			if (NodesChanged != null) {
+				this.NodesChanged(sender, e);
 			}
 		}
 
-		public Node this[string name]
+		public int Level {
+			get {
+				return recursiveComputeLevel(this);
+			}
+		}
+		
+		private int recursiveComputeLevel(Node node)
 		{
-			get
-			{
-				if(asoc.ContainsKey(name))
+			if (node.parent != null)
+				return recursiveComputeLevel(node.Parent) + 1;
+			else
+				return 0;
+		}
+		
+		public Node this[string name] {
+			get {
+				if (asoc.ContainsKey(name))
 					return (Node)asoc[name];
 				return null;
 			}
@@ -131,14 +169,20 @@ namespace SamDiagrams
 
 		public Node AddNode(Node nod)
 		{
-			this.List.Add(nod);
+			this.Nodes.Add(nod);
 			nod.parent = this;
 			asoc.Add(nod.Text, nod);
 			return nod;
 		}
 		
-		public IList getNodes() {
-			return this.List;
+		public IList getNodes()
+		{
+			return this.Nodes;
+		}
+		
+		public override String ToString()
+		{
+			return this.Text;
 		}
 		
 	}

@@ -18,10 +18,12 @@
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using SamDiagrams.Drawings;
 using SamDiagrams.Drawings.Link;
 using SamDiagrams.Linking;
+using SamDiagrams.Linking.Strategy.NSWELinkStrategy;
 using SamDiagrams.Model;
 
 namespace SamDiagrams.Drawers.Links
@@ -38,8 +40,9 @@ namespace SamDiagrams.Drawers.Links
 		private bool invalidated;
 		private ILinkableDrawing sourceDrawing;
 		private ILinkableDrawing destinationDrawing;
-		private LinkPoint sourcePoint, destinationPoint;
-		private LinkDirection direction = LinkDirection.None;
+		private CardinalLinkPoint sourcePoint, destinationPoint;
+		//private LinkDirection direction = LinkDirection.None;
+		private LinkDirection direction;
 		private bool selected;
 		private Color color;
 		
@@ -103,13 +106,13 @@ namespace SamDiagrams.Drawers.Links
 			set { linkStyle = value; }
 		}
 		
-		public LinkPoint DestinationPoint {
+		public CardinalLinkPoint DestinationPoint {
 			get { return destinationPoint; }
 			set { destinationPoint = value; }
 		}
 
 
-		public LinkPoint SourcePoint {
+		public CardinalLinkPoint SourcePoint {
 			get { return sourcePoint; }
 			set { sourcePoint = value; }
 		}
@@ -120,20 +123,25 @@ namespace SamDiagrams.Drawers.Links
 			}
 		}
 
-		public int CompareTo(object obj)
-		{
-			LinkDrawing l = (LinkDrawing)obj;
-			switch (l.Direction) {
-				case LinkDirection.SourceNorthDestinationSouth:
-				case LinkDirection.SourceSouthDestinationNorth:
-					return this.SourcePoint.X - l.SourcePoint.X;
-				case LinkDirection.SourceWestDestinationEast:
-				case LinkDirection.SourceEastDestinationWest:
-					return this.SourcePoint.Y - l.SourcePoint.Y;
-
+		public List<IDrawing> Components {
+			get {
+				return new List<IDrawing>();
 			}
-			return 0;
 		}
+//		public int CompareTo(object obj)
+//		{
+//			LinkDrawing l = (LinkDrawing)obj;
+//			switch (l.Direction) {
+//				case LinkDirection.SourceNorthDestinationSouth:
+//				case LinkDirection.SourceSouthDestinationNorth:
+//					return this.SourcePoint.X - l.SourcePoint.X;
+//				case LinkDirection.SourceWestDestinationEast:
+//				case LinkDirection.SourceEastDestinationWest:
+//					return this.SourcePoint.Y - l.SourcePoint.Y;
+//
+//			}
+//			return 0;
+//		}
 		
 		public LinkDrawing(ILinkableDrawing source, ILinkableDrawing destination,
 			float lineWidth, float selectedLineWidth, LinkStyle linkStyle)
@@ -142,10 +150,11 @@ namespace SamDiagrams.Drawers.Links
 			this.lineWidth = lineWidth;
 			this.selectedLineWidth = selectedLineWidth;
 			this.linkStyle = linkStyle;
-			this.sourcePoint = new LinkPoint(this);
-			this.destinationPoint = new LinkPoint(this);
+			this.sourcePoint = new CardinalLinkPoint(this);
+			this.destinationPoint = new CardinalLinkPoint(this);
 			this.sourceDrawing = source;
 			this.destinationDrawing = destination;
+			this.direction = new LinkDirection(CardinalPoint.None, CardinalPoint.None);
 		}
 		
 		public LinkDrawing(ILink link, float lineWidth, float selectedLineWidth, LinkStyle linkStyle)
@@ -161,7 +170,7 @@ namespace SamDiagrams.Drawers.Links
 			using (Pen linePen = new Pen(this.color, lineWidth)) {
 				Pen selectionPen = new Pen(Color.FromArgb(70, sourceDrawing.Color), selectedLineWidth);
 				linePen.DashPattern = new float[] { 8, 3 };
-				if ((direction == LinkDirection.SourceWestDestinationEast) || (direction == LinkDirection.SourceEastDestinationWest)) {
+				if ( CardinalPointUtils.AreOpposite(sourcePoint.Direction, destinationPoint.Direction)) {
 					if (linkStyle == LinkStyle.StreightLines) {
 						int midX = (int)(sourcePoint.X + destinationPoint.X) / 2;
 						Point[] ps = new Point[] {
@@ -177,11 +186,12 @@ namespace SamDiagrams.Drawers.Links
 						graphics.DrawLines(linePen, ps);
 
 					} else {
-						if (((sourceDrawing is StructureDrawing) && (sourceDrawing as StructureDrawing).Selected) ||
-						    ((destinationDrawing is StructureDrawing) && (destinationDrawing as StructureDrawing).Selected)) {
-							graphics.DrawLine(selectionPen, sourcePoint.X, sourcePoint.Y, destinationPoint.X, destinationPoint.Y);
+						if (sourceDrawing.Selected || destinationDrawing.Selected) {
+							graphics.DrawLine(selectionPen, sourcePoint.X, sourcePoint.Y,
+								destinationPoint.X, destinationPoint.Y);
 						}
-						graphics.DrawLine(linePen, sourcePoint.X, sourcePoint.Y, destinationPoint.X, destinationPoint.Y);
+						graphics.DrawLine(linePen, sourcePoint.X, sourcePoint.Y, 
+							destinationPoint.X, destinationPoint.Y);
 					}
 
 				} else {
@@ -199,9 +209,11 @@ namespace SamDiagrams.Drawers.Links
 						graphics.DrawLines(linePen, ps);
 					} else {
 						if (sourceDrawing.Selected || destinationDrawing.Selected) {
-							graphics.DrawLine(selectionPen, sourcePoint.X, sourcePoint.Y, destinationPoint.X, destinationPoint.Y);
+							graphics.DrawLine(selectionPen, sourcePoint.X, sourcePoint.Y,
+								destinationPoint.X, destinationPoint.Y);
 						}
-						graphics.DrawLine(linePen, sourcePoint.X, sourcePoint.Y, destinationPoint.X, destinationPoint.Y);
+						graphics.DrawLine(linePen, sourcePoint.X, sourcePoint.Y, 
+							destinationPoint.X, destinationPoint.Y);
 					}
 				}
 			}

@@ -13,57 +13,36 @@
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU Lesser General Public License for more details.
- *
+*
  *   You should have received a copy of the GNU Lesser General Public License
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
+using SamDiagrams.Drawers.Links;
+using SamDiagrams.Drawings;
+using SamDiagrams.Model;
 
-namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
+namespace SamDiagrams.Linking.Strategy
 {
-	/// <summary>
-	/// Description of LinkDirection.
-	/// </summary>
-	public class LinkDirection
+	public interface ILinkStrategy
 	{
-		private CardinalPoint from;
-		private CardinalPoint to;
-
-		public CardinalPoint From {
-			get {
-				return from;
-			}
-			set {
-				from = value;
-			}
-		}
-
-		public CardinalPoint To {
-			get {
-				return to;
-			}
-			set {
-				to = value;
-			}
-		}
-		public LinkDirection(CardinalPoint from, CardinalPoint to)
-		{
-			this.from = from;
-			this.to = to;
-		}
 		
-		public override bool Equals(object obj)
-		{
-			LinkDirection other = obj as LinkDirection;
-			if (other == null)
-				return false;
-			return this.from == other.from && this.to == other.to;
-		}
+		event LinkDirectionChangedHandler LinkDirectionChangedEvent;
 		
-		public override string ToString()
-		{
-			return string.Format("[LinkDirection From={0}, To={1}]", from, to);
-		}
-
+		/// <summary>
+		/// Registers a link to be handled by a link strategy.
+		/// </summary>
+		/// <param name="link"></param>
+		void RegisterLink(LinkDrawing link);
+		
+		/// <summary>
+		/// Computes the end points of all links associated with an item.
+		/// This handled input links and output links.
+		/// </summary>
+		/// <param name="item"></param>
+		void DirectLinks(IDrawing item);
+		
+		
+		LinkDrawing CreateLink(ILink link, int lineWidth, int selectedLineWidth, LinkStyle streightLines);
 	}
 }

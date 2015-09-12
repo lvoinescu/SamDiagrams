@@ -18,6 +18,7 @@
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Collections.Generic;
 using SamDiagrams.Drawings;
@@ -29,9 +30,10 @@ namespace SamDiagrams
 	[Serializable]
 	public class Structure : ILinkable
 	{
+		public event ListChangedEventHandler NodesChanged;
 		
 		private Color color = Color.LightSteelBlue;
-		private List<Node> nodes;
+		private readonly BindingList<Node> nodes;
 		private DiagramContainer diagramContainer;
 		private string title;
 		private IDrawing drawing;
@@ -96,11 +98,8 @@ namespace SamDiagrams
 
 
 
-		public List<Node> Nodes {
+		public BindingList<Node> Nodes {
 			get { return nodes; }
-			set {
-				nodes = value;
-			}
 		}
 
 		
@@ -109,11 +108,39 @@ namespace SamDiagrams
 			invalidated = true;
 			this.diagramContainer = p;
 			this.title = title;
-			nodes = new List<Node>();
+			nodes = new BindingList<Node>();
+			nodes.ListChanged += new ListChangedEventHandler(OnListChanged);
 			links = new  List<ILink>();
 		}
-		
 
+		public void AddNode(Node node)
+		{
+			node.NodesChanged += OnListChanged;
+			nodes.Add(node);
+		}
+		void OnListChanged(object sender, ListChangedEventArgs e)
+		{
+			if (NodesChanged != null) {
+				this.NodesChanged(sender, e);
+			}
+		}
+		
+		public void IterateDrawings(Action<NodeDrawing> action){
+			foreach(Node node in nodes){
+				RecursiveTraverse(node.Drawing as NodeDrawing, action);
+			}
+		}
+		
+		private void RecursiveTraverse(NodeDrawing nodeDrawing, Action<NodeDrawing> action)
+		{
+			action(nodeDrawing);
+			if (!(nodeDrawing.Item as Node).IsLeaf && (nodeDrawing.Item as Node).IsExpanded) {
+				foreach (Node node in (nodeDrawing.Item as Node).Nodes) {
+					RecursiveTraverse(node.Drawing as NodeDrawing, action);
+				}
+			}
+		}
+		
 		public void AddOnDiagram(DiagramContainer container, Color color)
 		{
 			this.diagramContainer = container;

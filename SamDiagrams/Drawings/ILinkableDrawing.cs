@@ -13,34 +13,36 @@
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU Lesser General Public License for more details.
-*
+ *
  *   You should have received a copy of the GNU Lesser General Public License
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
+using System.Collections.Generic;
 using SamDiagrams.Drawers.Links;
-using SamDiagrams.Drawings;
 
-namespace SamDiagrams.Linking.Strategy
+namespace SamDiagrams.Drawings.Link
 {
-	public interface ILinker
+	
+	public enum LinkAttachMode
 	{
-		
-		event LinkDirectionChangedHandler LinkDirectionChangedEvent;
-		
-		/// <summary>
-		/// Registers a link to be handled by a link strategy.
-		/// </summary>
-		/// <param name="link"></param>
-		void RegisterLink(LinkDrawing link);
-		
-		/// <summary>
-		/// Computes the end points of all links associated with an item.
-		/// This handled input links and output links.
-		/// </summary>
-		/// <param name="item"></param>
-		void DirectLinks(IDrawing item);
-		
-		
+		LEFT,
+		RIGHT,
+		TOP,
+		BOTTOM,
+		RANDOM,
+		LEFT_RIGHT,
+		TOP_BOTTOM,
+		ALL
+
+	}
+	
+	/// <summary>
+	/// Description of ILinkableDrawing.
+	/// </summary>
+	public interface ILinkableDrawing : IDrawing
+	{
+		LinkAttachMode LinkAttachMode{ get; }
+		List<LinkDrawing> DrawingLinks{ get; }
 	}
 }

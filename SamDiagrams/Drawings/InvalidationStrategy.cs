@@ -104,7 +104,7 @@ namespace SamDiagrams.Drawers
 		
 		void OnLinkDirectionChanged(object sender, LinkDirectionChangedArg e)
 		{
-			InvalidateLinkDrawing((LinkDrawing)e.Link);
+			InvalidateLinkDrawing(e.Link);
 		}
 		
 		void InvalidateDrawingGroup(List<IDrawing> drawings)

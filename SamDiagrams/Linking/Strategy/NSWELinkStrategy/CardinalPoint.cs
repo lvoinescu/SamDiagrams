@@ -22,48 +22,27 @@ using System;
 namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 {
 	/// <summary>
-	/// Description of LinkDirection.
+	/// Description of CardinalDirection.
 	/// </summary>
-	public class LinkDirection
+	public enum CardinalPoint
 	{
-		private CardinalPoint from;
-		private CardinalPoint to;
-
-		public CardinalPoint From {
-			get {
-				return from;
-			}
-			set {
-				from = value;
-			}
-		}
-
-		public CardinalPoint To {
-			get {
-				return to;
-			}
-			set {
-				to = value;
-			}
-		}
-		public LinkDirection(CardinalPoint from, CardinalPoint to)
+		North,
+		South,
+		West,
+		East,
+		None}
+	;
+	
+	
+	public static class CardinalPointUtils
+	{
+		public static bool AreOpposite(CardinalPoint c1, CardinalPoint c2)
 		{
-			this.from = from;
-			this.to = to;
+			return (
+			    (c1 == CardinalPoint.West && c2 == CardinalPoint.East) ||
+			    (c2 == CardinalPoint.West && c1 == CardinalPoint.East) ||
+			    (c1 == CardinalPoint.North && c2 == CardinalPoint.South) ||
+			    (c2 == CardinalPoint.North && c1 == CardinalPoint.South));
 		}
-		
-		public override bool Equals(object obj)
-		{
-			LinkDirection other = obj as LinkDirection;
-			if (other == null)
-				return false;
-			return this.from == other.from && this.to == other.to;
-		}
-		
-		public override string ToString()
-		{
-			return string.Format("[LinkDirection From={0}, To={1}]", from, to);
-		}
-
 	}
 }

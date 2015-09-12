@@ -18,6 +18,7 @@
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using SamDiagrams.Drawings.Geometry;
@@ -49,7 +50,13 @@ namespace SamDiagrams.Drawings.Selection
 				return this.drawing.Item;
 			}
 		}
-
+		
+		public List<IDrawing> Components {
+			get {
+				return drawing.Components;
+			}
+		}
+		
 		public Color Color {
 			get {
 				return drawing.Color;

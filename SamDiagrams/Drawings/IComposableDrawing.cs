@@ -19,15 +19,14 @@
  */
 using System;
 using System.Collections.Generic;
-using SamDiagrams.Drawers.Links;
 
-namespace SamDiagrams.Drawings.Link
+namespace SamDiagrams.Drawings
 {
 	/// <summary>
-	/// Description of ILinkableDrawing.
+	/// Description of IComposableDrawing.
 	/// </summary>
-	public interface ILinkableDrawing : IDrawing
+	public interface IComposableDrawing
 	{
-		List<LinkDrawing> DrawingLinks{ get; }
+		List<IDrawing> Components{get;}
 	}
 }

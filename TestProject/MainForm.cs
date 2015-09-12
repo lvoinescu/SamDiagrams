@@ -126,7 +126,7 @@ namespace TestProject
 					cols.AddNode(new Node("key", di));
 					cols.AddNode(new Node("anotherKey", di));
 					cols.AddNode(new Node("valid", di)).AddNode(new Node("child3", di)).AddNode(new Node("child4", di));
-					di.Nodes.Add(cols);
+					di.AddNode(cols);
 					di.AddOnDiagram(diagramContainer1, Color.FromArgb(r.Next(255), r.Next(255), r.Next(255)));
 					di.Drawing.Location = new Point(r.Next(300), r.Next(300));
 				}
@@ -151,7 +151,10 @@ namespace TestProject
 			CustomDrawing customDrawing = new CustomDrawing(customItem);
 			customDrawing.Movable = true;
 			customDrawing.Size = new Size(100, 100);
+			customItem.Drawing = customDrawing;
 			
+			Structure stru = (diagramContainer1.DiagramItems[0] as Structure);
+			diagramContainer1.AddLink(stru.Nodes[0], customItem);
 			
 			diagramContainer1.AddItem(customItem, customDrawing, true, true);
 			diagramContainer1.AddLink(customItem, diagramContainer1.DiagramItems[0]);

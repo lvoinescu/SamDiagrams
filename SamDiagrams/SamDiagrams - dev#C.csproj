@@ -61,27 +61,30 @@
     <Compile Include="Drawings\Decorators\SelectableDrawing.cs" />
     <Compile Include="Drawings\IBoundedShape.cs" />
     <Compile Include="Drawings\IClickable.cs" />
+    <Compile Include="Drawings\IComposableDrawing.cs" />
     <Compile Include="Drawings\IDrawing.cs" />
     <Compile Include="Drawings\Geometry\MergableRectangle.cs" />
     <Compile Include="Drawings\Grid\GridDrawer.cs" />
+    <Compile Include="Drawings\ILinkableDrawing.cs" />
     <Compile Include="Drawings\InvalidationStrategy.cs" />
     <Compile Include="Drawings\IResizable.cs" />
-    <Compile Include="Drawings\Link\ILinkableDrawing.cs" />
     <Compile Include="Drawings\Selection\SelectionBorder.cs" />
+    <Compile Include="Drawings\Structure\NodeDrawing.cs" />
     <Compile Include="Drawings\Structure\StructureNodeInfo.cs" />
     <Compile Include="Events\DrawingResizedEventArgs.cs" />
     <Compile Include="Linking\LinkStyle.cs" />
+    <Compile Include="Linking\Strategy\NSWELinkStrategy\CardinalPoint.cs" />
+    <Compile Include="Linking\Strategy\NSWELinkStrategy\CardinalLinkPoint.cs" />
+    <Compile Include="Linking\Strategy\NSWELinkStrategy\LinkDrawing.cs" />
     <Compile Include="Linking\Strategy\NSWELinkStrategy\LinkDirection.cs" />
     <Compile Include="Model\ILink.cs" />
     <Compile Include="Model\ILinkable.cs" />
     <Compile Include="Model\Item.cs" />
     <Compile Include="Model\Link\Link.cs" />
-    <Compile Include="Model\Link\NodeLink.cs" />
     <Compile Include="Drawings\Selection\NodeEditor\INodeEditor.cs" />
     <Compile Include="Drawings\Selection\NodeEditor\NodeTextEditor.cs" />
     <Compile Include="Drawings\Structure\StructureDrawing.cs" />
     <Compile Include="Drawings\ContainerDrawer.cs" />
-    <Compile Include="Drawings\Link\LinkDrawing.cs" />
     <Compile Include="Events\BeforeNodeExpandOrCollapseArg.cs" />
     <Compile Include="Events\ItemMovedEventArg.cs" />
     <Compile Include="Events\ItemResizedEventArg.cs" />
@@ -97,7 +100,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Linking\Strategy\CenterLinkStrategy\CenterLinkStrategy.cs" />
-    <Compile Include="Linking\Strategy\ILinker.cs" />
+    <Compile Include="Linking\Strategy\ILinkStrategy.cs" />
     <Compile Include="Linking\Strategy\NSWELinkStrategy\NSWELinkStrategy.cs" />
     <Compile Include="Linking\Strategy\NSWELinkStrategy\NSWEDrawing.cs" />
     <EmbeddedResource Include="DiagramContainer.resx">
@@ -113,7 +116,6 @@
     <Folder Include="Model\Link" />
     <Folder Include="Model\Structure" />
     <Folder Include="Drawings\Selection\NodeEditor" />
-    <Folder Include="Drawings\Link" />
     <Folder Include="Drawings\Structure" />
     <Folder Include="Events" />
     <Folder Include="Linking" />

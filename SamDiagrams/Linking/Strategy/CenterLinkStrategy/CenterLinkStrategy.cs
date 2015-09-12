@@ -25,7 +25,7 @@ namespace SamDiagrams.Linking.Strategy.CenterLinkStrategy
 	/// <summary>
 	/// Description of CenterLinkStrategy.
 	/// </summary>
-	public class CenterLinkStrategy : ILinker
+	public class CenterLinkStrategy : ILinkStrategy
 	{
 		
 		public event LinkDirectionChangedHandler LinkDirectionChangedEvent;
@@ -44,6 +44,11 @@ namespace SamDiagrams.Linking.Strategy.CenterLinkStrategy
 		}		
 		
 		public void ArangeLinksForItem(IDrawing item)
+		{
+			throw new NotImplementedException();
+		}
+
+		public SamDiagrams.Drawers.Links.LinkDrawing CreateLink(SamDiagrams.Model.ILink link, int lineWidth, int selectedLineWidth, LinkStyle streightLines)
 		{
 			throw new NotImplementedException();
 		}

@@ -18,6 +18,7 @@
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using SamDiagrams.Model;
 
@@ -28,7 +29,7 @@ namespace SamDiagrams.Drawings
 	/// </summary>
 	public interface IDrawing : IBoundedShape
 	{
-
+		List<IDrawing> Components {get;}
 		Item Item{get;}
 		bool Invalidated { get; set; }
 		bool Selected {get; set;}

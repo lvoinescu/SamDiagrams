@@ -1,6 +1,7 @@
 using System;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Linking;
+using SamDiagrams.Linking.Strategy.NSWELinkStrategy;
 
 namespace SamDiagrams
 {

@@ -41,7 +41,7 @@ namespace SamDiagrams.Linking.Orchestrator
 		List<LinkDrawing> links = new List<LinkDrawing>();
 		internal int lineWidth = 1;
 		internal int selectedLineWidth = 9;
-		internal ILinker linkStrategy;
+		internal ILinkStrategy linkStrategy;
 		
 		
 		public LinkStyle LinkStyle {
@@ -67,7 +67,7 @@ namespace SamDiagrams.Linking.Orchestrator
 
 		public void AddLink(ILink link)
 		{
-			LinkDrawing linkDrawing = new LinkDrawing(link, lineWidth, selectedLineWidth, LinkStyle.StreightLines);
+			LinkDrawing linkDrawing = linkStrategy.CreateLink(link, lineWidth, selectedLineWidth, LinkStyle.SingleLine);
 			link.Drawing = linkDrawing;
 			RegisterLink(linkDrawing);
 		}

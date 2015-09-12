@@ -34,22 +34,36 @@ namespace SamDiagrams.Drawings
 	{
 		private List<LinkDrawing> drawingLinks;
 		private Item item;
+		private List<IDrawing> subcomponents;
 		
 		protected DiagramComponent(Item item)
 			: base()
 		{
 			this.item = item;
+			this.subcomponents = new List<IDrawing>();
 			this.drawingLinks = new List<LinkDrawing>();
 		}
-		
+
 		protected DiagramComponent(Size size, bool movable)
 			: base()
 		{
+			this.subcomponents = new List<IDrawing>();
 			this.drawingLinks = new List<LinkDrawing>();
 			this.size = size;
 			this.movable = movable;
 		}
+
+		public LinkAttachMode LinkAttachMode {
+			get {
+				return LinkAttachMode.ALL;
+			}
+		}
 		
+		public List<IDrawing> Components {
+			get {
+				return subcomponents;
+			}
+		}
 		
 		public List<LinkDrawing> DrawingLinks {
 			get {

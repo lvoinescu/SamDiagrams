@@ -18,6 +18,7 @@
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace SamDiagrams.Drawings
@@ -62,6 +63,12 @@ namespace SamDiagrams.Drawings
 			}
 		}
 
+		public List<IDrawing> Components {
+			get {
+				return new List<IDrawing>();
+			}
+		}
+		
 		public MovableDrawing(IDrawing drawing)
 		{
 			this.drawing = drawing;

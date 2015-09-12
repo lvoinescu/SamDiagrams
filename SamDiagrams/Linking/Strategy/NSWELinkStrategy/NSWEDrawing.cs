@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
+using SamDiagrams.Drawings.Link;
 using SamDiagrams.Model;
 
 namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
@@ -33,17 +34,62 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 	{
 		
 		private List<LinkDrawing> linksNorth, linksSouth, linksWest, linksEast, linksNone;
-		private List<LinkPoint> linkPointsSouth, linkPointsNorth, linkPointsWest, linkPointsEast, linkPointsNone;
+		private List<CardinalLinkPoint> linkPointsSouth, linkPointsNorth, linkPointsWest, linkPointsEast, linkPointsNone;
 		private List<LinkDrawing> inputLinkList, outputLinkList, links;
 		private readonly IDrawing drawing;
 		private Color color;
-		
+		private bool allowNorth = true;
+		private bool allowSouth = true;
+		private bool allowWest = true;
+		private bool allowEast = true;
+
+		public bool AllowNorth {
+			get {
+				return allowNorth;
+			}
+			set {
+				allowNorth = value;
+			}
+		}
+
+		public bool AllowSouth {
+			get {
+				return allowSouth;
+			}
+			set {
+				allowSouth = value;
+			}
+		}
+
+		public bool AllowWest {
+			get {
+				return allowWest;
+			}
+			set {
+				allowWest = value;
+			}
+		}
+
+		public bool AllowEast {
+			get {
+				return allowEast;
+			}
+			set {
+				allowEast = value;
+			}
+		}
 		public Color Color {
 			get {
 				return color;
 			}
 			set {
 				color = value;
+			}
+		}
+		
+		public List<IDrawing> Components {
+			get {
+				return new List<IDrawing>();
 			}
 		}
 		
@@ -145,35 +191,35 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			set { linksNorth = value; }
 		}
 
-		public List<LinkPoint> LinkPointsNone {
+		public List<CardinalLinkPoint> LinkPointsNone {
 			get { return linkPointsNone; }
 			set { linkPointsNone = value; }
 		}
 
-		internal List<LinkPoint> LinkPointsEast {
+		internal List<CardinalLinkPoint> LinkPointsEast {
 			get { return linkPointsEast; }
 			set { linkPointsEast = value; }
 		}
 
-		internal List<LinkPoint> LinkPointsWest {
+		internal List<CardinalLinkPoint> LinkPointsWest {
 			get { return linkPointsWest; }
 			set { linkPointsWest = value; }
 		}
 
-		internal List<LinkPoint> LinkPointsNorth {
+		internal List<CardinalLinkPoint> LinkPointsNorth {
 			get { return linkPointsNorth; }
 			set { linkPointsNorth = value; }
 		}
 
 		
-		internal List<LinkPoint> LinkPointsSouth {
+		internal List<CardinalLinkPoint> LinkPointsSouth {
 			get { return linkPointsSouth; }
 			set { linkPointsSouth = value; }
 		}
 		
-		public NSWEDrawing(IDrawing structureDrawing)
+		public NSWEDrawing(ILinkableDrawing drawing)
 		{
-			this.drawing = structureDrawing;
+			this.drawing = drawing;
 			links = new List<LinkDrawing>();
 			
 			inputLinkList = new List<LinkDrawing>();
@@ -185,11 +231,27 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			linksWest = new List<LinkDrawing>();
 			linksEast = new List<LinkDrawing>();
 			
-			linkPointsNone = new List<LinkPoint>();
-			linkPointsNorth = new List<LinkPoint>();
-			linkPointsSouth = new List<LinkPoint>();
-			linkPointsWest = new List<LinkPoint>();
-			LinkPointsEast = new List<LinkPoint>();
+			linkPointsNone = new List<CardinalLinkPoint>();
+			linkPointsNorth = new List<CardinalLinkPoint>();
+			linkPointsSouth = new List<CardinalLinkPoint>();
+			linkPointsWest = new List<CardinalLinkPoint>();
+			linkPointsEast = new List<CardinalLinkPoint>();
+			
+			switch (drawing.LinkAttachMode) {
+				case LinkAttachMode.LEFT_RIGHT:
+					allowEast = true;
+					allowWest = true;
+					allowNorth = false;
+					allowSouth = false;
+					break;
+				case LinkAttachMode.TOP_BOTTOM:
+					allowEast = false;
+					allowWest = false;
+					allowNorth = true;
+					allowSouth = true;
+					break;
+			}
+			
 		}
 
 		public Rectangle InvalidatedRegion {

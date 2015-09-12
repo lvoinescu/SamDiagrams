@@ -18,6 +18,7 @@
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -40,13 +41,13 @@ namespace SamDiagrams.Drawings
 		private static SolidBrush CONTOUR_BRUSH = new SolidBrush(Color.SteelBlue);
 		private const int CORNER_RADIUS = 10;
 		private const int DEFAULT_WIDTH = 100;
-		private const int LEFT_PADDING = 4;
+		public const int LEFT_PADDING = 4;
 		private const int TITLE_OFFSET = 5;
 		private const int TAB_NOD_SIZE = 10;
 		private const int EXPANDER_SIZE = 10;
-		private const int IMAGE_SPACE = 14;
-		private const int IMAGE_PADDING = 4;
-		private const int IMAGE_SIZE = 16;
+		public const int IMAGE_SPACE = 14;
+		public const int IMAGE_PADDING = 4;
+		public const int IMAGE_SIZE = 16;
 		private static Color BORDER_COLOR = Color.SteelBlue;
 		private static SolidBrush TITLE_BRUSH = new SolidBrush(Color.Black);
 		
@@ -75,6 +76,8 @@ namespace SamDiagrams.Drawings
 			: base(structure)
 		{
 			this.structure = structure;
+			CreateNodeDrawings();
+			this.structure.NodesChanged += new ListChangedEventHandler(OnListChanged);
 			this.invalidated = true;
 			conturPen = new Pen(CONTOUR_BRUSH, 1F);
 			this.selected = false;
@@ -85,6 +88,12 @@ namespace SamDiagrams.Drawings
 			AutoSizeContent();
 		}
 	
+		public int RowHeight {
+			get {
+				return rowHeight;
+			}
+		}
+		
 		public Structure Structure {
 			get {
 				return structure;
@@ -94,6 +103,40 @@ namespace SamDiagrams.Drawings
 			}
 		}
 
+		public override Point Location{
+			get{
+				return this.location;
+			}
+			set{
+				this.location = value;
+			}
+		}
+		
+		void CreateNodeDrawings()
+		{
+			Iterate(new Action<Node>(CreateNodeDrawings));
+			ComputeDrawingRows();
+		}
+				
+		
+		public void Iterate(Action<Node> action)
+		{
+			foreach (Node node in structure.Nodes) {
+				RecursiveTraverse(node, action);
+			}
+		}
+		void CreateNodeDrawings(Node node)
+		{
+			NodeDrawing nodeDrawing = new NodeDrawing(this, node);
+			node.Drawing = nodeDrawing;
+			Components.Add(nodeDrawing);
+			//structure.DiagramContainer.ContainerDrawer.Drawings.Add(nodeDrawing);
+		}
+		
+		void OnListChanged(object sender, ListChangedEventArgs e)
+		{
+		}
+		
 		public override Rectangle InvalidatedRegion {
 			get {
 				MergableRectangle rectangle = new MergableRectangle(this.Bounds);
@@ -104,7 +147,12 @@ namespace SamDiagrams.Drawings
 			}
 		}
 		
-	
+		public Point NodesDrawingStart {
+			get {
+				return new Point(this.location.X, nodesDrawingTopPosition + TITLE_OFFSET);
+			}
+		}
+		
 		public override void Draw(Graphics graphics)
 		{
 			GraphicsPath path = new GraphicsPath();
@@ -130,7 +178,8 @@ namespace SamDiagrams.Drawings
 			graphics.DrawString(this.Structure.Title, titleFont, TITLE_BRUSH, new PointF(titlePosX, location.Y));
 			if (Structure.TitleImage != null)
 				graphics.DrawImage(Structure.TitleImage, 
-					new Rectangle(this.location.X + IMAGE_PADDING, this.location.Y + IMAGE_PADDING, IMAGE_SIZE, IMAGE_SIZE));
+					new Rectangle(this.location.X + IMAGE_PADDING, this.location.Y + IMAGE_PADDING, 
+						IMAGE_SIZE, IMAGE_SIZE));
 
 
 			int xOffset = this.location.X + LEFT_PADDING;
@@ -143,29 +192,30 @@ namespace SamDiagrams.Drawings
 			graphics.FillRectangle(Brushes.White, lineMainR);
 			graphics.DrawRectangle(conturPen, lineMainR);
 
-			crtDrawingRow = 0;
-			foreach (Node node in Structure.Nodes) {
-				RecursiveDraw(graphics, rowFont, node, xOffset, nodesDrawingTopPosition + TITLE_OFFSET);
-				crtDrawingRow++;
-			}
-			
 			path = new GraphicsPath();
-			path.AddArc(location.X, lineMainR.Y + lineMainR.Height - (int)(CORNER_RADIUS / 2), 
+			
+			path.AddArc(location.X, lineMainR.Y + lineMainR.Height - (int)(CORNER_RADIUS / 2),
 				CORNER_RADIUS, CORNER_RADIUS, 180, -90);
-			path.AddArc(location.X + size.Width - CORNER_RADIUS, lineMainR.Y + lineMainR.Height - (int)(CORNER_RADIUS / 2),
+			path.AddArc(location.X + size.Width - CORNER_RADIUS, 
+				lineMainR.Y + lineMainR.Height - (int)(CORNER_RADIUS / 2),
 				CORNER_RADIUS, CORNER_RADIUS, 90, -90);
+			
 			path.CloseAllFigures();
 			graphics.FillPath(new SolidBrush(color), path);
 			graphics.DrawPath(conturPen, path);
 			
+			DrawNodes(graphics);
+			crtDrawingRow = 0;
+			
 		}
+
 		
 		private int CalculateDisplayedRows(Node nod, bool parentIsExpanded)
 		{
 			int nr = 0;
 			if (parentIsExpanded) {
-				for (int i = 0; i < nod.Count; i++) {
-					nr += CalculateDisplayedRows(nod[i], parentIsExpanded && nod[i].IsExpanded);
+				for (int i = 0; i < nod.Nodes.Count; i++) {
+					nr += CalculateDisplayedRows(nod.Nodes[i], parentIsExpanded && nod.Nodes[i].IsExpanded);
 				}
 			}
 			nr++;
@@ -176,7 +226,7 @@ namespace SamDiagrams.Drawings
 		{
 			rowFont = new Font(this.rowFont.FontFamily, (float)((rowFont.Size - 0)));
 			Size sT = TextRenderer.MeasureText("TEST", rowFont);
-			return (int)(sT.Height);
+			return sT.Height;
 		}
 		
 		internal void AutoSizeContent()
@@ -199,38 +249,32 @@ namespace SamDiagrams.Drawings
 		}
 		
 		Random r = new Random(255);
-		private void RecursiveDraw(Graphics g, Font  nodeFont, Node nod, int xOffset, int yOffset)
+		private void DrawNodes(Graphics graphics)
 		{
 
-			int cY = yOffset + rowHeight * crtDrawingRow;
-			int cX = xOffset;
-
-			if (!Structure.DiagramContainer.AutoSizeItem && cY >
-			    location.Y + size.Height - CORNER_RADIUS - rowHeight)
-				return;
-
-			if (!nod.IsLeaf) {
-				g.DrawRectangle(Pens.Black, cX, cY, EXPANDER_SIZE, EXPANDER_SIZE);
-				g.DrawLine(Pens.Black, cX, cY + EXPANDER_SIZE / 2, cX + EXPANDER_SIZE, cY + EXPANDER_SIZE / 2);
-				if (!nod.IsExpanded) {
-					g.DrawLine(Pens.Black, cX + EXPANDER_SIZE / 2, cY, cX + EXPANDER_SIZE / 2, cY + +EXPANDER_SIZE);
+			ComputeDrawingRows();
+			
+			foreach (Node node in structure.Nodes) {
+				RecursiveDrawNodeDrawings(node, graphics);
+			}
+		}
+		
+		private void RecursiveDrawNodeDrawings(Node node, Graphics graphics)
+		{
+			node.Drawing.Draw(graphics);
+			if ((!node.IsLeaf) && node.IsExpanded) {
+				for (int i = 0; i < node.Nodes.Count; i++) {
+					RecursiveDrawNodeDrawings(node.Nodes[i], graphics);
 				}
 			}
-
-			int space = 0;
-
-			for (int i = 0; i < nod.Images.Count; i++) {
-				g.DrawImage(nod.Images[i], cX + EXPANDER_SIZE + space, cY + (int)(IMAGE_PADDING / 2),
-					rowHeight - IMAGE_PADDING, rowHeight - IMAGE_PADDING);
-				space += IMAGE_SPACE - IMAGE_PADDING / 2;
-			}
-			
-			g.DrawString(nod.Text, nodeFont, TITLE_BRUSH, new PointF(cX + space + EXPANDER_SIZE, cY));
-			if ((!nod.IsLeaf) && nod.IsExpanded) {
-				xOffset += TAB_NOD_SIZE;
-				for (int i = 0; i < nod.Count; i++) {
-					crtDrawingRow++;
-					RecursiveDraw(g, nodeFont, nod[i], xOffset, yOffset);
+		}
+		
+		private void RecursiveTraverse(Node node, Action<Node> action)
+		{
+			action(node);
+			if ((!node.IsLeaf) && node.IsExpanded) {
+				for (int i = 0; i < node.Nodes.Count; i++) {
+					RecursiveTraverse(node.Nodes[i], action);
 				}
 			}
 		}
@@ -249,11 +293,11 @@ namespace SamDiagrams.Drawings
 			if (nod.IsExpanded) {
 				x += TAB_NOD_SIZE;
 			}
-			for (int i = 0; i < nod.Count; i++) {
+			for (int i = 0; i < nod.Nodes.Count; i++) {
 				Node ndr = null;
 				if (parentIsExpanded)
 					crtNodCheck++;
-				ndr = GetNodAtXYRec(nod[i], x, y, mouseX, mouseY, parentIsExpanded && nod[i].IsExpanded);
+				ndr = GetNodAtXYRec(nod.Nodes[i], x, y, mouseX, mouseY, parentIsExpanded && nod.Nodes[i].IsExpanded);
 				if (ndr != null) {
 					nodDblX = location.X + x + LEFT_PADDING;
 					nodDblY = location.Y + nodesDrawingTopPosition + crtNodCheck * rowHeight;
@@ -297,12 +341,32 @@ namespace SamDiagrams.Drawings
 					if (DrawingResized != null) {
 						DrawingResized(this, new DrawingResizedEventArgs(this, previousBounds, Bounds));
 					}
+					ComputeDrawingRows();
 					return;
 				}
 				crtExpanderRow++;
 			}
 		}
+
+		void ComputeDrawingRows()
+		{
+			crtDrawingRow = 0;
+			structure.IterateDrawings(new Action<NodeDrawing>(ComputeNodeDrawingPosition));
+		}
+
+		void ComputeNodeDrawingPosition(NodeDrawing nodDrawing)
+		{
+						
+			int cY = nodesDrawingTopPosition + TITLE_OFFSET + rowHeight * crtDrawingRow++;
+			int cX = ((nodDrawing.Item as Node).Level + 0) * TAB_NOD_SIZE + LEFT_PADDING;
+
+			
+			nodDrawing.Location = new Point(location.X + cX, cY);
+			nodDrawing.DrawingPadding = cX;
+			nodDrawing.Visible = true;
+		}
 		
+
 		/// <summary>
 		/// Method that find the node for which the expander was triggered
 		/// </summary>
@@ -327,7 +391,7 @@ namespace SamDiagrams.Drawings
 				if (rowRectangleToCheck.Contains(insideClickPoint))
 					return node;
 				
-				foreach (Node childNode in node) {
+				foreach (Node childNode in node.Nodes) {
 					Node ndr = null;
 					if (parentIsExpanded) {
 						crtExpanderRow++;

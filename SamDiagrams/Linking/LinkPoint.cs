@@ -31,7 +31,7 @@ namespace SamDiagrams
 	{
 		private int x = 0;
 		private int y = 0;
-		private LinkDrawing linkDrawing;
+		protected LinkDrawing linkDrawing;
 		
 		public LinkDrawing Link {
 			get { return linkDrawing; }
@@ -53,32 +53,25 @@ namespace SamDiagrams
 			this.linkDrawing = linkDrawing;
 		}
 
-		internal LinkPoint GetCounterPoint()
-		{
-			if (linkDrawing.DestinationPoint == this)
-				return linkDrawing.SourcePoint;
-			return linkDrawing.DestinationPoint;
-		}
+//		internal void SetCounterPoint(int x, int y)
+//		{
+//			LinkPoint pc = GetCounterPoint();
+//			pc.x = x;
+//			pc.y = y;
+//		}
 
-		internal void SetCounterPoint(int x, int y)
-		{
-			LinkPoint pc = GetCounterPoint();
-			pc.x = x;
-			pc.y = y;
-		}
-
-		internal bool IsGreater(LinkPoint point, LinkDirection direction)
-		{
-			switch (direction) {
-				case LinkDirection.SourceNorthDestinationSouth:
-				case LinkDirection.SourceSouthDestinationNorth:
-					return this.x > point.x;
-				case LinkDirection.SourceEastDestinationWest:
-				case LinkDirection.SourceWestDestinationEast:
-					return this.y > point.y;
-			}
-			return false;
-		}
+//		internal bool IsGreater(LinkPoint point, LinkDirection direction)
+//		{
+//			switch (direction) {
+//				case LinkDirection.SourceNorthDestinationSouth:
+//				case LinkDirection.SourceSouthDestinationNorth:
+//					return this.x > point.x;
+//				case LinkDirection.SourceEastDestinationWest:
+//				case LinkDirection.SourceWestDestinationEast:
+//					return this.y > point.y;
+//			}
+//			return false;
+//		}
 
 		public static void Swap(LinkPoint p1, LinkPoint p2)
 		{

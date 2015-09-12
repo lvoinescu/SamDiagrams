@@ -190,6 +190,8 @@ namespace SamDiagrams
 			structure.Drawing = structureDrawing;
 			structureDrawing.Invalidated = true;
 			
+			
+			
 			SelectableDrawing selectableDrawing = new SelectableDrawing(structureDrawing);
 			selectableDrawing.DrawingResized += new DrawingResizedHandler(OnDrawingResized);
 			containerDrawer.Drawings.Insert(0, selectableDrawing);

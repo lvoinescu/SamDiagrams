@@ -19,17 +19,20 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
+using SamDiagrams.Drawings.Link;
 using SamDiagrams.Drawings.Selection;
 using SamDiagrams.Linking.Strategy;
+using SamDiagrams.Model;
 
 namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 {
 	/// <summary>
 	/// Description of LinkStrategy.
 	/// </summary>
-	public class NSWELinkStrategy : ILinker
+	public class NSWELinkStrategy : ILinkStrategy
 	{
 		
 		public event LinkDirectionChangedHandler LinkDirectionChangedEvent;
@@ -42,10 +45,19 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			virtualMapping = new Dictionary<IDrawing, NSWEDrawing>();
 		}
 
+		public LinkDrawing CreateLink(ILink link, int lineWidth, int selectedLineWidth, LinkStyle linkStyle)
+		{
+			LinkDrawing linkDrawing = new LinkDrawing(link, lineWidth, selectedLineWidth, linkStyle);
+			return linkDrawing;
+		}
 		
 		public void DirectLinks(IDrawing drawing)
 		{
  
+			foreach (IDrawing subcomponent in drawing.Components) {
+				DirectLinks(subcomponent);
+			}
+			
 			IDrawing structureDrawing = drawing;
 			if (drawing is SelectableDrawing)
 				structureDrawing = (drawing as SelectableDrawing).Drawing;
@@ -60,24 +72,30 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 				IDrawing sourceDrawing = link.SourceDrawing;
 				
 				LinkDirection prevDirection = link.Direction;
-				LinkDirection direction = LinkDirection.None;
-				if (sourceDrawing.Location.Y > destinationDrawing.Location.Y + destinationDrawing.Size.Height) {
-					direction = LinkDirection.SourceNorthDestinationSouth;
-				} else if (sourceDrawing.Location.Y + sourceDrawing.Size.Height < destinationDrawing.Location.Y) {
-					direction = LinkDirection.SourceSouthDestinationNorth;
-				} else {
-					if (sourceDrawing.Location.X > destinationDrawing.Location.X + destinationDrawing.Size.Width) {
-						direction = LinkDirection.SourceWestDestinationEast;
-					} else if (sourceDrawing.Location.X + sourceDrawing.Size.Width < destinationDrawing.Location.X) {
-						direction = LinkDirection.SourceEastDestinationWest;
-					} else
-						direction = LinkDirection.None;
-				}
+				CardinalPoint from = CardinalPoint.None;
+				CardinalPoint to = CardinalPoint.None;
 				
-				if (direction != link.Direction) {
+				if (sourceDrawing.Location.Y > destinationDrawing.Location.Y + destinationDrawing.Size.Height) {
+					from = CardinalPoint.South;
+					to = CardinalPoint.North;
+				} else if (sourceDrawing.Location.Y + sourceDrawing.Size.Height < destinationDrawing.Location.Y) {
+					from = CardinalPoint.North;
+					to = CardinalPoint.South;
+				} else if (sourceDrawing.Location.X > destinationDrawing.Location.X + destinationDrawing.Size.Width) {
+					from = CardinalPoint.East;
+					to = CardinalPoint.West;
+				} else if (sourceDrawing.Location.X + sourceDrawing.Size.Width < destinationDrawing.Location.X) {
+					from = CardinalPoint.West;
+					to = CardinalPoint.East;
+				}
+				LinkDirection direction = new LinkDirection(from, to);
+				
+				if (!direction.Equals(link.Direction)) {
 					link.Invalidated = true;
-					OnLinkDirectionChanged(link, direction);
+					OnLinkDirectionChanged(link, link.Direction, direction);
 					link.Direction = direction;
+					link.DestinationPoint.Direction = direction.From;
+					link.SourcePoint.Direction = direction.To;
 				}
 				
 				ArangeLinksForItem(destinationDrawing);
@@ -90,7 +108,7 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 		{
 			arrangeConnectionPoints(structureDrawing);
 			
-			arrangeLinks(structureDrawing);
+			arrangeLinkPoints(structureDrawing);
 		}
 		
 		public void RegisterLink(LinkDrawing link)
@@ -106,7 +124,7 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			nsweDestination.Links.Add(link);
 		}
 		
-		private NSWEDrawing registerDrawing(IDrawing drawing)
+		private NSWEDrawing registerDrawing(ILinkableDrawing drawing)
 		{
 			NSWEDrawing nsweDrawing;
 			if (!virtualMapping.ContainsKey(drawing)) {
@@ -117,31 +135,36 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			return nsweDrawing;
 		}
 		
-		private void arrangeLinks(IDrawing item)
+		/// <summary>
+		/// This method arrange all the points of the links attached to the IDrawing
+		/// </summary>
+		/// <param name="item"></param>
+		private void arrangeLinkPoints(IDrawing item)
 		{
-			int iN = 0, iS = 0, iW = 0, iE = 0;
+			int drawingNorthPoints = 0, drawingSouthPoints = 0, drawingWestPoints = 0, drawingEastPoints = 0;
 			NSWEDrawing virtualItem = virtualMapping[item];
+			
 			foreach (LinkDrawing link in virtualItem.InputLinkList) {
-				switch (link.Direction) {
-					case LinkDirection.SourceNorthDestinationSouth:
-						iS++;
-						link.DestinationPoint.X = item.Location.X + iS * item.Size.Width / (virtualItem.LinkPointsSouth.Count + 1);
+				switch (link.Direction.To) {
+					case CardinalPoint.North:
+						drawingSouthPoints++;
+						link.DestinationPoint.X = item.Location.X + drawingSouthPoints * item.Size.Width / (virtualItem.LinkPointsSouth.Count + 1);
 						link.DestinationPoint.Y = item.Location.Y + item.Size.Height;
 						break;
-					case LinkDirection.SourceSouthDestinationNorth:
-						iN++;
-						link.DestinationPoint.X = item.Location.X + iN * item.Size.Width / (virtualItem.LinkPointsNorth.Count + 1);
+					case CardinalPoint.South:
+						drawingNorthPoints++;
+						link.DestinationPoint.X = item.Location.X + drawingNorthPoints * item.Size.Width / (virtualItem.LinkPointsNorth.Count + 1);
 						link.DestinationPoint.Y = item.Location.Y;
 						break;
-					case LinkDirection.SourceWestDestinationEast:
-						iE++;
+					case CardinalPoint.West:
+						drawingEastPoints++;
 						link.DestinationPoint.X = item.Location.X + item.Size.Width;
-						link.DestinationPoint.Y = item.Location.Y + iE * item.Size.Height / (virtualItem.LinkPointsEast.Count + 1);
+						link.DestinationPoint.Y = item.Location.Y + drawingEastPoints * item.Size.Height / (virtualItem.LinkPointsEast.Count + 1);
 						break;
-					case LinkDirection.SourceEastDestinationWest:
-						iW++;
+					case CardinalPoint.East:
+						drawingWestPoints++;
 						link.DestinationPoint.X = item.Location.X;
-						link.DestinationPoint.Y = item.Location.Y + iW * item.Size.Height / (virtualItem.LinkPointsWest.Count + 1);
+						link.DestinationPoint.Y = item.Location.Y + drawingWestPoints * item.Size.Height / (virtualItem.LinkPointsWest.Count + 1);
 						break;
 					default:
 						link.DestinationPoint.X = item.Location.X + item.Size.Width / 2;
@@ -152,26 +175,26 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 
 
 			foreach (LinkDrawing link in virtualItem.OutputLinkList) {
-				switch (link.Direction) {
-					case LinkDirection.SourceNorthDestinationSouth:
-						iN++;
-						link.SourcePoint.X = item.Location.X + iN * item.Size.Width / (virtualItem.LinkPointsNorth.Count + 1);
+				switch (link.Direction.From) {
+					case CardinalPoint.South:
+						drawingNorthPoints++;
+						link.SourcePoint.X = item.Location.X + drawingNorthPoints * item.Size.Width / (virtualItem.LinkPointsNorth.Count + 1);
 						link.SourcePoint.Y = item.Location.Y;
 						break;
-					case LinkDirection.SourceSouthDestinationNorth:
-						iS++;
-						link.SourcePoint.X = item.Location.X + iS * item.Size.Width / (virtualItem.LinkPointsSouth.Count + 1);
+					case CardinalPoint.North:
+						drawingSouthPoints++;
+						link.SourcePoint.X = item.Location.X + drawingSouthPoints * item.Size.Width / (virtualItem.LinkPointsSouth.Count + 1);
 						link.SourcePoint.Y = item.Location.Y + item.Size.Height;
 						break;
-					case LinkDirection.SourceWestDestinationEast:
-						iW++;
+					case CardinalPoint.East:
+						drawingWestPoints++;
 						link.SourcePoint.X = item.Location.X;
-						link.SourcePoint.Y = item.Location.Y + iW * item.Size.Height / (virtualItem.LinkPointsWest.Count + 1);
+						link.SourcePoint.Y = item.Location.Y + drawingWestPoints * item.Size.Height / (virtualItem.LinkPointsWest.Count + 1);
 						break;
-					case LinkDirection.SourceEastDestinationWest:
-						iE++;
+					case CardinalPoint.West:
+						drawingEastPoints++;
 						link.SourcePoint.X = item.Location.X + item.Size.Width;
-						link.SourcePoint.Y = item.Location.Y + iE * item.Size.Height / (virtualItem.LinkPointsEast.Count + 1);
+						link.SourcePoint.Y = item.Location.Y + drawingEastPoints * item.Size.Height / (virtualItem.LinkPointsEast.Count + 1);
 						break;
 					default:
 						link.SourcePoint.X = item.Location.X + item.Size.Width / 2;
@@ -183,7 +206,7 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			arrangeConnectionPoints(item);
 		}
 		
-		private void OnLinkDirectionChanged(LinkDrawing link, LinkDirection newDirection)
+		private void OnLinkDirectionChanged(LinkDrawing link, LinkDirection previousDirection, LinkDirection newDirection)
 		{
 			
 			IDrawing sourceDrawing = link.SourceDrawing;
@@ -192,121 +215,149 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			link.Invalidated = true;
 			NSWEDrawing source = virtualMapping[sourceDrawing];
 			NSWEDrawing destination = virtualMapping[destinationDrawing];
-			switch (link.Direction) {
-				case LinkDirection.None:
+			
+			switch (previousDirection.From) {
+				case CardinalPoint.None:
 					source.LinkPointsNone.Remove(link.SourcePoint);
-					destination.LinkPointsNone.Remove(link.DestinationPoint);
 					source.LinksNone.Remove(link);
-					destination.LinksNone.Remove(link);
 					foreach (LinkDrawing l in source.LinksNone)
 						l.Invalidated = true;
+					break;
+				case CardinalPoint.North:
+					source.LinkPointsSouth.Remove(link.SourcePoint);
+					source.LinksSouth.Remove(link);
+					foreach (LinkDrawing l in source.LinksSouth)
+						l.Invalidated = true;
+					break;
+				case CardinalPoint.South:
+					source.LinkPointsNorth.Remove(link.SourcePoint);
+					source.LinksNorth.Remove(link);
+					foreach (LinkDrawing l in source.LinksSouth)
+						l.Invalidated = true;
+					break;
+				case CardinalPoint.West:
+					source.LinkPointsEast.Remove(link.SourcePoint);
+					source.LinksEast.Remove(link);
+					foreach (LinkDrawing l in source.LinksWest)
+						l.Invalidated = true;
+					break;
+				case CardinalPoint.East:
+					source.LinkPointsWest.Remove(link.SourcePoint);
+					source.LinksWest.Remove(link);
+					foreach (LinkDrawing l in source.LinksEast)
+						l.Invalidated = true;
+					break;
+			}
+			
+			switch (previousDirection.To) {
+				case CardinalPoint.None:
+					destination.LinkPointsNone.Remove(link.DestinationPoint);
+					destination.LinksNone.Remove(link);
 					foreach (LinkDrawing l in destination.LinksNone)
 						l.Invalidated = true;
 					break;
-				case LinkDirection.SourceNorthDestinationSouth:
-					source.LinkPointsNorth.Remove(link.SourcePoint);
-					destination.LinkPointsSouth.Remove(link.DestinationPoint);
-					source.LinksNorth.Remove(link);
-					destination.LinksSouth.Remove(link);
-					foreach (LinkDrawing l in source.LinksNorth)
-						l.Invalidated = true;
+				case CardinalPoint.South:
+					destination.LinkPointsNorth.Remove(link.DestinationPoint);
+					destination.LinksNorth.Remove(link);
 					foreach (LinkDrawing l in destination.LinksSouth)
 						l.Invalidated = true;
 					break;
-				case LinkDirection.SourceSouthDestinationNorth:
-					source.LinkPointsSouth.Remove(link.SourcePoint);
-					destination.LinkPointsNorth.Remove(link.DestinationPoint);
-					source.LinksSouth.Remove(link);
-					destination.LinksNorth.Remove(link);
-					foreach (LinkDrawing l in source.LinksSouth)
-						l.Invalidated = true;
+				case CardinalPoint.North:
+					destination.LinkPointsSouth.Remove(link.DestinationPoint);
+					destination.LinksSouth.Remove(link);
 					foreach (LinkDrawing l in destination.LinksNorth)
 						l.Invalidated = true;
 					break;
-				case LinkDirection.SourceWestDestinationEast:
-					source.LinkPointsWest.Remove(link.SourcePoint);
-					destination.LinkPointsEast.Remove(link.DestinationPoint);
-					source.LinksWest.Remove(link);
-					destination.LinksEast.Remove(link);
-					foreach (LinkDrawing l in source.LinksWest)
-						l.Invalidated = true;
+				case CardinalPoint.East:
+					destination.LinkPointsWest.Remove(link.DestinationPoint);
+					destination.LinksWest.Remove(link);
 					foreach (LinkDrawing l in destination.LinksEast)
 						l.Invalidated = true;
 					break;
-				case LinkDirection.SourceEastDestinationWest:
-					source.LinkPointsEast.Remove(link.SourcePoint);
-					destination.LinkPointsWest.Remove(link.DestinationPoint);
-					source.LinksEast.Remove(link);
-					destination.LinksWest.Remove(link);
-					foreach (LinkDrawing l in source.LinksEast)
-						l.Invalidated = true;
+				case CardinalPoint.West:
+					destination.LinkPointsEast.Remove(link.DestinationPoint);
+					destination.LinksEast.Remove(link);
 					foreach (LinkDrawing l in destination.LinksWest)
 						l.Invalidated = true;
 					break;
 			}
 
 
-			switch (newDirection) {
-				case LinkDirection.None:
+			switch (newDirection.From) {
+				case CardinalPoint.None:
 					source.LinkPointsNone.Add(link.SourcePoint);
-					destination.LinkPointsNone.Add(link.DestinationPoint);
 					source.LinksNone.Add(link);
+					break;
+				case CardinalPoint.North:
+					source.LinkPointsSouth.Add(link.SourcePoint);
+					source.LinksSouth.Add(link);
+					foreach (LinkDrawing l in source.LinksNorth)
+						l.Invalidated = true;
+					break;
+				case CardinalPoint.South:
+					source.LinkPointsNorth.Add(link.SourcePoint);
+					source.LinksNorth.Add(link);
+					foreach (LinkDrawing l in source.LinksSouth)
+						l.Invalidated = true;
+					break;
+				case CardinalPoint.West:
+					source.LinkPointsEast.Add(link.SourcePoint);
+					source.LinksEast.Add(link);
+					foreach (LinkDrawing l in source.LinksWest)
+						l.Invalidated = true;
+					break;
+				case CardinalPoint.East:
+					source.LinkPointsWest.Add(link.SourcePoint);
+					source.LinksWest.Add(link);
+					foreach (LinkDrawing l in source.LinksEast)
+						l.Invalidated = true;
+					break;
+			}
+			
+			switch (newDirection.To) {
+				case CardinalPoint.None:
+					destination.LinkPointsNone.Add(link.DestinationPoint);
 					destination.LinksNone.Add(link);
 					break;
-				case LinkDirection.SourceNorthDestinationSouth:
-					source.LinkPointsNorth.Add(link.SourcePoint);
+				case CardinalPoint.North:
 					destination.LinkPointsSouth.Add(link.DestinationPoint);
-					source.LinksNorth.Add(link);
 					destination.LinksSouth.Add(link);
 					foreach (LinkDrawing l in destination.LinksSouth)
 						l.Invalidated = true;
-					foreach (LinkDrawing l in source.LinksNorth)
-						l.Invalidated = true;
 					break;
-				case LinkDirection.SourceSouthDestinationNorth:
-					source.LinkPointsSouth.Add(link.SourcePoint);
+				case CardinalPoint.South:
 					destination.LinkPointsNorth.Add(link.DestinationPoint);
-					source.LinksSouth.Add(link);
 					destination.LinksNorth.Add(link);
 					foreach (LinkDrawing l in destination.LinksNorth)
 						l.Invalidated = true;
-					foreach (LinkDrawing l in source.LinksSouth)
-						l.Invalidated = true;
 					break;
-				case LinkDirection.SourceWestDestinationEast:
-					source.LinkPointsWest.Add(link.SourcePoint);
+				case CardinalPoint.West:
 					destination.LinkPointsEast.Add(link.DestinationPoint);
-					source.LinksWest.Add(link);
 					destination.LinksEast.Add(link);
 					foreach (LinkDrawing l in destination.LinksEast)
 						l.Invalidated = true;
-					foreach (LinkDrawing l in source.LinksWest)
-						l.Invalidated = true;
 					break;
-				case LinkDirection.SourceEastDestinationWest:
-					source.LinkPointsEast.Add(link.SourcePoint);
+				case CardinalPoint.East:
 					destination.LinkPointsWest.Add(link.DestinationPoint);
-					source.LinksEast.Add(link);
 					destination.LinksWest.Add(link);
 					foreach (LinkDrawing l in destination.LinksWest)
 						l.Invalidated = true;
-					foreach (LinkDrawing l in source.LinksEast)
-						l.Invalidated = true;
 					break;
 			}
+			
 			if (this.LinkDirectionChangedEvent != null)
 				LinkDirectionChangedEvent(link, new LinkDirectionChangedArg(link, newDirection, link.Direction));
 		}
 		
-		private void SortCounterPoints(List<LinkPoint> list, LinkDirection direction)
+		private void SortCounterPoints(List<CardinalLinkPoint> list)
 		{
 
 			for (int i = 0; i < list.Count; i++) {
 				for (int j = 0; j < list.Count; j++) {
 					LinkPoint counterPoint = list[i].GetCounterPoint();
 					LinkPoint point = list[i];
-					bool counterPointGreater = list[i].GetCounterPoint().IsGreater(list[j].GetCounterPoint(), direction);
-					bool pointGreater = list[i].IsGreater(list[j], direction);
+					bool counterPointGreater = list[i].GetCounterPoint().CompareTo(list[j].GetCounterPoint()) > 0;
+					bool pointGreater = list[i].CompareTo(list[j]) > 0;
 					if ((!counterPointGreater && pointGreater) || (counterPointGreater && !pointGreater)) {
 						int t = 0;
 						t = list[i].X;
@@ -327,13 +378,13 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			
 			NSWEDrawing item = virtualMapping[diagramItem];
 			if (item.LinkPointsSouth.Count > 1)
-				SortCounterPoints(item.LinkPointsSouth, LinkDirection.SourceSouthDestinationNorth);
+				SortCounterPoints(item.LinkPointsSouth);
 			if (item.LinkPointsNorth.Count > 1)
-				SortCounterPoints(item.LinkPointsNorth, LinkDirection.SourceNorthDestinationSouth);
+				SortCounterPoints(item.LinkPointsNorth);
 			if (item.LinkPointsWest.Count > 1)
-				SortCounterPoints(item.LinkPointsWest, LinkDirection.SourceWestDestinationEast);
+				SortCounterPoints(item.LinkPointsWest);
 			if (item.LinkPointsEast.Count > 1)
-				SortCounterPoints(item.LinkPointsEast, LinkDirection.SourceEastDestinationWest);
+				SortCounterPoints(item.LinkPointsEast);
 		}
 		
 	}

@@ -18,6 +18,7 @@
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -75,6 +76,12 @@ namespace SamDiagrams.DiagramItem.NodeEditor
 		public Rectangle InvalidatedRegion {
 			get {
 				throw new NotImplementedException();
+			}
+		}
+		
+		public List<IDrawing> Components {
+			get {
+				return new List<IDrawing>();
 			}
 		}
 		

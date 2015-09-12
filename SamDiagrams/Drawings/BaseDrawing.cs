@@ -65,7 +65,7 @@ namespace SamDiagrams.Drawings
 			}
 		}
 
-		public Point Location {
+		public virtual Point Location {
 			get {
 				return this.location;
 			}
