@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using SamDiagrams.Drawers.Links;
+using SamDiagrams.Drawings.Geometry;
 using SamDiagrams.Drawings.Link;
 using SamDiagrams.Model;
 
@@ -87,7 +88,11 @@ namespace SamDiagrams.Drawings
 
 		public Rectangle InvalidatedRegion {
 			get {
-				return structureDrawing.InvalidatedRegion;
+				MergeableRectangle rectangle = new MergeableRectangle(this.Bounds);
+				foreach (LinkDrawing link in this.DrawingLinks) {
+					rectangle.Merge(link.Bounds);
+				}
+				return rectangle.Bounds;
 			}
 		}
 		
