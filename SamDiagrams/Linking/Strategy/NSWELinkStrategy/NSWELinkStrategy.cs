@@ -148,23 +148,27 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 				switch (link.Direction.To) {
 					case CardinalPoint.North:
 						drawingSouthPoints++;
-						link.DestinationPoint.X = item.Location.X + drawingSouthPoints * item.Size.Width / (virtualItem.LinkPointsSouth.Count + 1);
+						link.DestinationPoint.X = item.Location.X 
+							+ drawingSouthPoints * item.Size.Width / (virtualItem.LinkPointsSouth.Count + 1);
 						link.DestinationPoint.Y = item.Location.Y + item.Size.Height;
 						break;
 					case CardinalPoint.South:
 						drawingNorthPoints++;
-						link.DestinationPoint.X = item.Location.X + drawingNorthPoints * item.Size.Width / (virtualItem.LinkPointsNorth.Count + 1);
+						link.DestinationPoint.X = item.Location.X 
+							+ drawingNorthPoints * item.Size.Width / (virtualItem.LinkPointsNorth.Count + 1);
 						link.DestinationPoint.Y = item.Location.Y;
 						break;
 					case CardinalPoint.West:
 						drawingEastPoints++;
 						link.DestinationPoint.X = item.Location.X + item.Size.Width;
-						link.DestinationPoint.Y = item.Location.Y + drawingEastPoints * item.Size.Height / (virtualItem.LinkPointsEast.Count + 1);
+						link.DestinationPoint.Y = item.Location.Y 
+							+ drawingEastPoints * item.Size.Height / (virtualItem.LinkPointsEast.Count + 1);
 						break;
 					case CardinalPoint.East:
 						drawingWestPoints++;
 						link.DestinationPoint.X = item.Location.X;
-						link.DestinationPoint.Y = item.Location.Y + drawingWestPoints * item.Size.Height / (virtualItem.LinkPointsWest.Count + 1);
+						link.DestinationPoint.Y = item.Location.Y 
+							+ drawingWestPoints * item.Size.Height / (virtualItem.LinkPointsWest.Count + 1);
 						break;
 					default:
 						link.DestinationPoint.X = item.Location.X + item.Size.Width / 2;
@@ -178,23 +182,27 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 				switch (link.Direction.From) {
 					case CardinalPoint.South:
 						drawingNorthPoints++;
-						link.SourcePoint.X = item.Location.X + drawingNorthPoints * item.Size.Width / (virtualItem.LinkPointsNorth.Count + 1);
+						link.SourcePoint.X = item.Location.X 
+							+ drawingNorthPoints * item.Size.Width / (virtualItem.LinkPointsNorth.Count + 1);
 						link.SourcePoint.Y = item.Location.Y;
 						break;
 					case CardinalPoint.North:
 						drawingSouthPoints++;
-						link.SourcePoint.X = item.Location.X + drawingSouthPoints * item.Size.Width / (virtualItem.LinkPointsSouth.Count + 1);
+						link.SourcePoint.X = item.Location.X 
+							+ drawingSouthPoints * item.Size.Width / (virtualItem.LinkPointsSouth.Count + 1);
 						link.SourcePoint.Y = item.Location.Y + item.Size.Height;
 						break;
 					case CardinalPoint.East:
 						drawingWestPoints++;
 						link.SourcePoint.X = item.Location.X;
-						link.SourcePoint.Y = item.Location.Y + drawingWestPoints * item.Size.Height / (virtualItem.LinkPointsWest.Count + 1);
+						link.SourcePoint.Y = item.Location.Y 
+							+ drawingWestPoints * item.Size.Height / (virtualItem.LinkPointsWest.Count + 1);
 						break;
 					case CardinalPoint.West:
 						drawingEastPoints++;
 						link.SourcePoint.X = item.Location.X + item.Size.Width;
-						link.SourcePoint.Y = item.Location.Y + drawingEastPoints * item.Size.Height / (virtualItem.LinkPointsEast.Count + 1);
+						link.SourcePoint.Y = item.Location.Y 
+							+ drawingEastPoints * item.Size.Height / (virtualItem.LinkPointsEast.Count + 1);
 						break;
 					default:
 						link.SourcePoint.X = item.Location.X + item.Size.Width / 2;
@@ -220,32 +228,22 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 				case CardinalPoint.None:
 					source.LinkPointsNone.Remove(link.SourcePoint);
 					source.LinksNone.Remove(link);
-					foreach (LinkDrawing l in source.LinksNone)
-						l.Invalidated = true;
 					break;
 				case CardinalPoint.North:
 					source.LinkPointsSouth.Remove(link.SourcePoint);
 					source.LinksSouth.Remove(link);
-					foreach (LinkDrawing l in source.LinksSouth)
-						l.Invalidated = true;
 					break;
 				case CardinalPoint.South:
 					source.LinkPointsNorth.Remove(link.SourcePoint);
 					source.LinksNorth.Remove(link);
-					foreach (LinkDrawing l in source.LinksSouth)
-						l.Invalidated = true;
 					break;
 				case CardinalPoint.West:
 					source.LinkPointsEast.Remove(link.SourcePoint);
 					source.LinksEast.Remove(link);
-					foreach (LinkDrawing l in source.LinksWest)
-						l.Invalidated = true;
 					break;
 				case CardinalPoint.East:
 					source.LinkPointsWest.Remove(link.SourcePoint);
 					source.LinksWest.Remove(link);
-					foreach (LinkDrawing l in source.LinksEast)
-						l.Invalidated = true;
 					break;
 			}
 			
@@ -253,32 +251,22 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 				case CardinalPoint.None:
 					destination.LinkPointsNone.Remove(link.DestinationPoint);
 					destination.LinksNone.Remove(link);
-					foreach (LinkDrawing l in destination.LinksNone)
-						l.Invalidated = true;
 					break;
 				case CardinalPoint.South:
 					destination.LinkPointsNorth.Remove(link.DestinationPoint);
 					destination.LinksNorth.Remove(link);
-					foreach (LinkDrawing l in destination.LinksSouth)
-						l.Invalidated = true;
 					break;
 				case CardinalPoint.North:
 					destination.LinkPointsSouth.Remove(link.DestinationPoint);
 					destination.LinksSouth.Remove(link);
-					foreach (LinkDrawing l in destination.LinksNorth)
-						l.Invalidated = true;
 					break;
 				case CardinalPoint.East:
 					destination.LinkPointsWest.Remove(link.DestinationPoint);
 					destination.LinksWest.Remove(link);
-					foreach (LinkDrawing l in destination.LinksEast)
-						l.Invalidated = true;
 					break;
 				case CardinalPoint.West:
 					destination.LinkPointsEast.Remove(link.DestinationPoint);
 					destination.LinksEast.Remove(link);
-					foreach (LinkDrawing l in destination.LinksWest)
-						l.Invalidated = true;
 					break;
 			}
 
@@ -291,26 +279,18 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 				case CardinalPoint.North:
 					source.LinkPointsSouth.Add(link.SourcePoint);
 					source.LinksSouth.Add(link);
-					foreach (LinkDrawing l in source.LinksNorth)
-						l.Invalidated = true;
 					break;
 				case CardinalPoint.South:
 					source.LinkPointsNorth.Add(link.SourcePoint);
 					source.LinksNorth.Add(link);
-					foreach (LinkDrawing l in source.LinksSouth)
-						l.Invalidated = true;
 					break;
 				case CardinalPoint.West:
 					source.LinkPointsEast.Add(link.SourcePoint);
 					source.LinksEast.Add(link);
-					foreach (LinkDrawing l in source.LinksWest)
-						l.Invalidated = true;
 					break;
 				case CardinalPoint.East:
 					source.LinkPointsWest.Add(link.SourcePoint);
 					source.LinksWest.Add(link);
-					foreach (LinkDrawing l in source.LinksEast)
-						l.Invalidated = true;
 					break;
 			}
 			
@@ -322,26 +302,18 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 				case CardinalPoint.North:
 					destination.LinkPointsSouth.Add(link.DestinationPoint);
 					destination.LinksSouth.Add(link);
-					foreach (LinkDrawing l in destination.LinksSouth)
-						l.Invalidated = true;
 					break;
 				case CardinalPoint.South:
 					destination.LinkPointsNorth.Add(link.DestinationPoint);
 					destination.LinksNorth.Add(link);
-					foreach (LinkDrawing l in destination.LinksNorth)
-						l.Invalidated = true;
 					break;
 				case CardinalPoint.West:
 					destination.LinkPointsEast.Add(link.DestinationPoint);
 					destination.LinksEast.Add(link);
-					foreach (LinkDrawing l in destination.LinksEast)
-						l.Invalidated = true;
 					break;
 				case CardinalPoint.East:
 					destination.LinkPointsWest.Add(link.DestinationPoint);
 					destination.LinksWest.Add(link);
-					foreach (LinkDrawing l in destination.LinksWest)
-						l.Invalidated = true;
 					break;
 			}
 			
@@ -356,7 +328,8 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 				for (int j = 0; j < list.Count; j++) {
 					LinkPoint counterPoint = list[i].GetCounterPoint();
 					LinkPoint point = list[i];
-					bool counterPointGreater = list[i].GetCounterPoint().CompareTo(list[j].GetCounterPoint()) > 0;
+					bool counterPointGreater = list[i].GetCounterPoint()
+						.CompareTo(list[j].GetCounterPoint()) > 0;
 					bool pointGreater = list[i].CompareTo(list[j]) > 0;
 					if ((!counterPointGreater && pointGreater) || (counterPointGreater && !pointGreater)) {
 						int t = 0;
