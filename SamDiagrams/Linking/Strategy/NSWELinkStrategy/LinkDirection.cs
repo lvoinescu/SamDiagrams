@@ -26,10 +26,10 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 	/// </summary>
 	public class LinkDirection
 	{
-		private CardinalPoint from;
-		private CardinalPoint to;
+		private CardinalDirection from;
+		private CardinalDirection to;
 
-		public CardinalPoint From {
+		public CardinalDirection From {
 			get {
 				return from;
 			}
@@ -38,7 +38,7 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			}
 		}
 
-		public CardinalPoint To {
+		public CardinalDirection To {
 			get {
 				return to;
 			}
@@ -46,7 +46,7 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 				to = value;
 			}
 		}
-		public LinkDirection(CardinalPoint from, CardinalPoint to)
+		public LinkDirection(CardinalDirection from, CardinalDirection to)
 		{
 			this.from = from;
 			this.to = to;
@@ -58,6 +58,11 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			if (other == null)
 				return false;
 			return this.from == other.from && this.to == other.to;
+		}
+		
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
 		}
 		
 		public override string ToString()

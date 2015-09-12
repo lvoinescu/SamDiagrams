@@ -73,7 +73,7 @@
     <Compile Include="Drawings\Structure\StructureNodeInfo.cs" />
     <Compile Include="Events\DrawingResizedEventArgs.cs" />
     <Compile Include="Linking\LinkStyle.cs" />
-    <Compile Include="Linking\Strategy\NSWELinkStrategy\CardinalPoint.cs" />
+    <Compile Include="Linking\Strategy\NSWELinkStrategy\CardinalDirection.cs" />
     <Compile Include="Linking\Strategy\NSWELinkStrategy\CardinalLinkPoint.cs" />
     <Compile Include="Linking\Strategy\NSWELinkStrategy\LinkDrawing.cs" />
     <Compile Include="Linking\Strategy\NSWELinkStrategy\LinkDirection.cs" />

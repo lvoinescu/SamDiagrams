@@ -18,31 +18,31 @@
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
-
 namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 {
 	/// <summary>
 	/// Description of CardinalDirection.
 	/// </summary>
-	public enum CardinalPoint
+	public enum CardinalDirection
 	{
 		North,
 		South,
 		West,
 		East,
-		None}
-	;
+		None,
+	}
 	
-	
-	public static class CardinalPointUtils
+	public static class CardinalDirectionUtils
 	{
-		public static bool AreOpposite(CardinalPoint c1, CardinalPoint c2)
+		public static bool AreOpposite(CardinalDirection c1, CardinalDirection c2)
 		{
 			return (
-			    (c1 == CardinalPoint.West && c2 == CardinalPoint.East) ||
-			    (c2 == CardinalPoint.West && c1 == CardinalPoint.East) ||
-			    (c1 == CardinalPoint.North && c2 == CardinalPoint.South) ||
-			    (c2 == CardinalPoint.North && c1 == CardinalPoint.South));
+			    (c1 == CardinalDirection.West && c2 == CardinalDirection.East) ||
+			    (c2 == CardinalDirection.West && c1 == CardinalDirection.East) ||
+			    (c1 == CardinalDirection.North && c2 == CardinalDirection.South) ||
+			    (c2 == CardinalDirection.North && c1 == CardinalDirection.South));
 		}
 	}
 }
+
+

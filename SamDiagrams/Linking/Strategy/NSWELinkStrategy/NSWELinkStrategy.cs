@@ -19,7 +19,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
 using SamDiagrams.Drawings.Link;
@@ -72,21 +71,21 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 				IDrawing sourceDrawing = link.SourceDrawing;
 				
 				LinkDirection prevDirection = link.Direction;
-				CardinalPoint from = CardinalPoint.None;
-				CardinalPoint to = CardinalPoint.None;
+				CardinalDirection from = CardinalDirection.None;
+				CardinalDirection to = CardinalDirection.None;
 				
 				if (sourceDrawing.Location.Y > destinationDrawing.Location.Y + destinationDrawing.Size.Height) {
-					from = CardinalPoint.South;
-					to = CardinalPoint.North;
+					from = CardinalDirection.South;
+					to = CardinalDirection.North;
 				} else if (sourceDrawing.Location.Y + sourceDrawing.Size.Height < destinationDrawing.Location.Y) {
-					from = CardinalPoint.North;
-					to = CardinalPoint.South;
+					from = CardinalDirection.North;
+					to = CardinalDirection.South;
 				} else if (sourceDrawing.Location.X > destinationDrawing.Location.X + destinationDrawing.Size.Width) {
-					from = CardinalPoint.East;
-					to = CardinalPoint.West;
+					from = CardinalDirection.East;
+					to = CardinalDirection.West;
 				} else if (sourceDrawing.Location.X + sourceDrawing.Size.Width < destinationDrawing.Location.X) {
-					from = CardinalPoint.West;
-					to = CardinalPoint.East;
+					from = CardinalDirection.West;
+					to = CardinalDirection.East;
 				}
 				LinkDirection direction = new LinkDirection(from, to);
 				
@@ -146,25 +145,25 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			
 			foreach (LinkDrawing link in virtualItem.InputLinkList) {
 				switch (link.Direction.To) {
-					case CardinalPoint.North:
+					case CardinalDirection.North:
 						drawingSouthPoints++;
 						link.DestinationPoint.X = item.Location.X 
 							+ drawingSouthPoints * item.Size.Width / (virtualItem.LinkPointsSouth.Count + 1);
 						link.DestinationPoint.Y = item.Location.Y + item.Size.Height;
 						break;
-					case CardinalPoint.South:
+					case CardinalDirection.South:
 						drawingNorthPoints++;
 						link.DestinationPoint.X = item.Location.X 
 							+ drawingNorthPoints * item.Size.Width / (virtualItem.LinkPointsNorth.Count + 1);
 						link.DestinationPoint.Y = item.Location.Y;
 						break;
-					case CardinalPoint.West:
+					case CardinalDirection.West:
 						drawingEastPoints++;
 						link.DestinationPoint.X = item.Location.X + item.Size.Width;
 						link.DestinationPoint.Y = item.Location.Y 
 							+ drawingEastPoints * item.Size.Height / (virtualItem.LinkPointsEast.Count + 1);
 						break;
-					case CardinalPoint.East:
+					case CardinalDirection.East:
 						drawingWestPoints++;
 						link.DestinationPoint.X = item.Location.X;
 						link.DestinationPoint.Y = item.Location.Y 
@@ -180,25 +179,25 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 
 			foreach (LinkDrawing link in virtualItem.OutputLinkList) {
 				switch (link.Direction.From) {
-					case CardinalPoint.South:
+					case CardinalDirection.South:
 						drawingNorthPoints++;
 						link.SourcePoint.X = item.Location.X 
 							+ drawingNorthPoints * item.Size.Width / (virtualItem.LinkPointsNorth.Count + 1);
 						link.SourcePoint.Y = item.Location.Y;
 						break;
-					case CardinalPoint.North:
+					case CardinalDirection.North:
 						drawingSouthPoints++;
 						link.SourcePoint.X = item.Location.X 
 							+ drawingSouthPoints * item.Size.Width / (virtualItem.LinkPointsSouth.Count + 1);
 						link.SourcePoint.Y = item.Location.Y + item.Size.Height;
 						break;
-					case CardinalPoint.East:
+					case CardinalDirection.East:
 						drawingWestPoints++;
 						link.SourcePoint.X = item.Location.X;
 						link.SourcePoint.Y = item.Location.Y 
 							+ drawingWestPoints * item.Size.Height / (virtualItem.LinkPointsWest.Count + 1);
 						break;
-					case CardinalPoint.West:
+					case CardinalDirection.West:
 						drawingEastPoints++;
 						link.SourcePoint.X = item.Location.X + item.Size.Width;
 						link.SourcePoint.Y = item.Location.Y 
@@ -225,46 +224,46 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			NSWEDrawing destination = virtualMapping[destinationDrawing];
 			
 			switch (previousDirection.From) {
-				case CardinalPoint.None:
+				case CardinalDirection.None:
 					source.LinkPointsNone.Remove(link.SourcePoint);
 					source.LinksNone.Remove(link);
 					break;
-				case CardinalPoint.North:
+				case CardinalDirection.North:
 					source.LinkPointsSouth.Remove(link.SourcePoint);
 					source.LinksSouth.Remove(link);
 					break;
-				case CardinalPoint.South:
+				case CardinalDirection.South:
 					source.LinkPointsNorth.Remove(link.SourcePoint);
 					source.LinksNorth.Remove(link);
 					break;
-				case CardinalPoint.West:
+				case CardinalDirection.West:
 					source.LinkPointsEast.Remove(link.SourcePoint);
 					source.LinksEast.Remove(link);
 					break;
-				case CardinalPoint.East:
+				case CardinalDirection.East:
 					source.LinkPointsWest.Remove(link.SourcePoint);
 					source.LinksWest.Remove(link);
 					break;
 			}
 			
 			switch (previousDirection.To) {
-				case CardinalPoint.None:
+				case CardinalDirection.None:
 					destination.LinkPointsNone.Remove(link.DestinationPoint);
 					destination.LinksNone.Remove(link);
 					break;
-				case CardinalPoint.South:
+				case CardinalDirection.South:
 					destination.LinkPointsNorth.Remove(link.DestinationPoint);
 					destination.LinksNorth.Remove(link);
 					break;
-				case CardinalPoint.North:
+				case CardinalDirection.North:
 					destination.LinkPointsSouth.Remove(link.DestinationPoint);
 					destination.LinksSouth.Remove(link);
 					break;
-				case CardinalPoint.East:
+				case CardinalDirection.East:
 					destination.LinkPointsWest.Remove(link.DestinationPoint);
 					destination.LinksWest.Remove(link);
 					break;
-				case CardinalPoint.West:
+				case CardinalDirection.West:
 					destination.LinkPointsEast.Remove(link.DestinationPoint);
 					destination.LinksEast.Remove(link);
 					break;
@@ -272,46 +271,46 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 
 
 			switch (newDirection.From) {
-				case CardinalPoint.None:
+				case CardinalDirection.None:
 					source.LinkPointsNone.Add(link.SourcePoint);
 					source.LinksNone.Add(link);
 					break;
-				case CardinalPoint.North:
+				case CardinalDirection.North:
 					source.LinkPointsSouth.Add(link.SourcePoint);
 					source.LinksSouth.Add(link);
 					break;
-				case CardinalPoint.South:
+				case CardinalDirection.South:
 					source.LinkPointsNorth.Add(link.SourcePoint);
 					source.LinksNorth.Add(link);
 					break;
-				case CardinalPoint.West:
+				case CardinalDirection.West:
 					source.LinkPointsEast.Add(link.SourcePoint);
 					source.LinksEast.Add(link);
 					break;
-				case CardinalPoint.East:
+				case CardinalDirection.East:
 					source.LinkPointsWest.Add(link.SourcePoint);
 					source.LinksWest.Add(link);
 					break;
 			}
 			
 			switch (newDirection.To) {
-				case CardinalPoint.None:
+				case CardinalDirection.None:
 					destination.LinkPointsNone.Add(link.DestinationPoint);
 					destination.LinksNone.Add(link);
 					break;
-				case CardinalPoint.North:
+				case CardinalDirection.North:
 					destination.LinkPointsSouth.Add(link.DestinationPoint);
 					destination.LinksSouth.Add(link);
 					break;
-				case CardinalPoint.South:
+				case CardinalDirection.South:
 					destination.LinkPointsNorth.Add(link.DestinationPoint);
 					destination.LinksNorth.Add(link);
 					break;
-				case CardinalPoint.West:
+				case CardinalDirection.West:
 					destination.LinkPointsEast.Add(link.DestinationPoint);
 					destination.LinksEast.Add(link);
 					break;
-				case CardinalPoint.East:
+				case CardinalDirection.East:
 					destination.LinkPointsWest.Add(link.DestinationPoint);
 					destination.LinksWest.Add(link);
 					break;

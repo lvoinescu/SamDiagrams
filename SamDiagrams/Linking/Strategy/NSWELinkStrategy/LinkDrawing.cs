@@ -128,20 +128,6 @@ namespace SamDiagrams.Drawers.Links
 				return new List<IDrawing>();
 			}
 		}
-//		public int CompareTo(object obj)
-//		{
-//			LinkDrawing l = (LinkDrawing)obj;
-//			switch (l.Direction) {
-//				case LinkDirection.SourceNorthDestinationSouth:
-//				case LinkDirection.SourceSouthDestinationNorth:
-//					return this.SourcePoint.X - l.SourcePoint.X;
-//				case LinkDirection.SourceWestDestinationEast:
-//				case LinkDirection.SourceEastDestinationWest:
-//					return this.SourcePoint.Y - l.SourcePoint.Y;
-//
-//			}
-//			return 0;
-//		}
 		
 		public LinkDrawing(ILinkableDrawing source, ILinkableDrawing destination,
 			float lineWidth, float selectedLineWidth, LinkStyle linkStyle)
@@ -154,7 +140,7 @@ namespace SamDiagrams.Drawers.Links
 			this.destinationPoint = new CardinalLinkPoint(this);
 			this.sourceDrawing = source;
 			this.destinationDrawing = destination;
-			this.direction = new LinkDirection(CardinalPoint.None, CardinalPoint.None);
+			this.direction = new LinkDirection(CardinalDirection.None, CardinalDirection.None);
 		}
 		
 		public LinkDrawing(ILink link, float lineWidth, float selectedLineWidth, LinkStyle linkStyle)
@@ -170,7 +156,7 @@ namespace SamDiagrams.Drawers.Links
 			using (Pen linePen = new Pen(this.color, lineWidth)) {
 				Pen selectionPen = new Pen(Color.FromArgb(70, sourceDrawing.Color), selectedLineWidth);
 				linePen.DashPattern = new float[] { 8, 3 };
-				if ( CardinalPointUtils.AreOpposite(sourcePoint.Direction, destinationPoint.Direction)) {
+				if ( CardinalDirectionUtils.AreOpposite(sourcePoint.Direction, destinationPoint.Direction)) {
 					if (linkStyle == LinkStyle.StreightLines) {
 						int midX = (int)(sourcePoint.X + destinationPoint.X) / 2;
 						Point[] ps = new Point[] {

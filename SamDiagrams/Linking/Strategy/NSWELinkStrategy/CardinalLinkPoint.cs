@@ -27,9 +27,9 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 	/// </summary>
 	public class CardinalLinkPoint : LinkPoint, IComparable
 	{
-		private CardinalPoint direction;
+		private CardinalDirection direction;
 		
-		public CardinalPoint Direction {
+		public CardinalDirection Direction {
 			get {
 				return direction;
 			}
@@ -41,7 +41,7 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 		public CardinalLinkPoint(LinkDrawing linkDrawing)
 			: base(linkDrawing)
 		{
-			this.direction = CardinalPoint.None;
+			this.direction = CardinalDirection.None;
 		}
 
 		public int CompareTo(object obj)
@@ -51,11 +51,11 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			CardinalLinkPoint compararisonPoint = obj as CardinalLinkPoint;
 			if (compararisonPoint.direction == this.direction) {
 				switch (compararisonPoint.direction) {
-					case CardinalPoint.North:
-					case CardinalPoint.South:
+					case CardinalDirection.North:
+					case CardinalDirection.South:
 						return this.X - compararisonPoint.X;
-					case CardinalPoint.East:
-					case CardinalPoint.West:
+					case CardinalDirection.East:
+					case CardinalDirection.West:
 						return this.Y - compararisonPoint.Y;
 				}
 			}
