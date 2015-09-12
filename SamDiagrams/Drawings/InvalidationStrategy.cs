@@ -96,7 +96,7 @@ namespace SamDiagrams.Drawers
 		{
 			containerDrawer.LinkOrchestrator.linkStrategy.DirectLinks(e.Drawing);
 			InvalidateDrawing(e.Drawing);
-			MergableRectangle rectangleToInvalidate = new MergableRectangle(e.Drawing.InvalidatedRegion);
+			MergeableRectangle rectangleToInvalidate = new MergeableRectangle(e.Drawing.InvalidatedRegion);
 			rectangleToInvalidate.Merge(e.PreviousBounds);
 			invalidateOverlappingDrawings(rectangleToInvalidate.Bounds);
 			containerDrawer.DiagramContainer.Invalidate(e.PreviousBounds);
@@ -112,7 +112,7 @@ namespace SamDiagrams.Drawers
 			if (drawings.Count < 1)
 				return;
 			
-			MergableRectangle newRectangleToInvalidate = new MergableRectangle(drawings[0].InvalidatedRegion);
+			MergeableRectangle newRectangleToInvalidate = new MergeableRectangle(drawings[0].InvalidatedRegion);
 			foreach (IDrawing drawing in drawings) {
 				drawing.Invalidated = true;
 				newRectangleToInvalidate.Merge(drawing.InvalidatedRegion);
@@ -136,7 +136,7 @@ namespace SamDiagrams.Drawers
 		void InvalidateDrawing(IDrawing drawing)
 		{
 			drawing.Invalidated = true;
-			MergableRectangle newRectangleToInvalidate = new MergableRectangle(drawing.InvalidatedRegion);
+			MergeableRectangle newRectangleToInvalidate = new MergeableRectangle(drawing.InvalidatedRegion);
 			Rectangle auxRectangle = newRectangleToInvalidate.Bounds;
 			invalidateOverlappingDrawings(previouslyInvalidatedRectangle);
 			newRectangleToInvalidate.Merge(previouslyInvalidatedRectangle);
@@ -155,7 +155,7 @@ namespace SamDiagrams.Drawers
 		
 		void InvalidateLinkDrawing(LinkDrawing linkDrawing)
 		{
-			MergableRectangle newRectangleToInvalidate = new MergableRectangle(linkDrawing.Bounds);
+			MergeableRectangle newRectangleToInvalidate = new MergeableRectangle(linkDrawing.Bounds);
 			newRectangleToInvalidate.Merge(getLinkInvalidatedRegion(linkDrawing));
 			newRectangleToInvalidate.Merge(
 				getStructureInvalidatedRegion(linkDrawing.SourceDrawing));
@@ -180,7 +180,7 @@ namespace SamDiagrams.Drawers
 		Rectangle getStructureInvalidatedRegion(IDrawing targetDrawing)
 		{
 			targetDrawing.Invalidated = true;
-			MergableRectangle rectangle = new MergableRectangle(targetDrawing.InvalidatedRegion);
+			MergeableRectangle rectangle = new MergeableRectangle(targetDrawing.InvalidatedRegion);
 
 			for (int i = 0; i < containerDrawer.Drawings.Count; i++) {
 				IDrawing drawing = containerDrawer.Drawings[i];
@@ -194,7 +194,7 @@ namespace SamDiagrams.Drawers
 		
 		Rectangle getLinkInvalidatedRegion(LinkDrawing linkDrawing)
 		{
-			MergableRectangle rectangle = new MergableRectangle(linkDrawing.Bounds);
+			MergeableRectangle rectangle = new MergeableRectangle(linkDrawing.Bounds);
 			linkDrawing.Invalidated = true;
 			ILinkableDrawing sourceDrawing = linkDrawing.SourceDrawing;
 			ILinkableDrawing destinationDrawing = linkDrawing.DestinationDrawing;

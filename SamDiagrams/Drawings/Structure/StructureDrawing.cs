@@ -139,7 +139,7 @@ namespace SamDiagrams.Drawings
 		
 		public override Rectangle InvalidatedRegion {
 			get {
-				MergableRectangle rectangle = new MergableRectangle(this.Bounds);
+				MergeableRectangle rectangle = new MergeableRectangle(this.Bounds);
 				foreach (LinkDrawing link in this.DrawingLinks) {
 					rectangle.Merge(link.Bounds);
 				}

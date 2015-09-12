@@ -72,7 +72,7 @@ namespace TestProject
 			
 			public override Rectangle InvalidatedRegion {
 				get {
-					MergableRectangle rectangle = new MergableRectangle(new Rectangle(this.location, this.size));
+					MergeableRectangle rectangle = new MergeableRectangle(new Rectangle(this.location, this.size));
 					foreach (LinkDrawing link in this.DrawingLinks) {
 						rectangle.Merge(link.Bounds);
 					}					
@@ -98,7 +98,7 @@ namespace TestProject
 
 			public override Rectangle InvalidatedRegion {
 				get {
-					MergableRectangle rectangle = new MergableRectangle(new Rectangle(this.location, this.size));
+					MergeableRectangle rectangle = new MergeableRectangle(new Rectangle(this.location, this.size));
 					foreach (LinkDrawing link in this.DrawingLinks) {
 						rectangle.Merge(link.Bounds);
 					}					

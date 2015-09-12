@@ -63,7 +63,7 @@
     <Compile Include="Drawings\IClickable.cs" />
     <Compile Include="Drawings\IComposableDrawing.cs" />
     <Compile Include="Drawings\IDrawing.cs" />
-    <Compile Include="Drawings\Geometry\MergableRectangle.cs" />
+    <Compile Include="Drawings\Geometry\MergeableRectangle.cs" />
     <Compile Include="Drawings\Grid\GridDrawer.cs" />
     <Compile Include="Drawings\ILinkableDrawing.cs" />
     <Compile Include="Drawings\InvalidationStrategy.cs" />

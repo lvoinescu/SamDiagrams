@@ -26,11 +26,11 @@ namespace SamDiagrams.Drawings.Geometry
 	/// <summary>
 	/// Represents an rectangle that can be merged with a Rectangle.
 	/// </summary>
-	public class MergableRectangle
+	public class MergeableRectangle
 	{
 		private Rectangle rectangle;
 		
-		public MergableRectangle(Rectangle rectangle)
+		public MergeableRectangle(Rectangle rectangle)
 		{
 			this.rectangle = rectangle;
 		}
@@ -46,8 +46,8 @@ namespace SamDiagrams.Drawings.Geometry
 			if (target.Width == 0 || target.Height == 0)
 				return;
 			
-			int maxX = Math.Max(rectangle.X + rectangle.Width, target.X + target.Width + 1);
-			int maxY = Math.Max(rectangle.Y + rectangle.Height, target.Y + target.Height + 1);
+			int maxX = Math.Max(rectangle.X + rectangle.Width, target.X + target.Width);
+			int maxY = Math.Max(rectangle.Y + rectangle.Height, target.Y + target.Height);
 			int minX = Math.Min(rectangle.X, target.X);
 			int minY = Math.Min(rectangle.Y, target.Y);
 			
@@ -57,7 +57,8 @@ namespace SamDiagrams.Drawings.Geometry
 			rectangle.Height = maxY - minY;
 		}
 		
-		public void Inflate(int ammount){
+		public void Inflate(int ammount)
+		{
 			this.rectangle.Inflate(ammount, ammount);
 		}
 		

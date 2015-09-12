@@ -104,6 +104,9 @@ namespace SamDiagrams.Actions
 				if (y > container.Height - movableDrawing.Size.Height)
 					y = (int)(container.Height - movableDrawing.Size.Height);
 				movedDrawing.Add(movableDrawing.Drawing);
+				if(movableDrawing.Drawing.Components != null){
+					movedDrawing.AddRange(movableDrawing.Drawing.Components);
+				}
 				movableDrawing.Location = new Point(x, y);
 			}
 			
