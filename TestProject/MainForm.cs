@@ -154,7 +154,7 @@ namespace TestProject
 			customItem.Drawing = customDrawing;
 			
 			Structure stru = (diagramContainer1.DiagramItems[0] as Structure);
-			diagramContainer1.AddLink(stru.Nodes[0], customItem);
+			diagramContainer1.AddLink(stru.Nodes[0].Nodes[3], customItem);
 			
 			diagramContainer1.AddItem(customItem, customDrawing, true, true);
 			diagramContainer1.AddLink(customItem, diagramContainer1.DiagramItems[0]);

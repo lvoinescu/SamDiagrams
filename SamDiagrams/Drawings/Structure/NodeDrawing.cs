@@ -123,6 +123,15 @@ namespace SamDiagrams.Drawings
 			int cY = this.location.Y;
 			int cX = this.location.X;
 			
+			if (this.drawingLinks.Count > 0) {
+				graphics.DrawRectangle(Pens.DarkGray, structureDrawing.Location.X, cY,
+					this.structureDrawing.Size.Width, structureDrawing.rowHeight);
+				using (Brush brush = new SolidBrush(Color.FromArgb(64, structureDrawing.Color))) {
+					graphics.FillRectangle(brush, structureDrawing.Location.X, cY,
+						this.structureDrawing.Size.Width, structureDrawing.rowHeight);
+				}
+			}
+			
 			if (!node.IsLeaf) {
 				graphics.DrawRectangle(Pens.Black, cX, cY, EXPANDER_SIZE, EXPANDER_SIZE);
 				graphics.DrawLine(Pens.Black, cX, cY + EXPANDER_SIZE / 2, cX + EXPANDER_SIZE, cY + EXPANDER_SIZE / 2);
@@ -138,6 +147,8 @@ namespace SamDiagrams.Drawings
 					structureDrawing.RowHeight - IMAGE_PADDING, structureDrawing.RowHeight - IMAGE_PADDING);
 				space += IMAGE_SPACE - IMAGE_PADDING / 2;
 			}
+			
+
 			
 			graphics.DrawString(node.Text, rowFont, TITLE_BRUSH, new PointF(cX + space + EXPANDER_SIZE, cY));
 		}

@@ -156,52 +156,53 @@ namespace SamDiagrams.Drawers.Links
 			using (Pen linePen = new Pen(this.color, lineWidth)) {
 				Pen selectionPen = new Pen(Color.FromArgb(70, sourceDrawing.Color), selectedLineWidth);
 				linePen.DashPattern = new float[] { 8, 3 };
-				if ( CardinalDirectionUtils.AreOpposite(sourcePoint.Direction, destinationPoint.Direction)) {
-					if (linkStyle == LinkStyle.StreightLines) {
-						int midX = (int)(sourcePoint.X + destinationPoint.X) / 2;
-						Point[] ps = new Point[] {
-							new Point(sourcePoint.X, sourcePoint.Y),
-							new Point(midX, sourcePoint.Y),
-							new Point(midX, destinationPoint.Y),
-							new Point(destinationPoint.X, destinationPoint.Y)
-						};
+				//if (CardinalDirectionUtils.AreOpposite(sourcePoint.Direction, destinationPoint.Direction)) {
+				if (linkStyle == LinkStyle.StreightLines) {
+					int midX = (int)(sourcePoint.X + destinationPoint.X) / 2;
+					Point[] ps = new Point[] {
+						new Point(sourcePoint.X, sourcePoint.Y),
+						new Point(midX, sourcePoint.Y),
+						new Point(midX, destinationPoint.Y),
+						new Point(destinationPoint.X, destinationPoint.Y)
+					};
 						
-						if (sourceDrawing.Selected || destinationDrawing.Selected) {
-							graphics.DrawLines(selectionPen, ps);
-						}
-						graphics.DrawLines(linePen, ps);
-
-					} else {
-						if (sourceDrawing.Selected || destinationDrawing.Selected) {
-							graphics.DrawLine(selectionPen, sourcePoint.X, sourcePoint.Y,
-								destinationPoint.X, destinationPoint.Y);
-						}
-						graphics.DrawLine(linePen, sourcePoint.X, sourcePoint.Y, 
-							destinationPoint.X, destinationPoint.Y);
+					if (sourceDrawing.Selected || destinationDrawing.Selected) {
+						graphics.DrawLines(selectionPen, ps);
 					}
+					graphics.DrawLines(linePen, ps);
 
 				} else {
-					if (linkStyle == LinkStyle.StreightLines) {
-						int midY = (int)(sourcePoint.Y + destinationPoint.Y) / 2;
-						Point[] ps = new Point[] {
-							new Point((int)(sourcePoint.X), (int)(sourcePoint.Y)),
-							new Point((int)(sourcePoint.X), (int)(midY)),
-							new Point((int)(destinationPoint.X), (int)(midY)),
-							new Point((int)(destinationPoint.X), (int)(destinationPoint.Y))
-						};
-						if (sourceDrawing.Selected || destinationDrawing.Selected) {
-							graphics.DrawLines(selectionPen, ps);
-						}
-						graphics.DrawLines(linePen, ps);
-					} else {
-						if (sourceDrawing.Selected || destinationDrawing.Selected) {
-							graphics.DrawLine(selectionPen, sourcePoint.X, sourcePoint.Y,
-								destinationPoint.X, destinationPoint.Y);
-						}
-						graphics.DrawLine(linePen, sourcePoint.X, sourcePoint.Y, 
+					if (sourceDrawing.Selected || destinationDrawing.Selected) {
+						graphics.DrawLine(selectionPen, sourcePoint.X, sourcePoint.Y,
 							destinationPoint.X, destinationPoint.Y);
 					}
+					graphics.DrawLine(linePen, sourcePoint.X, sourcePoint.Y, 
+						destinationPoint.X, destinationPoint.Y);
 				}
+
+				//}
+//				else {
+//					if (linkStyle == LinkStyle.StreightLines) {
+//						int midY = (int)(sourcePoint.Y + destinationPoint.Y) / 2;
+//						Point[] ps = new Point[] {
+//							new Point((int)(sourcePoint.X), (int)(sourcePoint.Y)),
+//							new Point((int)(sourcePoint.X), (int)(midY)),
+//							new Point((int)(destinationPoint.X), (int)(midY)),
+//							new Point((int)(destinationPoint.X), (int)(destinationPoint.Y))
+//						};
+//						if (sourceDrawing.Selected || destinationDrawing.Selected) {
+//							graphics.DrawLines(selectionPen, ps);
+//						}
+//						graphics.DrawLines(linePen, ps);
+//					} else {
+//						if (sourceDrawing.Selected || destinationDrawing.Selected) {
+//							graphics.DrawLine(selectionPen, sourcePoint.X, sourcePoint.Y,
+//								destinationPoint.X, destinationPoint.Y);
+//						}
+//						graphics.DrawLine(linePen, sourcePoint.X, sourcePoint.Y, 
+//							destinationPoint.X, destinationPoint.Y);
+//					}
+//				}
 			}
 		}
 		

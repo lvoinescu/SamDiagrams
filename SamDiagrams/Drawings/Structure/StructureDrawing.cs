@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings.Geometry;
 using SamDiagrams.Events;
@@ -362,6 +363,7 @@ namespace SamDiagrams.Drawings
 
 			
 			nodDrawing.Location = new Point(location.X + cX, cY);
+			nodDrawing.Size = new Size(this.size.Width - cX, rowHeight);
 			nodDrawing.DrawingPadding = cX;
 			nodDrawing.Visible = true;
 		}

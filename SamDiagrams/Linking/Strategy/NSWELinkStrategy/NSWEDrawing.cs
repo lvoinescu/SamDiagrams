@@ -250,6 +250,12 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 					allowNorth = true;
 					allowSouth = true;
 					break;
+				case LinkAttachMode.ALL:
+					allowEast = true;
+					allowWest = true;
+					allowNorth = true;
+					allowSouth = true;
+					break;
 			}
 			
 		}

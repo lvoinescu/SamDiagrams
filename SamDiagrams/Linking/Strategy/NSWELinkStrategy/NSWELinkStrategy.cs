@@ -57,56 +57,35 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 				DirectLinks(subcomponent);
 			}
 			
-			IDrawing structureDrawing = drawing;
+			IDrawing linkableDrawing = drawing;
 			if (drawing is SelectableDrawing)
-				structureDrawing = (drawing as SelectableDrawing).Drawing;
+				linkableDrawing = (drawing as SelectableDrawing).Drawing;
 			
-			if (!virtualMapping.ContainsKey(structureDrawing))
+			if (!virtualMapping.ContainsKey(linkableDrawing))
 				return;
 			
-			NSWEDrawing nsweItem = virtualMapping[structureDrawing];
+			NSWEDrawing nsweItem = virtualMapping[linkableDrawing];
 			foreach (LinkDrawing link in nsweItem.Links) {
-				link.Invalidated = true;
-				IDrawing destinationDrawing = link.DestinationDrawing;
-				IDrawing sourceDrawing = link.SourceDrawing;
-				
 				LinkDirection prevDirection = link.Direction;
-				CardinalDirection from = CardinalDirection.None;
-				CardinalDirection to = CardinalDirection.None;
+				LinkDirection newDirection = CardinalDirectionUtils.GetClosestDirectionPoints(link);
 				
-				if (sourceDrawing.Location.Y > destinationDrawing.Location.Y + destinationDrawing.Size.Height) {
-					from = CardinalDirection.South;
-					to = CardinalDirection.North;
-				} else if (sourceDrawing.Location.Y + sourceDrawing.Size.Height < destinationDrawing.Location.Y) {
-					from = CardinalDirection.North;
-					to = CardinalDirection.South;
-				} else if (sourceDrawing.Location.X > destinationDrawing.Location.X + destinationDrawing.Size.Width) {
-					from = CardinalDirection.East;
-					to = CardinalDirection.West;
-				} else if (sourceDrawing.Location.X + sourceDrawing.Size.Width < destinationDrawing.Location.X) {
-					from = CardinalDirection.West;
-					to = CardinalDirection.East;
-				}
-				LinkDirection direction = new LinkDirection(from, to);
-				
-				if (!direction.Equals(link.Direction)) {
+				if (!newDirection.Equals(link.Direction)) {
 					link.Invalidated = true;
-					OnLinkDirectionChanged(link, link.Direction, direction);
-					link.Direction = direction;
-					link.DestinationPoint.Direction = direction.From;
-					link.SourcePoint.Direction = direction.To;
+					OnLinkDirectionChanged(link, link.Direction, newDirection);
+					link.Direction = newDirection;
+					link.DestinationPoint.Direction = newDirection.From;
+					link.SourcePoint.Direction = newDirection.To;
 				}
 				
-				ArangeLinksForItem(destinationDrawing);
-				ArangeLinksForItem(sourceDrawing);
+				ArangeLinksForItem(link.DestinationDrawing);
+				ArangeLinksForItem(link.SourceDrawing);
 			}
-			arrangeConnectionPoints(structureDrawing);
+			arrangeConnectionPoints(linkableDrawing);
 		}
 		
 		public void ArangeLinksForItem(IDrawing structureDrawing)
 		{
 			arrangeConnectionPoints(structureDrawing);
-			
 			arrangeLinkPoints(structureDrawing);
 		}
 		
@@ -147,27 +126,27 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 				switch (link.Direction.To) {
 					case CardinalDirection.North:
 						drawingSouthPoints++;
-						link.DestinationPoint.X = item.Location.X 
-							+ drawingSouthPoints * item.Size.Width / (virtualItem.LinkPointsSouth.Count + 1);
+						link.DestinationPoint.X = item.Location.X
+						+ drawingSouthPoints * item.Size.Width / (virtualItem.LinkPointsSouth.Count + 1);
 						link.DestinationPoint.Y = item.Location.Y + item.Size.Height;
 						break;
 					case CardinalDirection.South:
 						drawingNorthPoints++;
-						link.DestinationPoint.X = item.Location.X 
-							+ drawingNorthPoints * item.Size.Width / (virtualItem.LinkPointsNorth.Count + 1);
+						link.DestinationPoint.X = item.Location.X
+						+ drawingNorthPoints * item.Size.Width / (virtualItem.LinkPointsNorth.Count + 1);
 						link.DestinationPoint.Y = item.Location.Y;
 						break;
 					case CardinalDirection.West:
 						drawingEastPoints++;
 						link.DestinationPoint.X = item.Location.X + item.Size.Width;
-						link.DestinationPoint.Y = item.Location.Y 
-							+ drawingEastPoints * item.Size.Height / (virtualItem.LinkPointsEast.Count + 1);
+						link.DestinationPoint.Y = item.Location.Y
+						+ drawingEastPoints * item.Size.Height / (virtualItem.LinkPointsEast.Count + 1);
 						break;
 					case CardinalDirection.East:
 						drawingWestPoints++;
 						link.DestinationPoint.X = item.Location.X;
-						link.DestinationPoint.Y = item.Location.Y 
-							+ drawingWestPoints * item.Size.Height / (virtualItem.LinkPointsWest.Count + 1);
+						link.DestinationPoint.Y = item.Location.Y
+						+ drawingWestPoints * item.Size.Height / (virtualItem.LinkPointsWest.Count + 1);
 						break;
 					default:
 						link.DestinationPoint.X = item.Location.X + item.Size.Width / 2;
@@ -176,32 +155,31 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 				}
 			}
 
-
 			foreach (LinkDrawing link in virtualItem.OutputLinkList) {
 				switch (link.Direction.From) {
 					case CardinalDirection.South:
 						drawingNorthPoints++;
-						link.SourcePoint.X = item.Location.X 
-							+ drawingNorthPoints * item.Size.Width / (virtualItem.LinkPointsNorth.Count + 1);
+						link.SourcePoint.X = item.Location.X
+						+ drawingNorthPoints * item.Size.Width / (virtualItem.LinkPointsNorth.Count + 1);
 						link.SourcePoint.Y = item.Location.Y;
 						break;
 					case CardinalDirection.North:
 						drawingSouthPoints++;
-						link.SourcePoint.X = item.Location.X 
-							+ drawingSouthPoints * item.Size.Width / (virtualItem.LinkPointsSouth.Count + 1);
+						link.SourcePoint.X = item.Location.X
+						+ drawingSouthPoints * item.Size.Width / (virtualItem.LinkPointsSouth.Count + 1);
 						link.SourcePoint.Y = item.Location.Y + item.Size.Height;
 						break;
 					case CardinalDirection.East:
 						drawingWestPoints++;
 						link.SourcePoint.X = item.Location.X;
-						link.SourcePoint.Y = item.Location.Y 
-							+ drawingWestPoints * item.Size.Height / (virtualItem.LinkPointsWest.Count + 1);
+						link.SourcePoint.Y = item.Location.Y
+						+ drawingWestPoints * item.Size.Height / (virtualItem.LinkPointsWest.Count + 1);
 						break;
 					case CardinalDirection.West:
 						drawingEastPoints++;
 						link.SourcePoint.X = item.Location.X + item.Size.Width;
-						link.SourcePoint.Y = item.Location.Y 
-							+ drawingEastPoints * item.Size.Height / (virtualItem.LinkPointsEast.Count + 1);
+						link.SourcePoint.Y = item.Location.Y
+						+ drawingEastPoints * item.Size.Height / (virtualItem.LinkPointsEast.Count + 1);
 						break;
 					default:
 						link.SourcePoint.X = item.Location.X + item.Size.Width / 2;
