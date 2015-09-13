@@ -2,8 +2,12 @@ SamDiagrams/obj
 SamDiagrams/bin
 SamDiagrams/obj/**
 SamDiagrams/bin/**
-TestProject/bin/**
+TestProject/bin/Debug
+!TestProject/bin/Debug/*.png
 TestProject/obj/**
 UnitTests/obj/**
 UnitTests/bin/**
 !SamDiagrams/bin/*.png
+TestProject/bin/Debug/TestProject.pdb
+TestProject/bin/Debug/SamDiagrams.pdb
+.gitignore
