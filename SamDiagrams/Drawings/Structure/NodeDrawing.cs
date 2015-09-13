@@ -44,6 +44,7 @@ namespace SamDiagrams.Drawings
 		StructureDrawing structureDrawing;
 		readonly Node node;
 		List<LinkDrawing> drawingLinks;
+		private Point innerLocation;
 
 		public NodeDrawing(StructureDrawing structureDrawing, Node node)
 		{
@@ -80,6 +81,14 @@ namespace SamDiagrams.Drawings
 			}
 		}
 
+		public Point InnerLocation {
+			get {
+				return innerLocation;
+			}
+			set {
+				innerLocation = value;
+			}
+		}
 		public Item Item {
 			get {
 				return this.node;
@@ -116,12 +125,9 @@ namespace SamDiagrams.Drawings
 		
 		public override void Draw(Graphics graphics)
 		{
-//			if (!visible) {
-//				return;
-//			}
 			
-			int cY = this.location.Y;
-			int cX = this.location.X;
+			int cX = structureDrawing.Location.X + this.innerLocation.X;
+			int cY = structureDrawing.Location.Y + this.innerLocation.Y;
 			
 			if (this.drawingLinks.Count > 0) {
 				graphics.DrawRectangle(Pens.DarkGray, structureDrawing.Location.X, cY,

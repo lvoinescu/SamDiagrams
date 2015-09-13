@@ -147,7 +147,7 @@ namespace SamDiagrams
 		private void RecursiveTraverse(Node node, Action<Node> action)
 		{
 			action(node);
-			if ((!node.IsLeaf) && node.IsExpanded) {
+			if ((!node.IsLeaf)) {
 				for (int i = 0; i < node.Nodes.Count; i++) {
 					RecursiveTraverse(node.Nodes[i], action);
 				}

@@ -39,17 +39,17 @@ namespace SamDiagrams.Drawings
 		public event BeforeNodeExpandOrCollapseHandler BeforeNodeExpandOrCollapse;
 		public event DrawingResizedHandler DrawingResized;
 		
-		private static SolidBrush CONTOUR_BRUSH = new SolidBrush(Color.SteelBlue);
-		private const int CORNER_RADIUS = 10;
-		private const int DEFAULT_WIDTH = 100;
 		public const int LEFT_PADDING = 4;
-		private const int TITLE_OFFSET = 5;
-		private const int TAB_NOD_SIZE = 10;
-		private const int EXPANDER_SIZE = 10;
 		public const int IMAGE_SPACE = 14;
 		public const int IMAGE_PADDING = 4;
 		public const int IMAGE_SIZE = 16;
+		private const int TITLE_OFFSET = 5;
+		private const int TAB_NOD_SIZE = 10;
+		private const int EXPANDER_SIZE = 10;
+		private const int CORNER_RADIUS = 10;
+		private const int DEFAULT_WIDTH = 100;
 		private static Color BORDER_COLOR = Color.SteelBlue;
+		private static SolidBrush CONTOUR_BRUSH = new SolidBrush(Color.SteelBlue);
 		private static SolidBrush TITLE_BRUSH = new SolidBrush(Color.Black);
 		
 		private Structure structure;
@@ -61,6 +61,7 @@ namespace SamDiagrams.Drawings
 		private Pen conturPen;
 		private int crtDrawingRow = 0;
 		private int nodesDrawingTopPosition;
+		private int nodesInnerDrawingTopPosition;
 		private int titleWidth;
 		private int nodDblX, nodDblY;
 		private int nrOfDisplayedRows = 0;
@@ -110,6 +111,16 @@ namespace SamDiagrams.Drawings
 			}
 			set {
 				this.location = value;
+				ComputeDrawingRows();
+			}
+		}
+		
+		public override bool Invalidated {
+			get { 
+				return this.invalidated;
+			}
+			set { 
+				this.invalidated = value;
 			}
 		}
 		
@@ -136,6 +147,10 @@ namespace SamDiagrams.Drawings
 				MergeableRectangle rectangle = new MergeableRectangle(this.Bounds);
 				foreach (LinkDrawing link in this.DrawingLinks) {
 					rectangle.Merge(link.Bounds);
+				}
+				
+				foreach (IDrawing subcomponent in Components) {
+					rectangle.Merge(subcomponent.InvalidatedRegion);
 				}
 				return rectangle.Bounds;
 			}
@@ -175,6 +190,7 @@ namespace SamDiagrams.Drawings
 
 			int xOffset = this.location.X + LEFT_PADDING;
 			nodesDrawingTopPosition = location.Y + titleHeight + (int)(Math.Ceiling((double)CORNER_RADIUS / 2));
+
 			int mainHeight = rowHeight * nrOfDisplayedRows + TITLE_OFFSET;
 			if (!Structure.DiagramContainer.AutoSizeItem) {
 				mainHeight = this.size.Height - TITLE_OFFSET - rowHeight - CORNER_RADIUS;
@@ -221,26 +237,27 @@ namespace SamDiagrams.Drawings
 		
 		internal void AutoSizeContent()
 		{
-			invalidated = true;
 			int nr = 0;
 			foreach (Node node in structure.Nodes) {
 				nr += ComputeDisplayedRows(node, node.IsExpanded);
 			}
-			if (structure.DiagramContainer.AutoSizeItem)
+			if (structure.DiagramContainer.AutoSizeItem) {
 				nrOfDisplayedRows = nr;
+			}
 			rowHeight = ComputeRowHeight();
 			titleFont = new Font(this.titleFont.FontFamily, (float)(titleFont.Size), FontStyle.Bold);
 			rowFont = new Font(this.rowFont.FontFamily, rowFont.Size);
+			
 			Size sT = TextRenderer.MeasureText(structure.Title, titleFont);
 			titleHeight = sT.Height;
 			titleWidth = sT.Width;
 			size.Height = rowHeight * nr + TITLE_OFFSET + titleHeight + CORNER_RADIUS;
+			nodesInnerDrawingTopPosition = titleHeight + (int)(Math.Ceiling((double)CORNER_RADIUS / 2)) + TITLE_OFFSET;
 			ComputeDrawingRows();
 		}
 		
 		private void DrawNodes(Graphics graphics)
 		{
-			ComputeDrawingRows();
 			foreach (Node node in structure.Nodes) {
 				RecursiveDrawNodeDrawings(node, graphics);
 			}
@@ -264,14 +281,23 @@ namespace SamDiagrams.Drawings
 
 		private void ComputeNodeDrawingPosition(Node nod)
 		{
-						
-			int cY = nodesDrawingTopPosition + TITLE_OFFSET + rowHeight * crtDrawingRow++;
-			int cX = nod.Level * TAB_NOD_SIZE + LEFT_PADDING;
-
-			nod.Drawing.Location = new Point(location.X + cX, cY);
-			(nod.Drawing as NodeDrawing).Size = new Size(this.size.Width - cX, rowHeight);
-			(nod.Drawing as NodeDrawing).DrawingPadding = cX;
-			(nod.Drawing as NodeDrawing).Visible = true;
+			int currentNodeInnerTop = nodesInnerDrawingTopPosition + rowHeight * crtDrawingRow++;
+			int currentNodeInnerLeft = nod.Level * TAB_NOD_SIZE + LEFT_PADDING;
+			NodeDrawing nodDrawing = nod.Drawing as NodeDrawing;
+			if (nod.Parent != null) {
+				if (nod.Parent.IsExpanded) {
+					nodDrawing.InnerLocation = new Point(currentNodeInnerLeft, currentNodeInnerTop);
+				} else {
+					nodDrawing.InnerLocation = (nod.Parent.Drawing as NodeDrawing).InnerLocation;
+				}
+			} else {
+				nodDrawing.InnerLocation = new Point(currentNodeInnerLeft, currentNodeInnerTop);
+			}
+			
+			nodDrawing.Location = new Point(location.X + nodDrawing.InnerLocation.X,
+				location.Y + nodDrawing.InnerLocation.Y);
+			nodDrawing.Size = new Size(this.size.Width - currentNodeInnerLeft, rowHeight);
+			nodDrawing.DrawingPadding = currentNodeInnerLeft;
 		}
 		
 		private Node GetNodAtXYRec(Node nod, int x, int y, int mouseX, int mouseY, bool parentIsExpanded)

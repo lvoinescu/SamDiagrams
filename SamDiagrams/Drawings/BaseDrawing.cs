@@ -98,7 +98,7 @@ namespace SamDiagrams.Drawings
 			}
 		}
 
-		public bool Invalidated {
+		public virtual bool Invalidated {
 			get {
 				return this.invalidated;
 			}
