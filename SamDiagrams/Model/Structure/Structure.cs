@@ -125,22 +125,6 @@ namespace SamDiagrams
 			}
 		}
 		
-		public void IterateDrawings(Action<NodeDrawing> action){
-			foreach(Node node in nodes){
-				RecursiveTraverse(node.Drawing as NodeDrawing, action);
-			}
-		}
-		
-		private void RecursiveTraverse(NodeDrawing nodeDrawing, Action<NodeDrawing> action)
-		{
-			action(nodeDrawing);
-			if (!(nodeDrawing.Item as Node).IsLeaf && (nodeDrawing.Item as Node).IsExpanded) {
-				foreach (Node node in (nodeDrawing.Item as Node).Nodes) {
-					RecursiveTraverse(node.Drawing as NodeDrawing, action);
-				}
-			}
-		}
-		
 		public void AddOnDiagram(DiagramContainer container, Color color)
 		{
 			this.diagramContainer = container;
@@ -151,6 +135,23 @@ namespace SamDiagrams
 		public override string ToString()
 		{
 			return string.Format("[Structure Title={0}]", title);
+		}
+		
+		public void Iterate(Action<Node> action)
+		{
+			foreach (Node node in Nodes) {
+				RecursiveTraverse(node, action);
+			}
+		}
+				
+		private void RecursiveTraverse(Node node, Action<Node> action)
+		{
+			action(node);
+			if ((!node.IsLeaf) && node.IsExpanded) {
+				for (int i = 0; i < node.Nodes.Count; i++) {
+					RecursiveTraverse(node.Nodes[i], action);
+				}
+			}
 		}
 
 	}
