@@ -112,7 +112,7 @@ namespace TestProject
 		{
 			Image intImg = Image.FromFile("diamond.png");
 			Image tImg = Image.FromFile("table.png");
-			const int k = 3;
+			const int k = 5;
 			Random r = new Random(255);
 			try {
 				for (int i = 0; i < k; i++) {

@@ -281,17 +281,22 @@ namespace SamDiagrams.Drawings
 
 		private void ComputeNodeDrawingPosition(Node nod)
 		{
-			int currentNodeInnerTop = nodesInnerDrawingTopPosition + rowHeight * crtDrawingRow++;
+			int currentNodeInnerTop = nodesInnerDrawingTopPosition + rowHeight * crtDrawingRow;
 			int currentNodeInnerLeft = nod.Level * TAB_NOD_SIZE + LEFT_PADDING;
 			NodeDrawing nodDrawing = nod.Drawing as NodeDrawing;
 			if (nod.Parent != null) {
-				if (nod.Parent.IsExpanded) {
+				if (nod.Parent.IsExpanded && (nod.Parent.Drawing as NodeDrawing).Visible) {
 					nodDrawing.InnerLocation = new Point(currentNodeInnerLeft, currentNodeInnerTop);
+					crtDrawingRow++;
+					nodDrawing.Visible = true;
 				} else {
 					nodDrawing.InnerLocation = (nod.Parent.Drawing as NodeDrawing).InnerLocation;
+					nodDrawing.Visible = false;
 				}
 			} else {
+				nodDrawing.Visible = true;
 				nodDrawing.InnerLocation = new Point(currentNodeInnerLeft, currentNodeInnerTop);
+				crtDrawingRow++;
 			}
 			
 			nodDrawing.Location = new Point(location.X + nodDrawing.InnerLocation.X,

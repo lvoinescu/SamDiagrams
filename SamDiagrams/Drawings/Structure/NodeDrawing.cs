@@ -39,7 +39,7 @@ namespace SamDiagrams.Drawings
 		
 		private int drawingRow;
 		private int drawingPadding;
-		private bool visible;
+		private bool visible = true;
 		private Font rowFont;
 		StructureDrawing structureDrawing;
 		readonly Node node;
