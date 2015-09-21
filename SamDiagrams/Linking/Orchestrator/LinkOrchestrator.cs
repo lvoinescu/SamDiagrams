@@ -67,7 +67,7 @@ namespace SamDiagrams.Linking.Orchestrator
 
 		public void AddLink(ILink link)
 		{
-			LinkDrawing linkDrawing = linkStrategy.CreateLink(link, lineWidth, selectedLineWidth, LinkStyle.SingleLine);
+			LinkDrawing linkDrawing = linkStrategy.CreateLink(link, lineWidth, selectedLineWidth, LinkStyle.StreightLines);
 			link.Drawing = linkDrawing;
 			RegisterLink(linkDrawing);
 		}

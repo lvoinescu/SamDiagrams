@@ -19,6 +19,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
 using SamDiagrams.Drawings.Link;
@@ -29,22 +30,23 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 	/// </summary>
 	public enum CardinalDirection
 	{
-		North,
-		South,
-		West,
-		East,
-		None,
+		North = -1,
+		South = +1,
+		West = -2,
+		East = +2,
+		None = 0
 	}
 	
 	public static class CardinalDirectionUtils
 	{
 		public static bool AreOpposite(CardinalDirection c1, CardinalDirection c2)
 		{
-			return (
-			    (c1 == CardinalDirection.West && c2 == CardinalDirection.East) ||
-			    (c2 == CardinalDirection.West && c1 == CardinalDirection.East) ||
-			    (c1 == CardinalDirection.North && c2 == CardinalDirection.South) ||
-			    (c2 == CardinalDirection.North && c1 == CardinalDirection.South));
+			return (int)c1 + (int)c2 == 0;
+		}
+		
+		public static bool AreOrthogonal(CardinalDirection c1, CardinalDirection c2)
+		{
+			return (int)c1 + (int)c2 != 0;
 		}
 		
 		
@@ -69,6 +71,52 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			return new LinkDirection(from, to);
 		}
 		
+		public static Point[] GetLinePoints(LinkDrawing linkDrawing)
+		{
+			Point[] points = {
+				linkDrawing.SourcePoint.Location,
+				linkDrawing.DestinationPoint.Location
+			};
+			
+			if (AreOpposite(linkDrawing.Direction.From, linkDrawing.Direction.To)) {
+				if (linkDrawing.Direction.From == CardinalDirection.South
+				    || linkDrawing.Direction.From == CardinalDirection.North) {
+					Point p1 = new Point(linkDrawing.DestinationPoint.X, 
+						           (linkDrawing.DestinationPoint.Y + linkDrawing.SourcePoint.Y) / 2);
+					Point p2 = new Point(linkDrawing.SourcePoint.X, 
+						           (linkDrawing.DestinationPoint.Y + linkDrawing.SourcePoint.Y) / 2);
+					return new Point[] {
+						linkDrawing.DestinationPoint.Location, p1, p2, linkDrawing.SourcePoint.Location
+					};
+				} else {
+					Point p1 = new Point((linkDrawing.DestinationPoint.X + linkDrawing.SourcePoint.X) / 2,
+						           linkDrawing.DestinationPoint.Y);
+					Point p2 = new Point((linkDrawing.DestinationPoint.X + linkDrawing.SourcePoint.X) / 2, 
+						           linkDrawing.SourcePoint.Y);
+					return new Point[] {
+						linkDrawing.DestinationPoint.Location, p1, p2, linkDrawing.SourcePoint.Location
+					};
+				}
+			}
+		
+			if (AreOrthogonal(linkDrawing.Direction.From, linkDrawing.Direction.To)) {
+				Point p1 = new Point();
+				if (linkDrawing.Direction.From == CardinalDirection.West ||
+				    linkDrawing.Direction.From == CardinalDirection.East) {
+					p1 = new Point(linkDrawing.DestinationPoint.X, linkDrawing.SourcePoint.Y);
+				} else if (linkDrawing.Direction.To == CardinalDirection.West ||
+				     linkDrawing.Direction.To == CardinalDirection.East) {
+					p1 = new Point(linkDrawing.SourcePoint.X, linkDrawing.DestinationPoint.Y);
+				}
+				return new Point[] {
+					linkDrawing.SourcePoint.Location,
+					p1,
+					linkDrawing.DestinationPoint.Location
+				};
+			}
+			
+			return points;
+		}
 		
 		public static LinkDirection GetClosestDirectionPoints(LinkDrawing linkDrawing)
 		{
@@ -87,9 +135,9 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			CardinalDirection to = CardinalDirection.None;
 			
 			if (destinationDrawing.LinkAttachMode == LinkAttachMode.LEFT_RIGHT) {
-				if (destinationDrawing.Location.X > sourceDrawing.Location.X + sourceDrawing.Size.Width) {
+				if (destinationDrawing.Location.X > sourceDrawing.Location.X + sourceDrawing.Size.Width / 2) {
 					to = CardinalDirection.West;
-				} else if (destinationDrawing.Location.X + destinationDrawing.Size.Width < sourceDrawing.Location.X) {
+				} else {
 					to = CardinalDirection.East;
 				}
 			} else if (destinationDrawing.LinkAttachMode == LinkAttachMode.ALL) {
@@ -116,9 +164,9 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 					from = CardinalDirection.West;
 				}
 			} else if (sourceDrawing.LinkAttachMode == LinkAttachMode.LEFT_RIGHT) {
-				if (sourceDrawing.Location.X > destinationDrawing.Location.X + destinationDrawing.Size.Width) {
+				if (sourceDrawing.Location.X > destinationDrawing.Location.X + destinationDrawing.Size.Width / 2) {
 					from = CardinalDirection.East;
-				} else if (sourceDrawing.Location.X + sourceDrawing.Size.Width < destinationDrawing.Location.X) {
+				} else {
 					from = CardinalDirection.West;
 				}
 			}

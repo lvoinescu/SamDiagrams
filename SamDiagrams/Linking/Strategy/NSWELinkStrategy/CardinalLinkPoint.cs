@@ -49,15 +49,13 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			if (obj == null)
 				return 1;
 			CardinalLinkPoint compararisonPoint = obj as CardinalLinkPoint;
-			if (compararisonPoint.direction == this.direction) {
-				switch (compararisonPoint.direction) {
-					case CardinalDirection.North:
-					case CardinalDirection.South:
-						return this.X - compararisonPoint.X;
-					case CardinalDirection.East:
-					case CardinalDirection.West:
-						return this.Y - compararisonPoint.Y;
-				}
+			switch (compararisonPoint.direction) {
+				case CardinalDirection.North:
+				case CardinalDirection.South:
+					return this.X - compararisonPoint.X;
+				case CardinalDirection.East:
+				case CardinalDirection.West:
+					return this.Y - compararisonPoint.Y;
 			}
 			return 0;
 		}
@@ -69,5 +67,10 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 			return linkDrawing.DestinationPoint;
 		}
 		
+		public override string ToString()
+		{
+			return string.Format("[CardinalLinkPoint Direction={0}, (x,y) = ({1},{2})]", direction, this.X, this.Y);
+		}
+
 	}
 }

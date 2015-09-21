@@ -156,20 +156,13 @@ namespace SamDiagrams.Drawers.Links
 			using (Pen linePen = new Pen(this.color, lineWidth)) {
 				Pen selectionPen = new Pen(Color.FromArgb(70, sourceDrawing.Color), selectedLineWidth);
 				linePen.DashPattern = new float[] { 8, 3 };
-				//if (CardinalDirectionUtils.AreOpposite(sourcePoint.Direction, destinationPoint.Direction)) {
 				if (linkStyle == LinkStyle.StreightLines) {
-					int midX = (int)(sourcePoint.X + destinationPoint.X) / 2;
-					Point[] ps = new Point[] {
-						new Point(sourcePoint.X, sourcePoint.Y),
-						new Point(midX, sourcePoint.Y),
-						new Point(midX, destinationPoint.Y),
-						new Point(destinationPoint.X, destinationPoint.Y)
-					};
+					Point[] linePoints = CardinalDirectionUtils.GetLinePoints(this);
 						
 					if (sourceDrawing.Selected || destinationDrawing.Selected) {
-						graphics.DrawLines(selectionPen, ps);
+						graphics.DrawLines(selectionPen, linePoints);
 					}
-					graphics.DrawLines(linePen, ps);
+					graphics.DrawLines(linePen, linePoints);
 
 				} else {
 					if (sourceDrawing.Selected || destinationDrawing.Selected) {
@@ -179,30 +172,6 @@ namespace SamDiagrams.Drawers.Links
 					graphics.DrawLine(linePen, sourcePoint.X, sourcePoint.Y, 
 						destinationPoint.X, destinationPoint.Y);
 				}
-
-				//}
-//				else {
-//					if (linkStyle == LinkStyle.StreightLines) {
-//						int midY = (int)(sourcePoint.Y + destinationPoint.Y) / 2;
-//						Point[] ps = new Point[] {
-//							new Point((int)(sourcePoint.X), (int)(sourcePoint.Y)),
-//							new Point((int)(sourcePoint.X), (int)(midY)),
-//							new Point((int)(destinationPoint.X), (int)(midY)),
-//							new Point((int)(destinationPoint.X), (int)(destinationPoint.Y))
-//						};
-//						if (sourceDrawing.Selected || destinationDrawing.Selected) {
-//							graphics.DrawLines(selectionPen, ps);
-//						}
-//						graphics.DrawLines(linePen, ps);
-//					} else {
-//						if (sourceDrawing.Selected || destinationDrawing.Selected) {
-//							graphics.DrawLine(selectionPen, sourcePoint.X, sourcePoint.Y,
-//								destinationPoint.X, destinationPoint.Y);
-//						}
-//						graphics.DrawLine(linePen, sourcePoint.X, sourcePoint.Y, 
-//							destinationPoint.X, destinationPoint.Y);
-//					}
-//				}
 			}
 		}
 		
@@ -214,6 +183,7 @@ namespace SamDiagrams.Drawers.Links
 				throw new Exception("Cannot set location for a link.");
 			}
 		}
+		
 		public Size Size {
 			get {
 				return new Size(
@@ -221,6 +191,7 @@ namespace SamDiagrams.Drawers.Links
 					Math.Abs(sourcePoint.Y - destinationPoint.Y));
 			}
 		}
+		
 		public Rectangle Bounds {
 			get {
 				Rectangle bounds = new Rectangle(Location, Size);

@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
+using SamDiagrams.Drawings.Geometry;
 using SamDiagrams.Drawings.Link;
 using SamDiagrams.Drawings.Selection;
 using SamDiagrams.Linking.Strategy;
@@ -300,24 +301,30 @@ namespace SamDiagrams.Linking.Strategy.NSWELinkStrategy
 		
 		private void SortCounterPoints(List<CardinalLinkPoint> list)
 		{
-
 			for (int i = 0; i < list.Count; i++) {
 				for (int j = 0; j < list.Count; j++) {
-					LinkPoint counterPoint = list[i].GetCounterPoint();
-					LinkPoint point = list[i];
-					bool counterPointGreater = list[i].GetCounterPoint()
-						.CompareTo(list[j].GetCounterPoint()) > 0;
-					bool pointGreater = list[i].CompareTo(list[j]) > 0;
-					if ((!counterPointGreater && pointGreater) || (counterPointGreater && !pointGreater)) {
-						int t = 0;
-						t = list[i].X;
-						list[i].X = list[j].X;
-						list[j].X = t;
+					if (i != j) {
+						LinkPoint counterPoint1 = list[i].GetCounterPoint();
+						LinkPoint point1 = list[i];
+					
+						LinkPoint counterPoint2 = list[j].GetCounterPoint();
+						LinkPoint point2 = list[j];
 
-						t = list[i].Y;
-						list[i].Y = list[j].Y;
-						list[j].Y = t;
+						LineSegment lineSegment1 = new LineSegment(point1.Location, counterPoint1.Location);
+						LineSegment lineSegment2 = new LineSegment(point2.Location, counterPoint2.Location);
+					
+					
+						if (lineSegment1.Intersects(lineSegment2)) {
+							int t = 0;
+							t = list[i].X;
+							list[i].X = list[j].X;
+							list[j].X = t;
 
+							t = list[i].Y;
+							list[i].Y = list[j].Y;
+							list[j].Y = t;
+
+						}
 					}
 				}
 			}

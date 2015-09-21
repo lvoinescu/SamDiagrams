@@ -1,4 +1,4 @@
-/*
+﻿/*
  *   SamDiagrams - diagram component for .NET
  *   Copyright (C) 2011  Lucian Voinescu
  *
@@ -13,64 +13,59 @@
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU Lesser General Public License for more details.
-*
+ *
  *   You should have received a copy of the GNU Lesser General Public License
  *   along with SamDiagrams. If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
 using System.Drawing;
-using SamDiagrams.Drawers.Links;
-using SamDiagrams.Linking;
+using SamDiagrams.Drawings.Geometry;
 
-namespace SamDiagrams
+namespace SamDiagrams.Drawings.Geometry
 {
 	/// <summary>
-	/// A simple class representing the end point of a link described
-	/// by a cartesian pair (x, y).
+	/// Line characterized by the ecuation:
+	/// 
+	/// d :   aX + bY + c =0;
 	/// </summary>
-	public class LinkPoint
+	public class LineSegment
 	{
-		private int x = 0;
-		private int y = 0;
-		protected LinkDrawing linkDrawing;
-		
-		public LinkDrawing Link {
-			get { return linkDrawing; }
-			set { linkDrawing = value; }
-		}
-		
-		public int X {
-			get { return x; }
-			set { x = value; }
-		}
+		internal double a, b, c;
+		Point p1;
+		Point p2;
 
-		public int Y {
-			get { return y; }
-			set { y = value; }
-		}
-
-		public LinkPoint(LinkDrawing linkDrawing)
-		{
-			this.linkDrawing = linkDrawing;
-		}
-
-		public Point Location{
+		public Point P1 {
 			get {
-				return new Point(x, y);
+				return p1;
 			}
 		}
 
-		public static void Swap(LinkPoint p1, LinkPoint p2)
-		{
-			int t = 0;
-			t = p1.X;
-			p1.X = p2.X;
-			p2.X = t;
-
-			t = p1.Y;
-			p1.Y = p2.Y;
-			p2.y = t;
+		public Point P2 {
+			get {
+				return p2;
+			}
 		}
-
+		
+		public LineSegment(Point p1, Point p2)
+		{
+			this.p1 = p1;
+			this.p2 = p2;
+			double m = (double)(p2.Y - p1.Y) / (p2.X - p1.X);
+			
+			a = m;
+			b = -1;
+			c = p1.Y - m * p1.X;
+		}
+		
+		internal double lineValue(Point p)
+		{
+			return a * p.X + b * p.Y + c;
+		}
+		
+		public bool Intersects(LineSegment l2)
+		{
+			return lineValue(l2.p1) * lineValue(l2.p2) < 0 &&
+			l2.lineValue(this.p1) * l2.lineValue(this.p2) < 0;
+		}
 	}
 }
