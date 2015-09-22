@@ -16,6 +16,7 @@ using SamDiagrams;
 using SamDiagrams.Drawers.Links;
 using SamDiagrams.Drawings;
 using SamDiagrams.Drawings.Geometry;
+using SamDiagrams.Linking;
 using SamDiagrams.Model;
 
 namespace TestProject
@@ -171,10 +172,19 @@ namespace TestProject
 			diagramContainer1.DrawableHeight = 705;
 			diagramContainer1.DrawableWidth = 758;
 		}
+		
 		void TrackBar1Scroll(object sender, EventArgs e)
 		{
 			diagramContainer1.ZoomFactor = trackBar1.Value;
 			zoomValueLabel.Text = trackBar1.Value.ToString() + "%";
+		}
+		
+		void LineStyleChanged(object sender, EventArgs e)
+		{
+			diagramContainer1.ContainerDrawer.LinkOrchestrator.LinkStyle
+				= radioButton1.Checked ? LinkStyle.SingleLine : LinkStyle.RectLines;
+			diagramContainer1.Refresh();
+			
 		}
 
  

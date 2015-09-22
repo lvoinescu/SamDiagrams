@@ -41,7 +41,6 @@ namespace SamDiagrams.Drawers.Links
 		private ILinkableDrawing sourceDrawing;
 		private ILinkableDrawing destinationDrawing;
 		private CardinalLinkPoint sourcePoint, destinationPoint;
-		//private LinkDirection direction = LinkDirection.None;
 		private LinkDirection direction;
 		private bool selected;
 		private Color color;
@@ -156,7 +155,7 @@ namespace SamDiagrams.Drawers.Links
 			using (Pen linePen = new Pen(this.color, lineWidth)) {
 				Pen selectionPen = new Pen(Color.FromArgb(70, sourceDrawing.Color), selectedLineWidth);
 				linePen.DashPattern = new float[] { 8, 3 };
-				if (linkStyle == LinkStyle.StreightLines) {
+				if (linkStyle == LinkStyle.RectLines) {
 					Point[] linePoints = CardinalDirectionUtils.GetLinePoints(this);
 						
 					if (sourceDrawing.Selected || destinationDrawing.Selected) {

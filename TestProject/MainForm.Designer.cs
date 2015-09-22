@@ -38,6 +38,9 @@ namespace TestProject
 		{
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.diagramContainer1 = new SamDiagrams.DiagramContainer();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.radioButton1 = new System.Windows.Forms.RadioButton();
+			this.radioButton2 = new System.Windows.Forms.RadioButton();
 			this.zoomValueLabel = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.trackBar1 = new System.Windows.Forms.TrackBar();
@@ -45,6 +48,7 @@ namespace TestProject
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
+			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -61,6 +65,7 @@ namespace TestProject
 			// 
 			// splitContainer1.Panel2
 			// 
+			this.splitContainer1.Panel2.Controls.Add(this.groupBox1);
 			this.splitContainer1.Panel2.Controls.Add(this.zoomValueLabel);
 			this.splitContainer1.Panel2.Controls.Add(this.label1);
 			this.splitContainer1.Panel2.Controls.Add(this.trackBar1);
@@ -85,6 +90,39 @@ namespace TestProject
 			this.diagramContainer1.TabIndex = 0;
 			this.diagramContainer1.ZoomFactor = 100;
 			// 
+			// groupBox1
+			// 
+			this.groupBox1.Controls.Add(this.radioButton1);
+			this.groupBox1.Controls.Add(this.radioButton2);
+			this.groupBox1.Location = new System.Drawing.Point(22, 60);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(450, 59);
+			this.groupBox1.TabIndex = 4;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "Line style";
+			// 
+			// radioButton1
+			// 
+			this.radioButton1.Checked = true;
+			this.radioButton1.Location = new System.Drawing.Point(15, 21);
+			this.radioButton1.Name = "radioButton1";
+			this.radioButton1.Size = new System.Drawing.Size(104, 24);
+			this.radioButton1.TabIndex = 2;
+			this.radioButton1.TabStop = true;
+			this.radioButton1.Text = "single lines";
+			this.radioButton1.UseVisualStyleBackColor = true;
+			this.radioButton1.CheckedChanged += new System.EventHandler(this.LineStyleChanged);
+			// 
+			// radioButton2
+			// 
+			this.radioButton2.Location = new System.Drawing.Point(125, 21);
+			this.radioButton2.Name = "radioButton2";
+			this.radioButton2.Size = new System.Drawing.Size(104, 24);
+			this.radioButton2.TabIndex = 3;
+			this.radioButton2.Text = "rect lines";
+			this.radioButton2.UseVisualStyleBackColor = true;
+			this.radioButton2.CheckedChanged += new System.EventHandler(this.LineStyleChanged);
+			// 
 			// zoomValueLabel
 			// 
 			this.zoomValueLabel.Location = new System.Drawing.Point(13, 23);
@@ -96,7 +134,7 @@ namespace TestProject
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(13, 0);
+			this.label1.Location = new System.Drawing.Point(13, 2);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(56, 23);
 			this.label1.TabIndex = 1;
@@ -129,6 +167,7 @@ namespace TestProject
 			this.splitContainer1.Panel2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
+			this.groupBox1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
 			this.ResumeLayout(false);
 
@@ -139,5 +178,8 @@ namespace TestProject
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.Label zoomValueLabel;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.RadioButton radioButton2;
 	}
 }

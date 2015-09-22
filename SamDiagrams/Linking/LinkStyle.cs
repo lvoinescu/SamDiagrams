@@ -27,6 +27,6 @@ namespace SamDiagrams.Linking
 	public enum LinkStyle
 	{
 		SingleLine,
-		StreightLines
+		RectLines
 	}
 }

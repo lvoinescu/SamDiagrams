@@ -232,7 +232,7 @@ namespace SamDiagrams
 		
 		public void AddLinkDrawing(ILinkableDrawing source, ILinkableDrawing destination)
 		{
-			LinkDrawing linkDrawing = new LinkDrawing(source, destination, 1.0f, 3.0f, LinkStyle.StreightLines);
+			LinkDrawing linkDrawing = new LinkDrawing(source, destination, 1.0f, 3.0f, LinkStyle.RectLines);
 			ContainerDrawer.LinkOrchestrator.AddLinkDrawing(linkDrawing);
 		}
 

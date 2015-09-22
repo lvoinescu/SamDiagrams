@@ -48,6 +48,9 @@ namespace SamDiagrams.Linking.Orchestrator
 			get { return linkStyle; }
 			set {
 				linkStyle = value;
+				foreach(LinkDrawing link in links){
+					link.LinkStyle = linkStyle;
+				}
 			}
 		}
 
@@ -67,7 +70,7 @@ namespace SamDiagrams.Linking.Orchestrator
 
 		public void AddLink(ILink link)
 		{
-			LinkDrawing linkDrawing = linkStrategy.CreateLink(link, lineWidth, selectedLineWidth, LinkStyle.StreightLines);
+			LinkDrawing linkDrawing = linkStrategy.CreateLink(link, lineWidth, selectedLineWidth, linkStyle);
 			link.Drawing = linkDrawing;
 			RegisterLink(linkDrawing);
 		}
