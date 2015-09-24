@@ -26,7 +26,6 @@ using SamDiagrams.Drawings;
 using SamDiagrams.Drawings.Geometry;
 using SamDiagrams.Drawings.Link;
 using SamDiagrams.Drawings.Selection;
-using SamDiagrams.Linking.Orchestrator;
 
 namespace SamDiagrams.Drawers
 {
@@ -49,11 +48,12 @@ namespace SamDiagrams.Drawers
 			this.containerDrawer.DiagramContainer.Paint += new PaintEventHandler(OnPaint);
 			this.containerDrawer.DiagramContainer.ZoomFactorChanged += new ZoomFactorChangedHandler(OnZoomChanged);
 			this.containerDrawer.DiagramContainer.DrawingResized += new DrawingResizedHandler(OnDrawingResized);
+			this.containerDrawer.DiagramContainer.GotFocus += new EventHandler(OnGotFocused);
 		}
 
 		void OnZoomChanged(object sender, ZoomFactorChangedArg e)
 		{
-			invalidateClipRectangle(containerDrawer.DiagramContainer.ClientRectangle);
+			invalidateOverlappingDrawings(containerDrawer.DiagramContainer.ClientRectangle);
 			containerDrawer.DiagramContainer.Invalidate();
 		}
 		/// <summary>
@@ -64,9 +64,16 @@ namespace SamDiagrams.Drawers
 		/// <param name="e"></param>
 		void OnPaint(object sender, PaintEventArgs e)
 		{
-			invalidateClipRectangle(e.ClipRectangle);
+			invalidateOverlappingDrawings(e.ClipRectangle);
 		}
 
+		void OnGotFocused(object sender, EventArgs e)
+		{
+			foreach (IDrawing drawer in containerDrawer.Drawings) {
+				drawer.Invalidated = true;
+			}
+		}
+		
 		void OnMouseDown(object sender, MouseEventArgs e)
 		{
 			foreach (IDrawing drawer in containerDrawer.Drawings) {
@@ -223,12 +230,5 @@ namespace SamDiagrams.Drawers
 			}
 		}
 		
-		void invalidateClipRectangle(Rectangle clipRectangle)
-		{
-			foreach (IDrawing drawing in containerDrawer.Drawings) {
-				if (!drawing.Invalidated && clipRectangle.IntersectsWith(drawing.Bounds))
-					drawing.Invalidated = true;
-			}
-		}
 	}
 }

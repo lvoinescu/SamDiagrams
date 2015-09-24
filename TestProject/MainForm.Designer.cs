@@ -69,23 +69,23 @@ namespace TestProject
 			this.splitContainer1.Panel2.Controls.Add(this.zoomValueLabel);
 			this.splitContainer1.Panel2.Controls.Add(this.label1);
 			this.splitContainer1.Panel2.Controls.Add(this.trackBar1);
-			this.splitContainer1.Size = new System.Drawing.Size(1245, 705);
-			this.splitContainer1.SplitterDistance = 758;
+			this.splitContainer1.Size = new System.Drawing.Size(1245, 723);
+			this.splitContainer1.SplitterDistance = 772;
 			this.splitContainer1.SplitterWidth = 3;
 			this.splitContainer1.TabIndex = 5;
 			// 
 			// diagramContainer1
 			// 
-			this.diagramContainer1.AutoSizeItem = true;
+			this.diagramContainer1.AutoSizeItem = false;
 			this.diagramContainer1.BackColor = System.Drawing.SystemColors.ControlLightLight;
 			this.diagramContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.diagramContainer1.DrawableHeight = 705;
-			this.diagramContainer1.DrawableWidth = 758;
+			this.diagramContainer1.DrawableHeight = 723;
+			this.diagramContainer1.DrawableWidth = 772;
 			this.diagramContainer1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.diagramContainer1.Location = new System.Drawing.Point(0, 0);
 			this.diagramContainer1.Margin = new System.Windows.Forms.Padding(2);
 			this.diagramContainer1.Name = "diagramContainer1";
-			this.diagramContainer1.Size = new System.Drawing.Size(758, 705);
+			this.diagramContainer1.Size = new System.Drawing.Size(772, 723);
 			this.diagramContainer1.SnapObjectsToGrid = false;
 			this.diagramContainer1.TabIndex = 0;
 			this.diagramContainer1.ZoomFactor = 100;
@@ -155,7 +155,7 @@ namespace TestProject
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1245, 705);
+			this.ClientSize = new System.Drawing.Size(1245, 723);
 			this.Controls.Add(this.splitContainer1);
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Margin = new System.Windows.Forms.Padding(4);
