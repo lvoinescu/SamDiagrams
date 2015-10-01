@@ -95,14 +95,14 @@ namespace SamDiagrams.Actions
 				if (x < 0)
 					x = 0;
 				
-				if (x > container.Width - movableDrawing.Size.Width)
-					x = (int)(container.Width - movableDrawing.Size.Width);
+				if (x > container.Width - movableDrawing.Size.Width + container.HScrollBar.Value)
+					x = (int)(container.Width - movableDrawing.Size.Width + container.HScrollBar.Value);
 				
 				if (y < 0)
 					y = 0;
 				
-				if (y > container.Height - movableDrawing.Size.Height)
-					y = (int)(container.Height - movableDrawing.Size.Height);
+				if (y > container.Height - movableDrawing.Size.Height + container.VScrollBar.Value)
+					y = (int)(container.Height - movableDrawing.Size.Height + container.VScrollBar.Value);
 				movedDrawing.Add(movableDrawing.Drawing);
 				if(movableDrawing.Drawing.Components != null){
 					movedDrawing.AddRange(movableDrawing.Drawing.Components);

@@ -62,6 +62,12 @@ namespace SamDiagrams.Drawings.Geometry
 			this.rectangle.Inflate(ammount, ammount);
 		}
 		
+		public void Translate(int dx, int dy){
+			Point newLocation = rectangle.Location;
+			newLocation.Offset(-dx, -dy);
+			rectangle.Location = newLocation;
+		}
+		
 		public override string ToString()
 		{
 			return string.Format("[MergableRectangle R1={0}]", rectangle);

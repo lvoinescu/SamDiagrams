@@ -40,5 +40,14 @@ namespace UnitTests.Drawings.Geometry
 			Assert.AreEqual(new Rectangle(100, 100, 550, 650), mRect.Bounds);
 			
 		}
+		
+		[Test]
+		public void TestTranslation()
+		{
+			MergeableRectangle mRect = new MergeableRectangle(new Rectangle(100, 100, 200, 300));
+			mRect.Translate(100,100);
+			Assert.AreEqual(new Rectangle(0, 0, 200, 300), mRect.Bounds);
+			
+		}
 	}
 }

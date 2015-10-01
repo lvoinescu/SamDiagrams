@@ -79,7 +79,8 @@ namespace SamDiagrams.Actions
 		void OnMouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
 			double scaleFactor = (double)container.ZoomFactor / 100;
-			Point clickPoint = new Point((int)((double)e.X / scaleFactor), (int)((double)e.Y / scaleFactor));
+			Point clickPoint = new Point((int)((double)e.X / scaleFactor) + container.HScrollBar.Value,
+			                             (int)((double)e.Y / scaleFactor) + container.VScrollBar.Value);
 			foreach (IDrawing selectedDrawing in container.ContainerDrawer.Drawings) {
 				if (selectedDrawing is IClickable && selectedDrawing.Bounds.Contains(clickPoint)) {
 					(selectedDrawing as IClickable).OnInsideClick(

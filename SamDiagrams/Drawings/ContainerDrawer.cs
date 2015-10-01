@@ -91,9 +91,9 @@ namespace SamDiagrams.Drawers
 		public void Draw(float scaleFactor, Graphics graphics)
 		{
 			RectangleF rectangle = graphics.ClipBounds;
-//			graphics.FillRectangle(new SolidBrush(Color.FromArgb(rd.Next(255), rd.Next(255), rd.Next(255))), 
-//			                       new Rectangle((int)rectangle.X, (int)rectangle.Y, 
-//			                                     (int)rectangle.Width, (int)rectangle.Height));
+			graphics.FillRectangle(new SolidBrush(Color.FromArgb(rd.Next(255), rd.Next(255), rd.Next(255))), 
+			                       new Rectangle((int)rectangle.X, (int)rectangle.Y, 
+			                                     (int)rectangle.Width, (int)rectangle.Height));
 			
 			graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
 			graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;

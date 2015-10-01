@@ -131,6 +131,8 @@ namespace SamDiagrams.Drawers
 			invalidateOverlappingDrawings(newRectangleToInvalidate.Bounds);
 			previouslyInvalidatedRectangle = auxRectangle;
 			double scaleFactor = (float)containerDrawer.DiagramContainer.ZoomFactor / 100;
+			newRectangleToInvalidate.Translate(containerDrawer.DiagramContainer.HScrollBar.Value,
+				containerDrawer.DiagramContainer.VScrollBar.Value);
 			Rectangle r = new Rectangle((int)(Math.Ceiling(newRectangleToInvalidate.Bounds.X * scaleFactor)),
 				              (int)(Math.Ceiling(newRectangleToInvalidate.Bounds.Y * scaleFactor)),
 				              (int)(Math.Ceiling(newRectangleToInvalidate.Bounds.Width * scaleFactor)),
@@ -224,7 +226,10 @@ namespace SamDiagrams.Drawers
 		void invalidateOverlappingDrawings(Rectangle rectangle)
 		{
 			foreach (IDrawing drawing in containerDrawer.Drawings) {
-				if (!drawing.Invalidated && drawing.Bounds.IntersectsWith(rectangle)) {
+				MergeableRectangle mRectangle = new MergeableRectangle(rectangle);
+				mRectangle.Translate(-containerDrawer.DiagramContainer.HScrollBar.Value,
+					-containerDrawer.DiagramContainer.VScrollBar.Value);
+				if (!drawing.Invalidated && drawing.Bounds.IntersectsWith(mRectangle.Bounds)) {
 					drawing.Invalidated = true;
 				}
 			}
